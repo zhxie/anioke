@@ -3,7 +3,12 @@ import "./App.css";
 
 class App extends React.Component {
   render() {
-    return <video className="Video" />;
+    return (
+      <div>
+        <video className="video" />
+        <p className="overlay">{`${window.ip}:${window.port}`}</p>
+      </div>
+    );
   }
 }
 

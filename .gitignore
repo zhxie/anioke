@@ -11,6 +11,9 @@
 # production
 /build
 /dist
+/public/.build-electron-done
+/public/main.js
+/public/preload.js*
 
 # misc
 .DS_Store
