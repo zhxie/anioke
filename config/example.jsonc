@@ -1,0 +1,27 @@
+// This is an example config in JSONC format. Please remove all comments,
+// rename the file with suffix .json and have it located in the root directory.
+{
+  "server": {
+    // The port for listening. The RESTful server will start and listen on
+    // 0.0.0.0:`port`. If it is unspecified or set as `0`, the system will find
+    // a suitable port.
+    "port": 0
+  },
+  "download": {
+    // The download location for MVs and lyrics.
+    "location": "./cache"
+  },
+  "providers": {
+    "mv": {
+      "bilibili": {},
+      "youtube": {
+        // The YouTube API key. You may acquire your own key in
+        // https://developers.google.com/youtube/registering_an_application.
+        "key": ""
+      }
+    },
+    "lyrics": {
+      "petit_lyrics": {}
+    }
+  }
+}
