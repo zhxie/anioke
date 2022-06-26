@@ -12,8 +12,8 @@
 /build
 /dist
 /public/.build-electron-done
-/public/main.js
-/public/preload.js*
+/public/*.js
+/public/*.txt
 
 # misc
 .DS_Store

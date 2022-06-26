@@ -53,10 +53,11 @@ class Server {
               title: entry.title(),
               subtitle: entry.subtitle(),
               uploader: entry.uploader(),
+              url: entry.url(),
             };
           });
         }
-        const artist = req.query["artist"];
+        const artist = req.query["artist"] ?? "";
         const lyrics = req.query["lyrics"];
         if (lyrics) {
           result["lyrics"] = (
@@ -73,8 +74,45 @@ class Server {
           });
         }
         res.send(result);
-      } catch {
-        res.status(400).send();
+      } catch (e) {
+        console.log(e);
+        res.status(400).send({ error: e.message });
+      }
+    });
+    this.server.get("/mv", async (req, res) => {
+      try {
+        const id = req.query["id"];
+        const source = id.split(".")[0];
+        const mv = await this.mv_providers
+          .find((provider) => provider.name() == source)
+          .get(id);
+        res.send({
+          id: id,
+          title: mv.title(),
+          subtitle: mv.subtitle(),
+          uploader: mv.uploader(),
+          url: mv.url(),
+        });
+      } catch (e) {
+        res.status(400).send({ error: e.message });
+      }
+    });
+    this.server.get("/lyrics", async (req, res) => {
+      try {
+        const id = req.query["id"];
+        const source = id.split(".")[0];
+        const lyrics = await this.lyrics_providers
+          .find((provider) => provider.name() == source)
+          .get(id);
+        res.send({
+          id: id,
+          title: lyrics.title(),
+          artist: lyrics.artist(),
+          style: lyrics.style(),
+          lyrics: await lyrics.lyrics(),
+        });
+      } catch (e) {
+        res.status(400).send({ error: e.message });
       }
     });
     this.server.get("/order", async (req, res) => {
@@ -91,9 +129,9 @@ class Server {
           .find((provider) => provider.name() == lyricsSource)
           .get(lyricsId);
         this.download_manager.push(result);
-        res.status(200).send();
-      } catch {
-        res.status(400).send();
+        res.send();
+      } catch (e) {
+        res.status(400).send({ error: e.message });
       }
     });
     this.listener = this.server.listen(serverConfig["port"] ?? 0, "0.0.0.0");

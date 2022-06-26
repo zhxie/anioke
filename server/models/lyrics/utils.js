@@ -1,6 +1,6 @@
 const Style = {
-  Traditional: 0,
-  Karaoke: 1,
+  Traditional: "traditional",
+  Karaoke: "karaoke",
 };
 
 class Word {

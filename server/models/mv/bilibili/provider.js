@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import Entry, { NAME } from "./entry";
 
 class Provider {

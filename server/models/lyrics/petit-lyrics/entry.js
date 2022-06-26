@@ -1,3 +1,4 @@
+import fetch from "node-fetch";
 import { parseStringPromise as parseXMLString } from "xml2js";
 import { Line, Style, Utils, Word } from "../utils";
 
