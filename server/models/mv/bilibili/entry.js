@@ -38,6 +38,10 @@ class Entry {
   url() {
     return `https://www.bilibili.com/video/${this.bvid}?p=${this.page}`;
   }
+
+  format() {
+    return [];
+  }
 }
 
 export { NAME };

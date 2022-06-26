@@ -3,12 +3,15 @@ import fs from "fs";
 import BilibiliMVProvider from "./models/mv/bilibili/provider";
 import YoutubeMVProvider from "./models/mv/youtube/provider";
 import PetitLyricsLyricsProvider from "./models/lyrics/petit-lyrics/provider";
+import Entry, { Status } from "./utils/common/entry";
+import Downloader from "./utils/download/downloader";
 
 class Server {
   config;
   mv_providers = [new BilibiliMVProvider(), new YoutubeMVProvider()];
   lyrics_providers = [new PetitLyricsLyricsProvider()];
-  download_manager = [];
+  playlist = [];
+  downloader;
 
   server = express();
   listener;
@@ -28,6 +31,13 @@ class Server {
     for (let provider of this.lyrics_providers) {
       provider.configure(lyricsConfig[provider.name()] ?? {});
     }
+
+    // Setup downloader.
+    const downloadConfig = this.config["download"] ?? {};
+    this.downloader = new Downloader(
+      downloadConfig["location"] ?? "./cache",
+      downloadConfig["yt-dlp" ?? "yt-dlp"]
+    );
 
     // Setup server.
     const serverConfig = this.config["server"] ?? {};
@@ -75,7 +85,7 @@ class Server {
         }
         res.send(result);
       } catch (e) {
-        console.log(e);
+        console.error(e);
         res.status(400).send({ error: e.message });
       }
     });
@@ -94,6 +104,7 @@ class Server {
           url: mv.url(),
         });
       } catch (e) {
+        console.error(e);
         res.status(400).send({ error: e.message });
       }
     });
@@ -112,33 +123,89 @@ class Server {
           lyrics: await lyrics.lyrics(),
         });
       } catch (e) {
+        console.error(e);
         res.status(400).send({ error: e.message });
       }
     });
     this.server.get("/order", async (req, res) => {
       try {
-        let result = {};
         const mvId = req.query["mv"];
         const mvSource = mvId.split(".")[0];
-        result["mv"] = await this.mv_providers
+        const mv = await this.mv_providers
           .find((provider) => provider.name() == mvSource)
           .get(mvId);
         const lyricsId = req.query["lyrics"];
         const lyricsSource = lyricsId.split(".")[0];
-        result["lyrics"] = await this.lyrics_providers
+        const lyrics = await this.lyrics_providers
           .find((provider) => provider.name() == lyricsSource)
           .get(lyricsId);
-        this.download_manager.push(result);
-        res.send();
+        const entry = new Entry(mv, lyrics);
+        this.playlist.push(entry);
+        this.requestDownload();
+        res.send({
+          sequence: entry.sequence(),
+          mv: {
+            id: mv.id(),
+            title: mv.title(),
+            subtitle: mv.subtitle(),
+            uploader: mv.uploader(),
+            url: mv.url(),
+          },
+          lyrics: {
+            id: lyrics.id(),
+            title: lyrics.title(),
+            artist: lyrics.artist(),
+            style: lyrics.style(),
+          },
+        });
       } catch (e) {
+        console.error(e);
         res.status(400).send({ error: e.message });
       }
+    });
+    this.server.get("/playlist", async (_req, res) => {
+      res.send(
+        this.playlist.map((entry) => {
+          const mv = entry.mv();
+          const lyrics = entry.lyrics();
+          return {
+            sequence: entry.sequence(),
+            status: entry.status(),
+            progress: entry.progress(),
+            error: entry.error(),
+            mv: {
+              id: mv.id(),
+              title: mv.title(),
+              subtitle: mv.subtitle(),
+              uploader: mv.uploader(),
+              url: mv.url(),
+            },
+            lyrics: {
+              id: lyrics.id(),
+              title: lyrics.title(),
+              artist: lyrics.artist(),
+              style: lyrics.style(),
+            },
+          };
+        })
+      );
     });
     this.listener = this.server.listen(serverConfig["port"] ?? 0, "0.0.0.0");
   }
 
   port = () => {
     return this.listener.address().port;
+  };
+
+  requestDownload = () => {
+    const entry = this.playlist.find(
+      (entry) => entry.status() == Status.DownloadQueue
+    );
+    if (entry) {
+      this.downloader.download(entry, (_success) => {
+        this.requestDownload();
+      });
+    }
   };
 }
 

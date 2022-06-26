@@ -34,6 +34,10 @@ class Entry {
   url() {
     return `https://www.youtube.com/watch?v=${this.videoId}`;
   }
+
+  format() {
+    return ["-f", "mp4"];
+  }
 }
 
 export { NAME };

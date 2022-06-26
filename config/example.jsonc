@@ -9,7 +9,10 @@
   },
   "download": {
     // The download location for MVs and lyrics.
-    "location": "./cache"
+    "location": "./cache",
+    // The location of yt-dlp. You may acquire an executable binary in
+    // https://github.com/yt-dlp/yt-dlp/releases.
+    "yt-dlp": "yt-dlp"
   },
   "providers": {
     "mv": {
