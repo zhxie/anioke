@@ -63,7 +63,7 @@ class Entry {
   }
 
   async formattedLyrics() {
-    const header = Utils.header(this.title);
+    const header = Utils.header(this.title_);
     const rawLyrics = await this.rawLyrics();
     const text = await parseXMLString(rawLyrics);
 

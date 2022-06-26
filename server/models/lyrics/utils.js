@@ -39,18 +39,18 @@ class Line {
   compile(style, assStyle, advance) {
     let words = this.line;
     switch (style) {
-      case LyricsStyle.Traditional:
+      case Style.Traditional:
         break;
-      case LyricsStyle.Karaoke:
+      case Style.Karaoke:
         words = `{\\K${Math.round(advance * 100)}}`;
         words += this.words.map((value) => value.compile()).join("");
         break;
       default:
-        throw new Error(`unexpected lyrics style "${style}"`);
+        throw new Error(`unexpected style "${style}"`);
     }
-    return `Dialogue: 0,${LyricsUtils.convertTime(
+    return `Dialogue: 0,${Utils.convertTime(
       this.startTime - advance
-    )},${LyricsUtils.convertTime(this.endTime)},${assStyle},,0,0,0,,${words}`;
+    )},${Utils.convertTime(this.endTime)},${assStyle},,0,0,0,,${words}`;
   }
 }
 
