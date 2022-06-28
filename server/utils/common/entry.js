@@ -1,28 +1,29 @@
 import { Utils } from "./utils";
 
 const Status = {
-  DownloadQueue: "download_queue",
-  PreDownload: "pre_download",
+  Queue: "queue",
   Download: "download",
-  Encode: "encode",
-  PlayQueue: "play_queue",
+  Complete: "complete",
   Play: "play",
   Fail: "fail",
 };
 
 class Entry {
   sequence_;
-  status_ = Status.DownloadQueue;
-  progress_ = 0;
+  status_ = Status.Queue;
   error_ = 0;
 
   mv_;
+  mvPath_;
   lyrics_;
+  lyricsPath_;
 
-  constructor(mv, lyrics) {
+  constructor(mv, mvPath, lyrics, lyricsPath) {
     this.sequence_ = Utils.generateSequence();
     this.mv_ = mv;
     this.lyrics_ = lyrics;
+    this.mvPath_ = mvPath;
+    this.lyricsPath_ = lyricsPath;
   }
 
   sequence() {
@@ -33,10 +34,6 @@ class Entry {
     return this.status_;
   }
 
-  progress() {
-    return this.progress_;
-  }
-
   error() {
     return this.error_;
   }
@@ -45,23 +42,59 @@ class Entry {
     return this.mv_;
   }
 
+  mvPath() {
+    return this.mvPath_;
+  }
+
   lyrics() {
     return this.lyrics_;
   }
 
-  updateStatus(status) {
-    this.status_ = status;
+  lyricsPath() {
+    return this.lyricsPath_;
   }
 
-  updateProgress(progress) {
-    this.progress_ = progress;
+  onDownload() {
+    this.status_ = Status.Download;
   }
 
-  fail(error) {
-    this.status_ = Status.Fail;
-    this.error_ = error;
+  onComplete() {
+    this.status_ = Status.Complete;
+  }
+
+  onPlay() {
+    this.status_ = Status.Play;
+  }
+
+  onFail() {
+    this.status_ = Status.onFail;
+  }
+
+  isRemovable() {
+    switch (this.status) {
+      case Status.Queue:
+      case Status.Complete:
+      case Status.Play:
+      case Status.Fail:
+        return true;
+      case Status.Download:
+        return false;
+      default:
+        throw new Error(`unexpected status "${this.status_}"`);
+    }
+  }
+
+  isQueued() {
+    return this.status_ == Status.Queue;
+  }
+
+  isCompleted() {
+    return this.status_ == Status.Complete;
+  }
+
+  isPlaying() {
+    return this.status_ == Status.Play;
   }
 }
 
-export { Status };
 export default Entry;

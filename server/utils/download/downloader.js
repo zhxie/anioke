@@ -1,72 +1,105 @@
 import fs from "fs";
 import YTDlpWrap from "yt-dlp-wrap";
-import { Status } from "../common/entry";
+import Entry from "../common/entry";
 
 class Downloader {
   location_;
-
   ytDlp;
-  downloading = false;
+  complete;
 
-  constructor(location, ytDlpLocation) {
+  downloading = false;
+  list_ = [];
+
+  constructor(location, ytDlpLocation, complete) {
     this.location_ = location;
     // Creates a directory if it does not exist in advance.
     fs.mkdirSync(location, {
       recursive: true,
     });
     this.ytDlp = new YTDlpWrap(ytDlpLocation);
+    this.complete = complete;
   }
 
   location() {
     return this.location_;
   }
 
-  async download(entry, callback) {
+  list() {
+    return this.list_;
+  }
+
+  add(mv, lyrics) {
+    const mvPath = `${this.location_}/${mv.id()}.mp4`;
+    const lyricsPath = `${this.location_}/${lyrics.id()}.ass`;
+    this.list_.push(new Entry(mv, mvPath, lyrics, lyricsPath));
+    this.download();
+  }
+
+  remove(sequence) {
+    const i = list.findIndex((entry) => entry.sequence() == sequence);
+    if (i >= 0 && list[i].isRemovable()) {
+      this.list_.splice(i);
+    }
+  }
+
+  async download() {
     if (this.downloading) {
       return;
     }
-    try {
-      this.downloading = true;
 
-      // Download lyrics
-      entry.updateStatus(Status.PreDownload);
-      const lyrics = entry.lyrics();
-      const lyricsPath = `${this.location_}/${lyrics.id()}.ass`;
-      if (!fs.existsSync(lyricsPath)) {
-        fs.writeFileSync(lyricsPath, await lyrics.formattedLyrics());
-      }
-
-      // Download MV
-      entry.updateStatus(Status.Download);
-      const mv = entry.mv();
-      const mvPath = `${this.location_}/${mv.id()}.mp4`;
-      this.ytDlp
-        .exec([mv.url(), "-o", mvPath].concat(mv.format()))
-        .on("progress", (progress) => {
-          entry.updateProgress(progress.percent ?? 0);
-        })
-        .on("error", (e) => {
-          console.error(e);
-          // Clean up
-          if (fs.existsSync(mvPath)) {
-            fs.rmSync(mvPath);
-          }
-
-          entry.fail(e.message);
-          this.downloading = false;
-          callback(false);
-        })
-        .on("close", () => {
-          entry.updateStatus(Status.PlayQueue);
-          this.downloading = false;
-          callback(true);
-        });
-    } catch (e) {
-      console.error(e);
-      entry.fail(e.message);
-      this.downloading = false;
-      callback(false);
+    const i = this.list_.findIndex((entry) => entry.isDownloadable());
+    if (i < 0) {
+      return;
     }
+    let entry = this.list_[i];
+
+    // Download lyrics
+    this.downloading = true;
+    entry.onDownload();
+    const lyrics = entry.lyrics();
+    const lyricsPath = `${this.location_}/${lyrics.id()}.ass`;
+    if (!fs.existsSync(lyricsPath)) {
+      try {
+        fs.writeFileSync(lyricsPath, await lyrics.formattedLyrics());
+      } catch (e) {
+        // Clean up
+        if (fs.existsSync(lyricsPath)) {
+          fs.rmSync(lyricsPath);
+        }
+
+        entry.onFail(e.message);
+        this.downloading = false;
+        this.download();
+        return;
+      }
+    }
+
+    // Download MV
+    const mv = entry.mv();
+    const mvPath = `${this.location_}/${mv.id()}.mp4`;
+    if (!fs.existsSync(mvPath)) {
+      try {
+        await this.ytDlp.execPromise(
+          [mv.url(), "-o", mvPath].concat(mv.format())
+        );
+      } catch (e) {
+        // Clean up
+        if (fs.existsSync(mvPath)) {
+          fs.rmSync(mvPath);
+        }
+
+        entry.onFail(e.message);
+        this.downloading = false;
+        this.download();
+        return;
+      }
+    }
+
+    entry.onComplete();
+    this.complete(entry);
+    this.list_.splice(i);
+    this.downloading = false;
+    this.download();
   }
 }
 

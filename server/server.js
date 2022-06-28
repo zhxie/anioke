@@ -3,14 +3,14 @@ import fs from "fs";
 import BilibiliMVProvider from "./models/mv/bilibili/provider";
 import YoutubeMVProvider from "./models/mv/youtube/provider";
 import PetitLyricsLyricsProvider from "./models/lyrics/petit-lyrics/provider";
-import Entry, { Status } from "./utils/common/entry";
 import Downloader from "./utils/download/downloader";
+import Player from "./utils/play/player";
 
 class Server {
   config;
   mv_providers = [new BilibiliMVProvider(), new YoutubeMVProvider()];
   lyrics_providers = [new PetitLyricsLyricsProvider()];
-  playlist = [];
+  player;
   downloader;
 
   server = express();
@@ -32,11 +32,15 @@ class Server {
       provider.configure(lyricsConfig[provider.name()] ?? {});
     }
 
+    // Setup player.
+    this.player = new Player();
+
     // Setup downloader.
     const downloadConfig = this.config["download"] ?? {};
     this.downloader = new Downloader(
       downloadConfig["location"] ?? "./cache",
-      downloadConfig["yt-dlp" ?? "yt-dlp"]
+      downloadConfig["yt-dlp" ?? "yt-dlp"],
+      this.onDownloadComplete
     );
 
     // Setup server.
@@ -139,25 +143,8 @@ class Server {
         const lyrics = await this.lyrics_providers
           .find((provider) => provider.name() == lyricsSource)
           .get(lyricsId);
-        const entry = new Entry(mv, lyrics);
-        this.playlist.push(entry);
-        this.requestDownload();
-        res.send({
-          sequence: entry.sequence(),
-          mv: {
-            id: mv.id(),
-            title: mv.title(),
-            subtitle: mv.subtitle(),
-            uploader: mv.uploader(),
-            url: mv.url(),
-          },
-          lyrics: {
-            id: lyrics.id(),
-            title: lyrics.title(),
-            artist: lyrics.artist(),
-            style: lyrics.style(),
-          },
-        });
+        this.downloader.add(mv, lyrics);
+        res.send({});
       } catch (e) {
         console.error(e);
         res.status(400).send({ error: e.message });
@@ -165,13 +152,15 @@ class Server {
     });
     this.server.get("/playlist", async (_req, res) => {
       res.send(
-        this.playlist.map((entry) => {
+        this.player
+          .list()
+          .concat(this.downloader.list())
+          .map((entry) => {
           const mv = entry.mv();
           const lyrics = entry.lyrics();
-          return {
+            result.push({
             sequence: entry.sequence(),
             status: entry.status(),
-            progress: entry.progress(),
             error: entry.error(),
             mv: {
               id: mv.id(),
@@ -186,7 +175,7 @@ class Server {
               artist: lyrics.artist(),
               style: lyrics.style(),
             },
-          };
+            });
         })
       );
     });
@@ -195,7 +184,9 @@ class Server {
 
   port = () => {
     return this.listener.address().port;
-  };
+  onDownloadComplete() {
+    this.player.add(entry);
+  }
 
   requestDownload = () => {
     const entry = this.playlist.find(
