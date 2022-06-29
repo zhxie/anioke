@@ -5,19 +5,19 @@ import Entry from "../common/entry";
 class Downloader {
   location_;
   ytDlp;
-  complete;
+  completeCallback;
 
   downloading = false;
   list_ = [];
 
-  constructor(location, ytDlpLocation, complete) {
+  constructor(location, ytDlpLocation, onComplete) {
     this.location_ = location;
     // Creates a directory if it does not exist in advance.
     fs.mkdirSync(location, {
       recursive: true,
     });
     this.ytDlp = new YTDlpWrap(ytDlpLocation);
-    this.complete = complete;
+    this.completeCallback = onComplete;
   }
 
   location() {
@@ -36,9 +36,9 @@ class Downloader {
   }
 
   remove(sequence) {
-    const i = list.findIndex((entry) => entry.sequence() == sequence);
+    const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
     if (i >= 0 && list[i].isRemovable()) {
-      this.list_.splice(i);
+      this.list_.splice(i, 1);
     }
   }
 
@@ -47,7 +47,7 @@ class Downloader {
       return;
     }
 
-    const i = this.list_.findIndex((entry) => entry.isDownloadable());
+    const i = this.list_.findIndex((entry) => entry.isQueued());
     if (i < 0) {
       return;
     }
@@ -62,6 +62,7 @@ class Downloader {
       try {
         fs.writeFileSync(lyricsPath, await lyrics.formattedLyrics());
       } catch (e) {
+        console.error(e);
         // Clean up
         if (fs.existsSync(lyricsPath)) {
           fs.rmSync(lyricsPath);
@@ -83,6 +84,7 @@ class Downloader {
           [mv.url(), "-o", mvPath].concat(mv.format())
         );
       } catch (e) {
+        console.error(e);
         // Clean up
         if (fs.existsSync(mvPath)) {
           fs.rmSync(mvPath);
@@ -96,8 +98,8 @@ class Downloader {
     }
 
     entry.onComplete();
-    this.complete(entry);
-    this.list_.splice(i);
+    this.completeCallback(entry);
+    this.list_.splice(i, 1);
     this.downloading = false;
     this.download();
   }

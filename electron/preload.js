@@ -1,10 +1,13 @@
-import { contextBridge } from "electron";
-import { internalIpV4Sync } from "internal-ip";
-import Server from "../server/server";
-
-const server = new Server();
+import { contextBridge, ipcRenderer } from "electron";
 
 process.once("loaded", () => {
-  contextBridge.exposeInMainWorld("ip", internalIpV4Sync());
-  contextBridge.exposeInMainWorld("port", server.port());
+  contextBridge.exposeInMainWorld("server", {
+    onServerReady: (callback) => ipcRenderer.on("server_ready", callback),
+    ready: () => ipcRenderer.invoke("ready"),
+  });
+  contextBridge.exposeInMainWorld("player", {
+    onPlay: (callback) => ipcRenderer.on("play", callback),
+    onStop: (callback) => ipcRenderer.on("stop", callback),
+    end: () => ipcRenderer.invoke("end"),
+  });
 });
