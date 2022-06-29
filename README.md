@@ -2,6 +2,12 @@
 
 Karaoki your anime songs.
 
+## Requirements
+
+- [FFmpeg](https://ffmpeg.org/)
+- [yt-dlp](https://github.com/yt-dlp/yt-dlp)
+- (Optional) [SoX](http://sox.sourceforge.net/)
+
 ## Usage
 
 ```sh
@@ -10,7 +16,7 @@ npm run electron
 
 ## Configuration
 
-You should have a `config.json` located in the root directory with the content
+You should have a `config.json` located in the root directory with at least the content
 
 ```json
 {}

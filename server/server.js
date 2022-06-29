@@ -17,7 +17,7 @@ class Server {
   server = express();
   listener;
 
-  constructor(onReady, onPlay, onStop) {
+  constructor(onReady, onPlay, onStop, onSwitchTrack) {
     this.readyCallback = onReady;
 
     // Read config from config.json.
@@ -40,13 +40,16 @@ class Server {
     this.downloader = new Downloader(
       downloadConfig["location"] ?? "./cache",
       downloadConfig["yt-dlp" ?? "yt-dlp"],
+      downloadConfig["encoding" ?? "ffmpeg"],
+      downloadConfig["ffmpeg" ?? "ffmpeg"],
+      downloadConfig["sox" ?? "sox"],
       (entry) => {
         this.handleDownloadComplete(entry);
       }
     );
 
     // Setup player.
-    this.player = new Player(onPlay, onStop);
+    this.player = new Player(onPlay, onStop, onSwitchTrack);
 
     // Setup server.
     const serverConfig = config["server"] ?? {};
@@ -158,6 +161,10 @@ class Server {
     this.server.get("/remove", (req, res) => {
       this.downloader.remove(req.query["sequence"]);
       this.player.remove(req.query["sequence"]);
+      res.send({});
+    });
+    this.server.get("/switch", async (req, res) => {
+      this.player.switchTrack();
       res.send({});
     });
     this.server.get("/playlist", (_req, res) => {

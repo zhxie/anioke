@@ -8,6 +8,7 @@ function createWindow() {
     width: 1280,
     height: 720,
     webPreferences: {
+      experimentalFeatures: true,
       preload: path.join(__dirname, "preload.js"),
     },
   });
@@ -43,7 +44,7 @@ app.whenReady().then(() => {
 
   // Setup server.
   const ready = (ip, port) => {
-    mainWindow.webContents.send("server_ready", ip, port);
+    mainWindow.webContents.send("server-ready", ip, port);
   };
   const play = (sequence, mv, lyrics, offset) => {
     mainWindow.webContents.send(
@@ -57,7 +58,10 @@ app.whenReady().then(() => {
   const stop = () => {
     mainWindow.webContents.send("stop");
   };
-  let server = new Server(ready, play, stop);
+  const switchTrack = () => {
+    mainWindow.webContents.send("switch-track");
+  };
+  let server = new Server(ready, play, stop, switchTrack);
 
   // Register renderer-to-main IPC.
   ipcMain.handle("ready", () => {

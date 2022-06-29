@@ -1,8 +1,9 @@
-import { Utils } from "./utils";
+import Utils from "./utils";
 
 const Status = {
   Queue: "queue",
   Download: "download",
+  Encode: "encode",
   Complete: "complete",
   Play: "play",
   Fail: "fail",
@@ -58,6 +59,10 @@ class Entry {
     this.status_ = Status.Download;
   }
 
+  onEncode() {
+    this.status_ = Status.Encode;
+  }
+
   onComplete() {
     this.status_ = Status.Complete;
   }
@@ -78,6 +83,7 @@ class Entry {
       case Status.Fail:
         return true;
       case Status.Download:
+      case Status.Encode:
         return false;
       default:
         throw new Error(`unexpected status "${this.status_}"`);
