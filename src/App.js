@@ -18,6 +18,7 @@ class App extends React.Component {
       <div>
         {this.state.mv && (
           <video
+            id="video"
             className="video"
             autoPlay
             onEnded={() => {
@@ -49,6 +50,14 @@ class App extends React.Component {
     });
   }
 
+  handleSwitchTrack() {
+    const video = document.getElementById("video");
+    video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
+    video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
+    video.currentTime = video.currentTime + 0.01;
+    video.play();
+  }
+
   handleStop() {
     this.setState({
       sequence: 0,
@@ -66,6 +75,9 @@ class App extends React.Component {
       });
       window.player.onPlay((_event, sequence, mv, lyrics, offset) => {
         this.handlePlay(sequence, mv, lyrics, offset);
+      });
+      window.player.onSwitchTrack((_event) => {
+        this.handleSwitchTrack();
       });
       window.player.onStop((_event) => {
         this.handleStop();

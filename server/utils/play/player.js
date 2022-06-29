@@ -1,12 +1,14 @@
 class Player {
   playCallback;
   stopCallback;
+  switchTrackCallback;
 
   list_ = [];
 
-  constructor(onPlay, onStop) {
+  constructor(onPlay, onStop, onSwitchTrack) {
     this.playCallback = onPlay;
     this.stopCallback = onStop;
+    this.switchTrackCallback = onSwitchTrack;
   }
 
   list() {
@@ -53,6 +55,10 @@ class Player {
     }
 
     this.play();
+  }
+
+  switchTrack() {
+    this.switchTrackCallback();
   }
 }
 
