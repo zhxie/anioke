@@ -12,7 +12,17 @@
     "location": "./cache",
     // The location of yt-dlp. You may acquire an executable binary in
     // https://github.com/yt-dlp/yt-dlp/releases.
-    "yt-dlp": "yt-dlp"
+    "yt-dlp": "yt-dlp",
+    // The encoding method. Anioke will encode the MV and add an audio track
+    // without human voice for karaoke automatically. It can be one of `ffmpeg`
+    // or `sox`. If it is unspecified, the `ffmpeg` will be chosen by default.
+    "encoding": "ffmpeg",
+    // The location of FFmpeg. You may acquire an executable binary in
+    // https://ffmpeg.org/download.html.
+    "ffmpeg": "ffmpeg",
+    // The location of SoX. You may acquire an executable binary in
+    // https://sourceforge.net/projects/sox/files/sox.
+    "sox": "sox"
   },
   "providers": {
     "mv": {

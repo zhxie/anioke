@@ -40,6 +40,9 @@ class Server {
     this.downloader = new Downloader(
       downloadConfig["location"] ?? "./cache",
       downloadConfig["yt-dlp" ?? "yt-dlp"],
+      downloadConfig["encoding" ?? "ffmpeg"],
+      downloadConfig["ffmpeg" ?? "ffmpeg"],
+      downloadConfig["sox" ?? "sox"],
       (entry) => {
         this.handleDownloadComplete(entry);
       }

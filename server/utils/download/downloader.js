@@ -1,22 +1,41 @@
 import fs from "fs";
 import YTDlpWrap from "yt-dlp-wrap";
 import Entry from "../common/entry";
+import Utils from "../common/utils";
+
+const Encoding = {
+  FFmpeg: "ffmpeg",
+  SoX: "sox",
+};
 
 class Downloader {
   location_;
   ytDlp;
+  encoding;
+  ffmpegLocation;
+  soxLocation;
   completeCallback;
 
   downloading = false;
   list_ = [];
 
-  constructor(location, ytDlpLocation, onComplete) {
+  constructor(
+    location,
+    ytDlpLocation,
+    encoding,
+    ffmpegLocation,
+    soxLocation,
+    onComplete
+  ) {
     this.location_ = location;
     // Creates a directory if it does not exist in advance.
     fs.mkdirSync(location, {
       recursive: true,
     });
     this.ytDlp = new YTDlpWrap(ytDlpLocation);
+    this.encoding = encoding;
+    this.ffmpegLocation = ffmpegLocation;
+    this.soxLocation = soxLocation;
     this.completeCallback = onComplete;
   }
 
@@ -75,7 +94,7 @@ class Downloader {
       }
     }
 
-    // Download MV
+    // Download and encode MV
     const mv = entry.mv();
     const mvPath = `${this.location_}/${mv.id()}.mp4`;
     if (!fs.existsSync(mvPath)) {
@@ -94,6 +113,82 @@ class Downloader {
         this.downloading = false;
         this.download();
         return;
+      }
+
+      entry.onEncode();
+      switch (this.encoding) {
+        case Encoding.FFmpeg:
+          {
+            const karaokePath = `${this.location_}/${mv.id()}.aac`;
+            const genMVPath = `${this.location_}/${mv.id()}.gen.mp4`;
+            try {
+              await Utils.exec(
+                `${this.ffmpegLocation} -i ${mvPath} -vn -af pan="stereo|c0=c0|c1=-1*c1" -ac 1 -y ${karaokePath}`
+              );
+              await Utils.exec(
+                `${this.ffmpegLocation} -i ${mvPath} -i ${karaokePath} -map 0 -map 1:a -y ${genMVPath}`
+              );
+              fs.rmSync(karaokePath);
+              fs.rmSync(mvPath);
+              fs.renameSync(genMVPath, mvPath);
+            } catch (e) {
+              console.error(e);
+              // Clean up
+              if (fs.existsSync(karaokePath)) {
+                fs.rmSync(karaokePath);
+              }
+              if (fs.existsSync(genMVPath)) {
+                fs.rmSync(genMVPath);
+              }
+
+              entry.onFail(e.message);
+              this.downloading = false;
+              this.download();
+              return;
+            }
+          }
+          break;
+        case Encoding.SoX:
+          {
+            const musicPath = `${this.location_}/${mv.id()}.mp3`;
+            const karaokePath = `${this.location_}/${mv.id()}.k.mp3`;
+            const genMVPath = `${this.location_}/${mv.id()}.gen.mp4`;
+            try {
+              await Utils.exec(
+                `${this.ffmpegLocation} -i ${mvPath} -vn -y ${musicPath}`
+              );
+              await Utils.exec(
+                `${this.soxLocation} ${musicPath} ${karaokePath} oops`
+              );
+              fs.rmSync(musicPath);
+              await Utils.exec(
+                `${this.ffmpegLocation} -i ${mvPath} -i ${karaokePath} -map 0 -map 1:a -y ${genMVPath}`
+              );
+              fs.rmSync(karaokePath);
+              fs.rmSync(mvPath);
+              fs.renameSync(genMVPath, mvPath);
+            } catch (e) {
+              console.error(e);
+              // Clean up
+              if (fs.existsSync(musicPath)) {
+                fs.rmSync(musicPath);
+              }
+              if (fs.existsSync(karaokePath)) {
+                fs.rmSync(karaokePath);
+              }
+              if (fs.existsSync(genMVPath)) {
+                fs.rmSync(genMVPath);
+              }
+
+              entry.onFail(e.message);
+              this.downloading = false;
+              this.download();
+              return;
+            }
+          }
+          break;
+        default:
+          throw new Error(`unexpected encoding "${this.encoding}"`);
       }
     }
 
