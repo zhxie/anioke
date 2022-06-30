@@ -1,13 +1,17 @@
+import Utils from "../common/utils";
+
 class Player {
   playCallback;
   stopCallback;
+  seekCallback;
   switchTrackCallback;
 
   list_ = [];
 
-  constructor(onPlay, onStop, onSwitchTrack) {
+  constructor(onPlay, onStop, onSeek, onSwitchTrack) {
     this.playCallback = onPlay;
     this.stopCallback = onStop;
+    this.seekCallback = onSeek;
     this.switchTrackCallback = onSwitchTrack;
   }
 
@@ -60,6 +64,39 @@ class Player {
 
   switchTrack() {
     this.switchTrackCallback();
+  }
+
+  shuffle() {
+    const i = this.list_.findIndex((entry) => entry.isPlaying());
+    let entry = undefined;
+    if (i >= 0) {
+      entry = this.list_[i];
+      this.list_.splice(i, 1);
+    }
+
+    Utils.shuffle(this.list_);
+    if (entry) {
+      this.list_.unshift(entry);
+    }
+  }
+
+  topmost(sequence) {
+    if (this.list_.length < 2) {
+      return;
+    }
+
+    const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
+    if (i < 0) {
+      return;
+    }
+
+    const entry = this.list_[i];
+    this.list_.splice(i, 1);
+    this.list_.splice(1, 0, entry);
+  }
+
+  replay() {
+    this.seekCallback(0);
   }
 }
 

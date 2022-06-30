@@ -58,10 +58,13 @@ app.whenReady().then(() => {
   const stop = () => {
     mainWindow.webContents.send("stop");
   };
+  const seek = (time) => {
+    mainWindow.webContents.send("seek", time);
+  };
   const switchTrack = () => {
     mainWindow.webContents.send("switch-track");
   };
-  let server = new Server(ready, play, stop, switchTrack);
+  let server = new Server(ready, play, stop, seek, switchTrack);
 
   // Register renderer-to-main IPC.
   ipcMain.handle("ready", () => {

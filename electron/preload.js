@@ -8,6 +8,7 @@ process.once("loaded", () => {
   contextBridge.exposeInMainWorld("player", {
     onPlay: (callback) => ipcRenderer.on("play", callback),
     onStop: (callback) => ipcRenderer.on("stop", callback),
+    onSeek: (callback) => ipcRenderer.on("seek", callback),
     onSwitchTrack: (callback) => ipcRenderer.on("switch-track", callback),
     end: () => ipcRenderer.invoke("end"),
   });
