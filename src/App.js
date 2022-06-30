@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import SubtitlesOctopus from "libass-wasm";
 
 class App extends React.Component {
   register = false;
@@ -12,18 +13,26 @@ class App extends React.Component {
     lyrics: "",
     offset: 0,
   };
+  videoRef = React.createRef();
+  lyricsInstance = null;
+
+  componentDidUpdate(_prevProps, _prevState) {
+    this.refreshLyrics();
+  }
 
   render() {
     return (
-      <div>
+      <div className="wrapper">
         {this.state.mv && (
           <video
             id="video"
+            ref={this.videoRef}
             className="video"
             autoPlay
             onEnded={() => {
               window.player.end();
             }}
+            onLoadedData={this.onVideoLoad}
             controls
           >
             <source src={this.state.mv} type="video/mp4" />
@@ -33,6 +42,28 @@ class App extends React.Component {
       </div>
     );
   }
+
+  onVideoLoad = () => {
+    this.refreshLyrics();
+  };
+
+  refreshLyrics = () => {
+    this.lyricsInstance && this.lyricsInstance.dispose();
+    if (!this.state.lyrics) {
+      return;
+    }
+    const opts = {
+      video: this.videoRef.current, // HTML5 video element
+      subUrl: this.state.lyrics, // Link to subtitles
+      fonts: ["/assets/SourceHanSerif-Regular.ttc"], // Links to fonts (not required, default font already included in build)
+      workerUrl: "/assets/subtitles-octopus-worker.js",
+      timeOffset: this.state.offset,
+    };
+    this.lyricsInstance = new SubtitlesOctopus(opts);
+    this.videoRef.current.currentTime =
+      this.videoRef.current.currentTime + 0.01;
+    this.videoRef.current.play();
+  };
 
   handleServerReady(ip, port) {
     this.setState({
@@ -77,7 +108,11 @@ class App extends React.Component {
     }
   }
 
-  handleOffset(_offset) {}
+  handleOffset(_offset) {
+    this.setState({
+      offset: _offset,
+    });
+  }
 
   componentDidMount() {
     if (!this.register) {
