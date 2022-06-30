@@ -50,14 +50,6 @@ class App extends React.Component {
     });
   }
 
-  handleSwitchTrack() {
-    const video = document.getElementById("video");
-    video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
-    video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
-    video.currentTime = video.currentTime + 0.01;
-    video.play();
-  }
-
   handleStop() {
     this.setState({
       sequence: 0,
@@ -65,6 +57,24 @@ class App extends React.Component {
       lyrics: "",
       offset: 0,
     });
+  }
+
+  handleSeek() {
+    const video = document.getElementById("video");
+    if (video) {
+      video.currentTime = 0;
+      video.play();
+    }
+  }
+
+  handleSwitchTrack() {
+    const video = document.getElementById("video");
+    if (video) {
+      video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
+      video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
+      video.currentTime = video.currentTime + 0.01;
+      video.play();
+    }
   }
 
   componentDidMount() {
@@ -76,11 +86,14 @@ class App extends React.Component {
       window.player.onPlay((_event, sequence, mv, lyrics, offset) => {
         this.handlePlay(sequence, mv, lyrics, offset);
       });
-      window.player.onSwitchTrack((_event) => {
-        this.handleSwitchTrack();
-      });
       window.player.onStop((_event) => {
         this.handleStop();
+      });
+      window.player.onSeek((_event, time) => {
+        this.handleSeek(time);
+      });
+      window.player.onSwitchTrack((_event) => {
+        this.handleSwitchTrack();
       });
       window.server.ready();
     }

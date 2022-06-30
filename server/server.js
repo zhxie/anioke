@@ -19,7 +19,7 @@ class Server {
   server = express();
   listener;
 
-  constructor(onReady, onPlay, onStop, onSwitchTrack) {
+  constructor(onReady, onPlay, onStop, onSeek, onSwitchTrack) {
     this.readyCallback = onReady;
 
     // Read config from config.json.
@@ -59,7 +59,7 @@ class Server {
     );
 
     // Setup player.
-    this.player = new Player(onPlay, onStop, onSwitchTrack);
+    this.player = new Player(onPlay, onStop, onSeek, onSwitchTrack);
 
     // Setup server.
     const serverConfig = config["server"] ?? {};
@@ -175,8 +175,20 @@ class Server {
       this.player.remove(sequence);
       res.send({});
     });
-    this.server.get("/switch", async (req, res) => {
+    this.server.get("/switch", async (_req, res) => {
       this.player.switchTrack();
+      res.send({});
+    });
+    this.server.get("/shuffle", (_req, res) => {
+      this.player.shuffle();
+      res.send({});
+    });
+    this.server.get("/topmost", (req, res) => {
+      this.player.topmost(Number(req.query["sequence"]));
+      res.send({});
+    });
+    this.server.get("/replay", (_req, res) => {
+      this.player.replay();
       res.send({});
     });
     this.server.get("/playlist", (_req, res) => {
