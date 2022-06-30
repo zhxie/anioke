@@ -16,6 +16,7 @@ class Player {
   }
 
   add(entry) {
+    entry.onPlayQueue();
     this.list_.push(entry);
     this.play();
   }
@@ -26,7 +27,7 @@ class Player {
       return;
     }
 
-    const entry = this.list_.find((entry) => entry.isCompleted());
+    const entry = this.list_.find((entry) => entry.isPlayQueued());
     if (!entry) {
       this.stopCallback();
       return;
@@ -50,7 +51,7 @@ class Player {
     if (this.list_[i].isPlaying()) {
       this.stopCallback();
     }
-    if (i >= 0) {
+    if (i >= 0 && this.list_[i].isRemovable()) {
       this.list_.splice(i, 1);
     }
 
