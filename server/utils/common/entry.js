@@ -1,17 +1,18 @@
 import Utils from "./utils";
 
 const Status = {
-  Queue: "queue",
+  DownloadQueue: "download_queue",
   Download: "download",
+  EncodeQueue: "encode_queue",
   Encode: "encode",
-  Complete: "complete",
+  PlayQueue: "play_queue",
   Play: "play",
   Fail: "fail",
 };
 
 class Entry {
   sequence_;
-  status_ = Status.Queue;
+  status_ = Status.DownloadQueue;
   error_ = 0;
 
   mv_;
@@ -55,16 +56,24 @@ class Entry {
     return this.lyricsPath_;
   }
 
+  onDownloadQueue() {
+    this.status_ = Status.DownloadQueue;
+  }
+
   onDownload() {
     this.status_ = Status.Download;
+  }
+
+  onEncodeQueue() {
+    this.status_ = Status.EncodeQueue;
   }
 
   onEncode() {
     this.status_ = Status.Encode;
   }
 
-  onComplete() {
-    this.status_ = Status.Complete;
+  onPlayQueue() {
+    this.status_ = Status.PlayQueue;
   }
 
   onPlay() {
@@ -76,9 +85,10 @@ class Entry {
   }
 
   isRemovable() {
-    switch (this.status) {
-      case Status.Queue:
-      case Status.Complete:
+    switch (this.status_) {
+      case Status.DownloadQueue:
+      case Status.EncodeQueue:
+      case Status.PlayQueue:
       case Status.Play:
       case Status.Fail:
         return true;
@@ -90,12 +100,16 @@ class Entry {
     }
   }
 
-  isQueued() {
-    return this.status_ == Status.Queue;
+  isDownloadQueued() {
+    return this.status_ == Status.DownloadQueue;
   }
 
-  isCompleted() {
-    return this.status_ == Status.Complete;
+  isEncodeQueued() {
+    return this.status_ == Status.EncodeQueue;
+  }
+
+  isPlayQueued() {
+    return this.status_ == Status.PlayQueue;
   }
 
   isPlaying() {

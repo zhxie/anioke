@@ -1,46 +1,23 @@
 import fs from "fs";
 import YTDlpWrap from "yt-dlp-wrap";
 import Entry from "../common/entry";
-import Utils from "../common/utils";
-
-const Encoding = {
-  FFmpeg: "ffmpeg",
-  SoX: "sox",
-};
 
 class Downloader {
-  location_;
+  location;
   ytDlp;
-  encoding;
-  ffmpegLocation;
-  soxLocation;
   completeCallback;
 
   downloading = false;
   list_ = [];
 
-  constructor(
-    location,
-    ytDlpLocation,
-    encoding,
-    ffmpegLocation,
-    soxLocation,
-    onComplete
-  ) {
-    this.location_ = location;
+  constructor(location, ytDlpLocation, onComplete) {
+    this.location = location;
     // Creates a directory if it does not exist in advance.
     fs.mkdirSync(location, {
       recursive: true,
     });
     this.ytDlp = new YTDlpWrap(ytDlpLocation);
-    this.encoding = encoding;
-    this.ffmpegLocation = ffmpegLocation;
-    this.soxLocation = soxLocation;
     this.completeCallback = onComplete;
-  }
-
-  location() {
-    return this.location_;
   }
 
   list() {
@@ -48,17 +25,21 @@ class Downloader {
   }
 
   add(mv, lyrics) {
-    const mvPath = `${this.location_}/${mv.id()}.mp4`;
-    const lyricsPath = `${this.location_}/${lyrics.id()}.ass`;
-    this.list_.push(new Entry(mv, mvPath, lyrics, lyricsPath));
+    const mvPath = `${this.location}/${mv.id()}.mp4`;
+    const lyricsPath = `${this.location}/${lyrics.id()}.ass`;
+    let entry = new Entry(mv, mvPath, lyrics, lyricsPath);
+    entry.onDownloadQueue();
+    this.list_.push(entry);
     this.download();
   }
 
   remove(sequence) {
     const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
-    if (i >= 0 && list[i].isRemovable()) {
+    if (i >= 0 && this.list_[i].isRemovable()) {
       this.list_.splice(i, 1);
     }
+
+    this.download();
   }
 
   async download() {
@@ -66,7 +47,7 @@ class Downloader {
       return;
     }
 
-    const i = this.list_.findIndex((entry) => entry.isQueued());
+    const i = this.list_.findIndex((entry) => entry.isDownloadQueued());
     if (i < 0) {
       return;
     }
@@ -76,7 +57,7 @@ class Downloader {
     this.downloading = true;
     entry.onDownload();
     const lyrics = entry.lyrics();
-    const lyricsPath = `${this.location_}/${lyrics.id()}.ass`;
+    const lyricsPath = `${this.location}/${lyrics.id()}.ass`;
     if (!fs.existsSync(lyricsPath)) {
       try {
         fs.writeFileSync(lyricsPath, await lyrics.formattedLyrics());
@@ -94,10 +75,11 @@ class Downloader {
       }
     }
 
-    // Download and encode MV
+    // Download MV
     const mv = entry.mv();
-    const mvPath = `${this.location_}/${mv.id()}.mp4`;
-    if (!fs.existsSync(mvPath)) {
+    const mvPath = `${this.location}/${mv.id()}.mp4`;
+    const exist = fs.existsSync(mvPath);
+    if (!exist) {
       try {
         await this.ytDlp.execPromise(
           [mv.url(), "-o", mvPath].concat(mv.format())
@@ -114,86 +96,9 @@ class Downloader {
         this.download();
         return;
       }
-
-      entry.onEncode();
-      switch (this.encoding) {
-        case Encoding.FFmpeg:
-          {
-            const karaokePath = `${this.location_}/${mv.id()}.aac`;
-            const genMVPath = `${this.location_}/${mv.id()}.gen.mp4`;
-            try {
-              await Utils.exec(
-                `${this.ffmpegLocation} -i ${mvPath} -vn -af pan="stereo|c0=c0|c1=-1*c1" -ac 1 -y ${karaokePath}`
-              );
-              await Utils.exec(
-                `${this.ffmpegLocation} -i ${mvPath} -i ${karaokePath} -map 0 -map 1:a -y ${genMVPath}`
-              );
-              fs.rmSync(karaokePath);
-              fs.rmSync(mvPath);
-              fs.renameSync(genMVPath, mvPath);
-            } catch (e) {
-              console.error(e);
-              // Clean up
-              if (fs.existsSync(karaokePath)) {
-                fs.rmSync(karaokePath);
-              }
-              if (fs.existsSync(genMVPath)) {
-                fs.rmSync(genMVPath);
-              }
-
-              entry.onFail(e.message);
-              this.downloading = false;
-              this.download();
-              return;
-            }
-          }
-          break;
-        case Encoding.SoX:
-          {
-            const musicPath = `${this.location_}/${mv.id()}.mp3`;
-            const karaokePath = `${this.location_}/${mv.id()}.k.mp3`;
-            const genMVPath = `${this.location_}/${mv.id()}.gen.mp4`;
-            try {
-              await Utils.exec(
-                `${this.ffmpegLocation} -i ${mvPath} -vn -y ${musicPath}`
-              );
-              await Utils.exec(
-                `${this.soxLocation} ${musicPath} ${karaokePath} oops`
-              );
-              fs.rmSync(musicPath);
-              await Utils.exec(
-                `${this.ffmpegLocation} -i ${mvPath} -i ${karaokePath} -map 0 -map 1:a -y ${genMVPath}`
-              );
-              fs.rmSync(karaokePath);
-              fs.rmSync(mvPath);
-              fs.renameSync(genMVPath, mvPath);
-            } catch (e) {
-              console.error(e);
-              // Clean up
-              if (fs.existsSync(musicPath)) {
-                fs.rmSync(musicPath);
-              }
-              if (fs.existsSync(karaokePath)) {
-                fs.rmSync(karaokePath);
-              }
-              if (fs.existsSync(genMVPath)) {
-                fs.rmSync(genMVPath);
-              }
-
-              entry.onFail(e.message);
-              this.downloading = false;
-              this.download();
-              return;
-            }
-          }
-          break;
-        default:
-          throw new Error(`unexpected encoding "${this.encoding}"`);
-      }
     }
 
-    entry.onComplete();
-    this.completeCallback(entry);
+    this.completeCallback(entry, !exist);
     this.list_.splice(i, 1);
     this.downloading = false;
     this.download();

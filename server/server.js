@@ -1,10 +1,11 @@
 import express from "express";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
+import PetitLyricsLyricsProvider from "./models/lyrics/petit-lyrics/provider";
 import BilibiliMVProvider from "./models/mv/bilibili/provider";
 import YoutubeMVProvider from "./models/mv/youtube/provider";
-import PetitLyricsLyricsProvider from "./models/lyrics/petit-lyrics/provider";
 import Downloader from "./utils/download/downloader";
+import Encoder from "./utils/encode/encoder";
 import Player from "./utils/play/player";
 
 class Server {
@@ -14,6 +15,7 @@ class Server {
   lyricsProviders = [new PetitLyricsLyricsProvider()];
   downloader;
   player;
+  encoder;
   server = express();
   listener;
 
@@ -39,12 +41,20 @@ class Server {
     const downloadConfig = config["download"] ?? {};
     this.downloader = new Downloader(
       downloadConfig["location"] ?? "./cache",
-      downloadConfig["yt-dlp" ?? "yt-dlp"],
-      downloadConfig["encoding" ?? "ffmpeg"],
-      downloadConfig["ffmpeg" ?? "ffmpeg"],
-      downloadConfig["sox" ?? "sox"],
+      downloadConfig["yt-dlp"] ?? "yt-dlp",
+      (entry, encode) => {
+        this.handleDownloadComplete(entry, encode);
+      }
+    );
+
+    // Setup encoder.
+    const encodeConfig = config["encode"] ?? {};
+    this.encoder = new Encoder(
+      encodeConfig["method"] ?? "ffmpeg",
+      encodeConfig["ffmpeg"] ?? "ffmpeg",
+      encodeConfig["sox"],
       (entry) => {
-        this.handleDownloadComplete(entry);
+        this.handleEncodeComplete(entry);
       }
     );
 
@@ -159,8 +169,10 @@ class Server {
       }
     });
     this.server.get("/remove", (req, res) => {
-      this.downloader.remove(req.query["sequence"]);
-      this.player.remove(req.query["sequence"]);
+      const sequence = Number(req.query["sequence"]);
+      this.downloader.remove(sequence);
+      this.encoder.remove(sequence);
+      this.player.remove(sequence);
       res.send({});
     });
     this.server.get("/switch", async (req, res) => {
@@ -171,6 +183,7 @@ class Server {
       res.send(
         this.player
           .list()
+          .concat(this.encoder.list())
           .concat(this.downloader.list())
           .map((entry) => {
             const mv = entry.mv();
@@ -205,7 +218,16 @@ class Server {
     );
   }
 
-  handleDownloadComplete(entry) {
+  handleDownloadComplete(entry, encode) {
+    if (!encode) {
+      this.handleEncodeComplete(entry);
+      return;
+    }
+
+    this.encoder.add(entry);
+  }
+
+  handleEncodeComplete(entry) {
     this.player.add(entry);
   }
 
