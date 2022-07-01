@@ -82,7 +82,7 @@ class Downloader {
     if (!exist) {
       try {
         await this.ytDlp.execPromise(
-          [mv.url(), "-o", mvPath].concat(mv.format())
+          [mv.url(), "-o", mvPath].concat(mv.downloadOptions())
         );
       } catch (e) {
         console.error(e);

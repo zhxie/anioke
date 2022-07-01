@@ -80,30 +80,20 @@ class Server {
               .find((provider) => provider.name() == mv)
               .search(title)
           ).map((entry) => {
-            return {
-              id: entry.id(),
-              title: entry.title(),
-              subtitle: entry.subtitle(),
-              uploader: entry.uploader(),
-              url: entry.url(),
-            };
+            return entry.format();
           });
         }
         const artist = req.query["artist"] ?? "";
         const lyrics = req.query["lyrics"];
         if (lyrics) {
-          result["lyrics"] = (
+          const ls = (
             await this.lyricsProviders
               .find((provider) => provider.name() == lyrics)
               .searchByTitleAndArtist(title, artist)
           ).map((entry) => {
-            return {
-              id: entry.id(),
-              title: entry.title(),
-              artist: entry.artist(),
-              style: entry.style(),
-            };
+            return entry.format(false);
           });
+          result["lyrics"] = await Promise.all(ls);
         }
         res.send(result);
       } catch (e) {
@@ -118,13 +108,7 @@ class Server {
         const mv = await this.mvProviders
           .find((provider) => provider.name() == source)
           .get(id);
-        res.send({
-          id: id,
-          title: mv.title(),
-          subtitle: mv.subtitle(),
-          uploader: mv.uploader(),
-          url: mv.url(),
-        });
+        res.send(mv.format());
       } catch (e) {
         console.error(e);
         res.status(400).send({ error: e.message });
@@ -137,13 +121,7 @@ class Server {
         const lyrics = await this.lyricsProviders
           .find((provider) => provider.name() == source)
           .get(id);
-        res.send({
-          id: id,
-          title: lyrics.title(),
-          artist: lyrics.artist(),
-          style: lyrics.style(),
-          lyrics: await lyrics.lyrics(),
-        });
+        res.send(lyrics.format(true));
       } catch (e) {
         console.error(e);
         res.status(400).send({ error: e.message });
@@ -191,35 +169,21 @@ class Server {
       this.player.replay();
       res.send({});
     });
-    this.server.get("/playlist", (_req, res) => {
-      res.send(
-        this.player
+    this.server.get("/playlist", async (_req, res) => {
+      try {
+        const list = this.player
           .list()
           .concat(this.encoder.list())
           .concat(this.downloader.list())
           .map((entry) => {
-            const mv = entry.mv();
-            const lyrics = entry.lyrics();
-            return {
-              sequence: entry.sequence(),
-              status: entry.status(),
-              error: entry.error(),
-              mv: {
-                id: mv.id(),
-                title: mv.title(),
-                subtitle: mv.subtitle(),
-                uploader: mv.uploader(),
-                url: mv.url(),
-              },
-              lyrics: {
-                id: lyrics.id(),
-                title: lyrics.title(),
-                artist: lyrics.artist(),
-                style: lyrics.style(),
-              },
-            };
-          })
-      );
+            return entry.format();
+          });
+        const result = await Promise.all(list);
+        res.send(result);
+      } catch (e) {
+        console.error(e);
+        res.status(400).send({ error: e.message });
+      }
     });
     this.listener = this.server.listen(
       serverConfig["port"] ?? 0,

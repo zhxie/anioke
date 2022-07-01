@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 import { parseStringPromise as parseXMLString } from "xml2js";
-import { Line, Style, Utils, Word } from "../utils";
+import Utils, { Line, Style, Word } from "../utils";
 
 const NAME = "petit_lyrics";
 
@@ -48,6 +48,16 @@ class Entry {
 
   source() {
     return NAME;
+  }
+
+  async format(withLyrics) {
+    return {
+      id: this.id(),
+      title: this.title_,
+      artist: this.artist_,
+      style: this.style(),
+      lyrics: withLyrics ? await this.lyrics() : "",
+    };
   }
 
   async lyrics() {

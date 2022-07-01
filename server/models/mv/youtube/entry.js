@@ -35,8 +35,19 @@ class Entry {
     return `https://www.youtube.com/watch?v=${this.videoId}`;
   }
 
-  format() {
+  downloadOptions() {
     return ["-f", "mp4"];
+  }
+
+  format(lyrics) {
+    return {
+      id: this.id(),
+      title: this.title_,
+      subtitle: "",
+      uploader: this.channelTitle,
+      url: this.url(),
+      lyrics: lyrics,
+    };
   }
 }
 

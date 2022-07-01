@@ -39,8 +39,19 @@ class Entry {
     return `https://www.bilibili.com/video/${this.bvid}?p=${this.page}`;
   }
 
-  format() {
+  downloadOptions() {
     return [];
+  }
+
+  format(lyrics) {
+    return {
+      id: this.id(),
+      title: this.title_,
+      subtitle: this.part,
+      uploader: this.author,
+      url: this.url(),
+      lyrics: lyrics,
+    };
   }
 }
 
