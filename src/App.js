@@ -77,6 +77,8 @@ class App extends React.Component {
     }
   }
 
+  handleOffset(_offset) {}
+
   componentDidMount() {
     if (!this.register) {
       this.register = true;
@@ -94,6 +96,9 @@ class App extends React.Component {
       });
       window.player.onSwitchTrack((_event) => {
         this.handleSwitchTrack();
+      });
+      window.player.onOffset((_event, offset) => {
+        this.handleOffset(offset);
       });
       window.server.ready();
     }

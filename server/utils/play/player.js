@@ -5,14 +5,16 @@ class Player {
   stopCallback;
   seekCallback;
   switchTrackCallback;
+  offsetCallback;
 
   list_ = [];
 
-  constructor(onPlay, onStop, onSeek, onSwitchTrack) {
+  constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
     this.playCallback = onPlay;
     this.stopCallback = onStop;
     this.seekCallback = onSeek;
     this.switchTrackCallback = onSwitchTrack;
+    this.offsetCallback = onOffset;
   }
 
   list() {
@@ -64,6 +66,10 @@ class Player {
 
   switchTrack() {
     this.switchTrackCallback();
+  }
+
+  offset(offset) {
+    this.offsetCallback(offset);
   }
 
   shuffle() {
