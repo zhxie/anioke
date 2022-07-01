@@ -36,7 +36,7 @@ class Line {
     return this.line.trim().length == 0;
   }
 
-  compile(style, assStyle, advance) {
+  compile(style, assStyle, advance, delay) {
     let words = this.line;
     switch (style) {
       case Style.Traditional:
@@ -50,7 +50,7 @@ class Line {
     }
     return `Dialogue: 0,${Utils.convertTime(
       this.startTime - advance
-    )},${Utils.convertTime(this.endTime)},${assStyle},,0,0,0,,${words}`;
+    )},${Utils.convertTime(this.endTime + delay)},${assStyle},,0,0,0,,${words}`;
   }
 }
 
@@ -73,31 +73,39 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   static compile(style, lines) {
     const ASS_STYLES = ["K1", "K2"];
     const ADVANCE = 5;
+    const DELAY = 1;
 
     let result = [];
     let displays = new Array(ASS_STYLES.length).fill(0);
-    let empty = true;
     for (const line of lines) {
-      // Calculate lyrics show in advance time.
-      let lastTime = Math.min(...displays);
-      let index = displays.indexOf(lastTime);
-      if (empty) {
-        index = 0;
-        lastTime = displays[0];
+      if (line.isEmpty()) {
+        continue;
       }
-      let a = Math.max(line.startTime - lastTime, 0);
-      if (empty) {
-        a = Math.min(a, ADVANCE);
+
+      // Calculate lyrics show in advance time.
+      let newParagraph = false;
+      const prevTime = Math.max(...displays);
+      if (prevTime < line.startTime) {
+        newParagraph = true;
+      }
+
+      const lastTime = Math.min(...displays);
+      let index = displays.indexOf(lastTime);
+      if (newParagraph) {
+        index = 0;
+      }
+      let advance = Math.max(line.startTime - lastTime, 0);
+      if (newParagraph) {
+        advance = Math.min(advance, ADVANCE);
       }
 
       const assStyle = ASS_STYLES[index];
-      result.push(line.compile(style, assStyle, a));
+      result.push(line.compile(style, assStyle, advance, DELAY));
 
-      if (empty) {
-        displays.fill(line.startTime - a);
+      if (newParagraph) {
+        displays.fill(line.startTime - advance);
       }
-      displays[index] = line.endTime;
-      empty = line.isEmpty();
+      displays[index] = line.endTime + DELAY;
     }
     return result.join("\n");
   }
