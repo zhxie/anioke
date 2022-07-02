@@ -48,8 +48,8 @@ class Server {
     this.downloader = new Downloader(
       downloadConfig["location"] ?? "./cache",
       downloadConfig["yt-dlp"] ?? "yt-dlp",
-      (entry, encode) => {
-        this.handleDownloadComplete(entry, encode);
+      (entry) => {
+        this.handleDownloadComplete(entry);
       }
     );
 
@@ -240,12 +240,7 @@ class Server {
     return lyrics;
   }
 
-  handleDownloadComplete(entry, encode) {
-    if (!encode) {
-      this.handleEncodeComplete(entry);
-      return;
-    }
-
+  handleDownloadComplete(entry) {
     this.encoder.add(entry);
   }
 
