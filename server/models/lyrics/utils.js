@@ -128,4 +128,5 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   }
 }
 
-export { Style, Word, Line, Utils };
+export { Style, Word, Line };
+export default Utils;

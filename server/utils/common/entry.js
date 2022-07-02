@@ -56,6 +56,17 @@ class Entry {
     return this.lyricsPath_;
   }
 
+  async format() {
+    const lyrics = await this.lyrics_.format(false);
+    return {
+      sequence: this.sequence_,
+      status: this.status_,
+      error: this.error_,
+      mv: this.mv_.format(lyrics),
+      lyrics: lyrics,
+    };
+  }
+
   onDownloadQueue() {
     this.status_ = Status.DownloadQueue;
   }

@@ -64,7 +64,10 @@ app.whenReady().then(() => {
   const switchTrack = () => {
     mainWindow.webContents.send("switch-track");
   };
-  let server = new Server(ready, play, stop, seek, switchTrack);
+  const offset = (offset) => {
+    mainWindow.webContents.send("offset", offset);
+  };
+  let server = new Server(ready, play, stop, seek, switchTrack, offset);
 
   // Register renderer-to-main IPC.
   ipcMain.handle("ready", () => {

@@ -10,6 +10,7 @@ process.once("loaded", () => {
     onStop: (callback) => ipcRenderer.on("stop", callback),
     onSeek: (callback) => ipcRenderer.on("seek", callback),
     onSwitchTrack: (callback) => ipcRenderer.on("switch-track", callback),
+    onOffset: (callback) => ipcRenderer.on("offset", callback),
     end: () => ipcRenderer.invoke("end"),
   });
 });

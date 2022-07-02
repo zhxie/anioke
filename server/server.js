@@ -4,6 +4,7 @@ import { internalIpV4Sync } from "internal-ip";
 import PetitLyricsLyricsProvider from "./models/lyrics/petit-lyrics/provider";
 import BilibiliMVProvider from "./models/mv/bilibili/provider";
 import YoutubeMVProvider from "./models/mv/youtube/provider";
+import Database from "./utils/database/database";
 import Downloader from "./utils/download/downloader";
 import Encoder from "./utils/encode/encoder";
 import Player from "./utils/play/player";
@@ -13,13 +14,14 @@ class Server {
 
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
   lyricsProviders = [new PetitLyricsLyricsProvider()];
+  database;
   downloader;
-  player;
   encoder;
+  player;
   server = express();
   listener;
 
-  constructor(onReady, onPlay, onStop, onSeek, onSwitchTrack) {
+  constructor(onReady, onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
     this.readyCallback = onReady;
 
     // Read config from config.json.
@@ -36,6 +38,10 @@ class Server {
     for (let provider of this.lyricsProviders) {
       provider.configure(lyricsConfig[provider.name()] ?? {});
     }
+
+    // Setup database.
+    const databaseConfig = config["database"] ?? {};
+    this.database = new Database(databaseConfig["location"] ?? "./anioke.db");
 
     // Setup downloader.
     const downloadConfig = config["download"] ?? {};
@@ -59,7 +65,20 @@ class Server {
     );
 
     // Setup player.
-    this.player = new Player(onPlay, onStop, onSeek, onSwitchTrack);
+    this.player = new Player(
+      (entry) => {
+        const offset = this.database.select(entry.mv().id()).offset ?? 0;
+        onPlay(entry.sequence(), entry.mvPath(), entry.lyricsPath(), offset);
+      },
+      onStop,
+      onSeek,
+      onSwitchTrack,
+      (mvId, offset) => {
+        const prev = this.database.select(mvId).offset ?? 0;
+        this.database.updateOffset(mvId, prev + offset);
+        onOffset(prev + offset);
+      }
+    );
 
     // Setup server.
     const serverConfig = config["server"] ?? {};
@@ -73,37 +92,35 @@ class Server {
       try {
         let result = {};
         const title = req.query["title"];
-        const mv = req.query["mv"];
-        if (mv) {
-          result["mv"] = (
+        const mvProvider = req.query["mv"];
+        if (mvProvider) {
+          const mv = (
             await this.mvProviders
-              .find((provider) => provider.name() == mv)
+              .find((provider) => provider.name() == mvProvider)
               .search(title)
-          ).map((entry) => {
-            return {
-              id: entry.id(),
-              title: entry.title(),
-              subtitle: entry.subtitle(),
-              uploader: entry.uploader(),
-              url: entry.url(),
-            };
+          ).map(async (entry) => {
+            const lyricsId = this.database.select(entry.id()).lyrics;
+            let lyrics;
+            if (lyricsId) {
+              lyrics = await (
+                await this.getLyricsWithId(lyricsId)
+              ).format(false);
+            }
+            return entry.format(lyrics);
           });
+          result["mv"] = await Promise.all(mv);
         }
         const artist = req.query["artist"] ?? "";
-        const lyrics = req.query["lyrics"];
-        if (lyrics) {
-          result["lyrics"] = (
+        const lyricsProvider = req.query["lyrics"];
+        if (lyricsProvider) {
+          const lyrics = (
             await this.lyricsProviders
-              .find((provider) => provider.name() == lyrics)
+              .find((provider) => provider.name() == lyricsProvider)
               .searchByTitleAndArtist(title, artist)
           ).map((entry) => {
-            return {
-              id: entry.id(),
-              title: entry.title(),
-              artist: entry.artist(),
-              style: entry.style(),
-            };
+            return entry.format(false);
           });
+          result["lyrics"] = await Promise.all(lyrics);
         }
         res.send(result);
       } catch (e) {
@@ -113,18 +130,13 @@ class Server {
     });
     this.server.get("/mv", async (req, res) => {
       try {
-        const id = req.query["id"];
-        const source = id.split(".")[0];
-        const mv = await this.mvProviders
-          .find((provider) => provider.name() == source)
-          .get(id);
-        res.send({
-          id: id,
-          title: mv.title(),
-          subtitle: mv.subtitle(),
-          uploader: mv.uploader(),
-          url: mv.url(),
-        });
+        const mv = await this.getMVWithId(req.query["id"]);
+        const lyricsId = this.database.select(id).lyrics;
+        let lyrics;
+        if (lyricsId) {
+          lyrics = await (await this.getLyricsWithId(lyricsId)).format(false);
+        }
+        res.send(mv.format(lyrics));
       } catch (e) {
         console.error(e);
         res.status(400).send({ error: e.message });
@@ -132,18 +144,8 @@ class Server {
     });
     this.server.get("/lyrics", async (req, res) => {
       try {
-        const id = req.query["id"];
-        const source = id.split(".")[0];
-        const lyrics = await this.lyricsProviders
-          .find((provider) => provider.name() == source)
-          .get(id);
-        res.send({
-          id: id,
-          title: lyrics.title(),
-          artist: lyrics.artist(),
-          style: lyrics.style(),
-          lyrics: await lyrics.lyrics(),
-        });
+        const lyrics = await this.getLyricsWithId(req.query["id"]);
+        res.send(lyrics.format(true));
       } catch (e) {
         console.error(e);
         res.status(400).send({ error: e.message });
@@ -161,6 +163,8 @@ class Server {
         const lyrics = await this.lyricsProviders
           .find((provider) => provider.name() == lyricsSource)
           .get(lyricsId);
+        // Bind in database.
+        this.database.bind(mvId, lyricsId);
         this.downloader.add(mv, lyrics);
         res.send({});
       } catch (e) {
@@ -179,6 +183,10 @@ class Server {
       this.player.switchTrack();
       res.send({});
     });
+    this.server.get("/offset", (req, res) => {
+      this.player.offset(Number(req.query["time"]));
+      res.send({});
+    });
     this.server.get("/shuffle", (_req, res) => {
       this.player.shuffle();
       res.send({});
@@ -191,35 +199,21 @@ class Server {
       this.player.replay();
       res.send({});
     });
-    this.server.get("/playlist", (_req, res) => {
-      res.send(
-        this.player
+    this.server.get("/playlist", async (_req, res) => {
+      try {
+        const list = this.player
           .list()
           .concat(this.encoder.list())
           .concat(this.downloader.list())
           .map((entry) => {
-            const mv = entry.mv();
-            const lyrics = entry.lyrics();
-            return {
-              sequence: entry.sequence(),
-              status: entry.status(),
-              error: entry.error(),
-              mv: {
-                id: mv.id(),
-                title: mv.title(),
-                subtitle: mv.subtitle(),
-                uploader: mv.uploader(),
-                url: mv.url(),
-              },
-              lyrics: {
-                id: lyrics.id(),
-                title: lyrics.title(),
-                artist: lyrics.artist(),
-                style: lyrics.style(),
-              },
-            };
-          })
-      );
+            return entry.format();
+          });
+        const result = await Promise.all(list);
+        res.send(result);
+      } catch (e) {
+        console.error(e);
+        res.status(400).send({ error: e.message });
+      }
     });
     this.listener = this.server.listen(
       serverConfig["port"] ?? 0,
@@ -228,6 +222,22 @@ class Server {
         this.handleReady();
       }
     );
+  }
+
+  async getMVWithId(id) {
+    const source = id.split(".")[0];
+    const mv = await this.mvProviders
+      .find((provider) => provider.name() == source)
+      .get(id);
+    return mv;
+  }
+
+  async getLyricsWithId(id) {
+    const source = id.split(".")[0];
+    const lyrics = await this.lyricsProviders
+      .find((provider) => provider.name() == source)
+      .get(id);
+    return lyrics;
   }
 
   handleDownloadComplete(entry) {

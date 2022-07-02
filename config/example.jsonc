@@ -7,6 +7,12 @@
     // a suitable port.
     "port": 0
   },
+  "database": {
+    // The location of database. If it is unspecified, `./anioke.db` will used
+    // by default. You can allocate it in a sync folder is you want to keep the
+    // database safely.
+    "location": "./anioke.db"
+  },
   "download": {
     // The download location for MVs and lyrics. If it is unspecified,
     // `./cache` will be used by default.
