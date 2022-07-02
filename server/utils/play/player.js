@@ -21,6 +21,14 @@ class Player {
     return this.list_;
   }
 
+  currentPlay() {
+    return this.list_.find((entry) => entry.isPlaying());
+  }
+
+  currentPlayIndex() {
+    return this.list_.findIndex((entry) => entry.isPlaying());
+  }
+
   add(entry) {
     entry.onPlayQueue();
     this.list_.push(entry);
@@ -28,7 +36,7 @@ class Player {
   }
 
   play() {
-    const i = this.list_.findIndex((entry) => entry.isPlaying());
+    const i = this.currentPlayIndex();
     if (i >= 0) {
       return;
     }
@@ -40,11 +48,11 @@ class Player {
     }
 
     entry.onPlay();
-    this.playCallback(entry.sequence(), entry.mvPath(), entry.lyricsPath(), 0);
+    this.playCallback(entry);
   }
 
   next() {
-    const entry = this.list_.find((entry) => entry.isPlaying());
+    const entry = this.currentPlay();
     if (entry) {
       this.remove(entry.sequence());
     }
@@ -65,15 +73,25 @@ class Player {
   }
 
   switchTrack() {
+    const entry = this.currentPlay();
+    if (!entry) {
+      return;
+    }
+
     this.switchTrackCallback();
   }
 
   offset(offset) {
-    this.offsetCallback(offset);
+    const entry = this.currentPlay();
+    if (!entry) {
+      return;
+    }
+
+    this.offsetCallback(entry.mv().id(), offset);
   }
 
   shuffle() {
-    const i = this.list_.findIndex((entry) => entry.isPlaying());
+    const i = this.currentPlayIndex();
     let entry = undefined;
     if (i >= 0) {
       entry = this.list_[i];
@@ -102,6 +120,10 @@ class Player {
   }
 
   replay() {
+    if (!this.currentPlay()) {
+      return;
+    }
+
     this.seekCallback(0);
   }
 }

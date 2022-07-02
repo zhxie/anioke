@@ -7,6 +7,7 @@
   "homepage": ".",
   "main": "public/main.js",
   "dependencies": {
+    "better-sqlite3": "^7.5.3",
     "express": "^4.18.1",
     "internal-ip": "^7.0.0",
     "node-fetch": "^3.2.6",
@@ -17,8 +18,9 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
-    "electron": "concurrently -k \"cross-env BROWSER=none npm start\" \"build-electron -d\" \"wait-on public/.build-electron-done http://127.0.0.1:3000 && electronmon .\""
+    "build": "build-electron && react-scripts build",
+    "electron": "concurrently -k \"cross-env BROWSER=none npm start\" \"build-electron -d\" \"wait-on public/.build-electron-done http://127.0.0.1:3000 && electronmon .\"",
+    "rebuild": "electron-rebuild"
   },
   "electronmon": {
     "patterns": [
@@ -43,6 +45,7 @@
     "concurrently": "^7.2.2",
     "cross-env": "^7.0.3",
     "electron": "^19.0.6",
+    "electron-rebuild": "^3.2.7",
     "electronmon": "^2.0.2",
     "react-scripts": "5.0.1",
     "wait-on": "^6.0.1"
