@@ -53,7 +53,7 @@ class Downloader {
     }
     let entry = this.list_[i];
 
-    // Download lyrics
+    // Download lyrics.
     this.downloading = true;
     entry.onDownload();
     const lyrics = entry.lyrics();
@@ -63,7 +63,7 @@ class Downloader {
         fs.writeFileSync(lyricsPath, await lyrics.formattedLyrics());
       } catch (e) {
         console.error(e);
-        // Clean up
+        // Clean up.
         if (fs.existsSync(lyricsPath)) {
           fs.rmSync(lyricsPath);
         }
@@ -75,18 +75,17 @@ class Downloader {
       }
     }
 
-    // Download MV
+    // Download MV.
     const mv = entry.mv();
     const mvPath = `${this.location}/${mv.id()}.mp4`;
-    const exist = fs.existsSync(mvPath);
-    if (!exist) {
+    if (!fs.existsSync(mvPath)) {
       try {
         await this.ytDlp.execPromise(
           [mv.url(), "-o", mvPath].concat(mv.format())
         );
       } catch (e) {
         console.error(e);
-        // Clean up
+        // Clean up.
         if (fs.existsSync(mvPath)) {
           fs.rmSync(mvPath);
         }
@@ -98,7 +97,7 @@ class Downloader {
       }
     }
 
-    this.completeCallback(entry, !exist);
+    this.completeCallback(entry);
     this.list_.splice(i, 1);
     this.downloading = false;
     this.download();
