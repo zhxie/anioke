@@ -130,7 +130,8 @@ class Server {
     });
     this.server.get("/mv", async (req, res) => {
       try {
-        const mv = await this.getMVWithId(req.query["id"]);
+        const id = req.query["id"];
+        const mv = await this.getMVWithId(id);
         const lyricsId = this.database.select(id).lyrics;
         let lyrics;
         if (lyricsId) {
@@ -179,6 +180,14 @@ class Server {
       this.player.remove(sequence);
       res.send({});
     });
+    this.server.get("/skip", (_req, res) => {
+      this.player.skip();
+      res.send({});
+    });
+    this.server.get("/replay", (_req, res) => {
+      this.player.replay();
+      res.send({});
+    });
     this.server.get("/switch", async (_req, res) => {
       this.player.switchTrack();
       res.send({});
@@ -193,10 +202,6 @@ class Server {
     });
     this.server.get("/topmost", (req, res) => {
       this.player.topmost(Number(req.query["sequence"]));
-      res.send({});
-    });
-    this.server.get("/replay", (_req, res) => {
-      this.player.replay();
       res.send({});
     });
     this.server.get("/playlist", async (_req, res) => {
