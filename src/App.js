@@ -55,7 +55,7 @@ class App extends React.Component {
     const opts = {
       video: this.videoRef.current, // HTML5 video element
       subUrl: this.state.lyrics, // Link to subtitles
-      fonts: ["/assets/SourceHanSerif-Regular.ttc"], // Links to fonts (not required, default font already included in build)
+      fonts: ["fonts/SourceHanSerif-Regular.ttc"], // Links to fonts (not required, default font already included in build)
       workerUrl: "/assets/subtitles-octopus-worker.js",
       timeOffset: this.state.offset,
     };
