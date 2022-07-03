@@ -72,6 +72,23 @@ class Player {
     this.play();
   }
 
+  skip() {
+    const entry = this.currentPlay();
+    if (!entry) {
+      return;
+    }
+
+    this.remove(entry.sequence());
+  }
+
+  replay() {
+    if (!this.currentPlay()) {
+      return;
+    }
+
+    this.seekCallback(0);
+  }
+
   switchTrack() {
     const entry = this.currentPlay();
     if (!entry) {
@@ -117,14 +134,6 @@ class Player {
     const entry = this.list_[i];
     this.list_.splice(i, 1);
     this.list_.splice(1, 0, entry);
-  }
-
-  replay() {
-    if (!this.currentPlay()) {
-      return;
-    }
-
-    this.seekCallback(0);
   }
 }
 
