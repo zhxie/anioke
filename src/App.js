@@ -1,6 +1,6 @@
+import SubtitlesOctopus from "libass-wasm";
 import React from "react";
 import "./App.css";
-import SubtitlesOctopus from "libass-wasm";
 
 class App extends React.Component {
   register = false;
@@ -15,6 +15,31 @@ class App extends React.Component {
   };
   videoRef = React.createRef();
   lyricsInstance = null;
+
+  componentDidMount() {
+    if (!this.register) {
+      this.register = true;
+      window.server.onServerReady((_event, ip, port) => {
+        this.handleServerReady(ip, port);
+      });
+      window.player.onPlay((_event, sequence, mv, lyrics, offset) => {
+        this.handlePlay(sequence, mv, lyrics, offset);
+      });
+      window.player.onStop((_event) => {
+        this.handleStop();
+      });
+      window.player.onSeek((_event, time) => {
+        this.handleSeek(time);
+      });
+      window.player.onSwitchTrack((_event) => {
+        this.handleSwitchTrack();
+      });
+      window.player.onOffset((_event, offset) => {
+        this.handleOffset(offset);
+      });
+      window.server.ready();
+    }
+  }
 
   componentDidUpdate(_prevProps, _prevState) {
     this.refreshLyrics();
@@ -52,17 +77,17 @@ class App extends React.Component {
     if (!this.state.lyrics) {
       return;
     }
+    const video = this.videoRef.current;
     const opts = {
-      video: this.videoRef.current, // HTML5 video element
-      subUrl: this.state.lyrics, // Link to subtitles
-      fonts: ["fonts/SourceHanSerif-Regular.ttc"], // Links to fonts (not required, default font already included in build)
-      workerUrl: "/assets/subtitles-octopus-worker.js",
+      video: video,
+      subUrl: this.state.lyrics,
+      fonts: ["fonts/SourceHanSerif-Regular.ttc"],
+      workerUrl: "subtitles-octopus-worker.js",
       timeOffset: this.state.offset,
     };
     this.lyricsInstance = new SubtitlesOctopus(opts);
-    this.videoRef.current.currentTime =
-      this.videoRef.current.currentTime + 0.01;
-    this.videoRef.current.play();
+    video.currentTime = video.currentTime + 0.01;
+    video.play();
   };
 
   handleServerReady(ip, port) {
@@ -91,7 +116,7 @@ class App extends React.Component {
   }
 
   handleSeek() {
-    const video = document.getElementById("video");
+    const video = this.videoRef.current;
     if (video) {
       video.currentTime = 0;
       video.play();
@@ -99,7 +124,7 @@ class App extends React.Component {
   }
 
   handleSwitchTrack() {
-    const video = document.getElementById("video");
+    const video = this.videoRef.current;
     if (video) {
       video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
       video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
@@ -112,31 +137,6 @@ class App extends React.Component {
     this.setState({
       offset: _offset,
     });
-  }
-
-  componentDidMount() {
-    if (!this.register) {
-      this.register = true;
-      window.server.onServerReady((_event, ip, port) => {
-        this.handleServerReady(ip, port);
-      });
-      window.player.onPlay((_event, sequence, mv, lyrics, offset) => {
-        this.handlePlay(sequence, mv, lyrics, offset);
-      });
-      window.player.onStop((_event) => {
-        this.handleStop();
-      });
-      window.player.onSeek((_event, time) => {
-        this.handleSeek(time);
-      });
-      window.player.onSwitchTrack((_event) => {
-        this.handleSwitchTrack();
-      });
-      window.player.onOffset((_event, offset) => {
-        this.handleOffset(offset);
-      });
-      window.server.ready();
-    }
   }
 }
 
