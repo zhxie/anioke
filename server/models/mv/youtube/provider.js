@@ -14,7 +14,7 @@ class Provider {
 
   async search(title) {
     const res = await fetch(
-      `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=${title}&key=${this.key}`
+      `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=${title}&type=video&key=${this.key}`
     );
     const json = await res.json();
 
