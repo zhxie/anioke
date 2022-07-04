@@ -55,7 +55,7 @@ class Line {
 }
 
 class Utils {
-  static header = (title) => {
+  static header(title) {
     return `[Script Info]
 Title: ${title}
 ScriptType: v4.00+
@@ -68,9 +68,9 @@ Style: K2,Source Han Serif,24,&H000000FF,&H00FFFFFF,&H00000000,&H00000000,1,0,0,
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
-  };
+  }
 
-  static compile = (style, lines) => {
+  static compile(style, lines) {
     const ASS_STYLES = ["K1", "K2"];
     const ADVANCE = 5;
     const DELAY = 1;
@@ -108,9 +108,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       displays[index] = line.endTime + DELAY;
     }
     return result.join("\n");
-  };
+  }
 
-  static convertTime = (time) => {
+  static convertTime(time) {
     const hour = parseInt(String(time / 3600));
     const min = parseInt(String((time - 3600 * hour) / 60));
     const sec = parseInt(String(time - 3600 * hour - 60 * min));
@@ -118,14 +118,14 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       Math.round((time - 3600 * hour - 60 * min - sec) * 100),
       99
     );
-    return `${hour}:${this.padTime(min)}:${this.padTime(sec)}.${this.padTime(
+    return `${hour}:${Utils.padTime(min)}:${Utils.padTime(sec)}.${Utils.padTime(
       mil
     )}`;
-  };
+  }
 
-  static padTime = (timeComponent) => {
+  static padTime(timeComponent) {
     return String(timeComponent).padStart(2, "0");
-  };
+  }
 }
 
 export { Style, Word, Line };
