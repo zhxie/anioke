@@ -3,17 +3,17 @@ import { parseStringPromise as parseXMLString } from "xml2js";
 import Entry, { NAME } from "./entry";
 
 class Provider {
-  name() {
+  name = () => {
     return NAME;
-  }
+  };
 
-  configure(_config) {}
+  configure = (_config) => {};
 
-  async searchByTitle(title) {
+  searchByTitle = async (title) => {
     return this.searchByTitleAndArtist(title, "");
-  }
+  };
 
-  async searchByTitleAndArtist(title, artist) {
+  searchByTitleAndArtist = async (title, artist) => {
     const res = await fetch(
       "https://p1.petitlyrics.com/api/GetPetitLyricsData.php",
       {
@@ -45,9 +45,9 @@ class Provider {
       );
     }
     return result.filter((lyrics) => lyrics.isSync());
-  }
+  };
 
-  async get(id) {
+  get = async (id) => {
     const lyricsId = id.split(".")[1];
     const res = await fetch(
       "https://p1.petitlyrics.com/api/GetPetitLyricsData.php",
@@ -72,7 +72,7 @@ class Provider {
       song["artist"][0],
       parseInt(song["availableLyricsType"][0])
     );
-  }
+  };
 }
 
 export default Provider;

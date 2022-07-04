@@ -14,10 +14,10 @@ class Word {
     this.endTime = endTime;
   }
 
-  compile() {
+  compile = () => {
     const duration = Math.round((this.endTime - this.startTime) * 100);
     return `{\\K${duration}}${this.word}`;
-  }
+  };
 }
 
 class Line {
@@ -32,11 +32,11 @@ class Line {
     this.endTime = endTime;
   }
 
-  isEmpty() {
+  isEmpty = () => {
     return this.line.trim().length == 0;
-  }
+  };
 
-  compile(style, assStyle, advance, delay) {
+  compile = (style, assStyle, advance, delay) => {
     let words = this.line;
     switch (style) {
       case Style.Traditional:
@@ -51,11 +51,11 @@ class Line {
     return `Dialogue: 0,${Utils.convertTime(
       this.startTime - advance
     )},${Utils.convertTime(this.endTime + delay)},${assStyle},,0,0,0,,${words}`;
-  }
+  };
 }
 
 class Utils {
-  static header(title) {
+  static header = (title) => {
     return `[Script Info]
 Title: ${title}
 ScriptType: v4.00+
@@ -68,9 +68,9 @@ Style: K2,Source Han Serif,24,&H000000FF,&H00FFFFFF,&H00000000,&H00000000,1,0,0,
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
-  }
+  };
 
-  static compile(style, lines) {
+  static compile = (style, lines) => {
     const ASS_STYLES = ["K1", "K2"];
     const ADVANCE = 5;
     const DELAY = 1;
@@ -108,9 +108,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       displays[index] = line.endTime + DELAY;
     }
     return result.join("\n");
-  }
+  };
 
-  static convertTime(time) {
+  static convertTime = (time) => {
     const hour = parseInt(String(time / 3600));
     const min = parseInt(String((time - 3600 * hour) / 60));
     const sec = parseInt(String(time - 3600 * hour - 60 * min));
@@ -121,11 +121,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return `${hour}:${this.padTime(min)}:${this.padTime(sec)}.${this.padTime(
       mil
     )}`;
-  }
+  };
 
-  static padTime(timeComponent) {
+  static padTime = (timeComponent) => {
     return String(timeComponent).padStart(2, "0");
-  }
+  };
 }
 
 export { Style, Word, Line };

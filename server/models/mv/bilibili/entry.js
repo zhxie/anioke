@@ -15,35 +15,35 @@ class Entry {
     this.part = part;
   }
 
-  id() {
+  id = () => {
     return `${this.source()}.${this.bvid}.${this.page}`;
-  }
+  };
 
-  title() {
+  title = () => {
     return this.title_;
-  }
+  };
 
-  subtitle() {
+  subtitle = () => {
     return this.part;
-  }
+  };
 
-  uploader() {
+  uploader = () => {
     return this.author;
-  }
+  };
 
-  source() {
+  source = () => {
     return NAME;
-  }
+  };
 
-  url() {
+  url = () => {
     return `https://www.bilibili.com/video/${this.bvid}?p=${this.page}`;
-  }
+  };
 
-  downloadOptions() {
+  downloadOptions = () => {
     return [];
-  }
+  };
 
-  format(lyrics) {
+  format = (lyrics) => {
     return {
       id: this.id(),
       title: this.title_,
@@ -52,7 +52,7 @@ class Entry {
       url: this.url(),
       lyrics: lyrics,
     };
-  }
+  };
 }
 
 export { NAME };

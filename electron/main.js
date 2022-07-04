@@ -70,12 +70,8 @@ app.whenReady().then(() => {
   let server = new Server(ready, play, stop, seek, switchTrack, offset);
 
   // Register renderer-to-main IPC.
-  ipcMain.handle("ready", () => {
-    server.handleReady();
-  });
-  ipcMain.handle("end", () => {
-    server.handlePlayerEnded();
-  });
+  ipcMain.handle("ready", server.handleReady);
+  ipcMain.handle("end", server.handlePlayerEnded);
 });
 
 app.on("window-all-closed", () => {
