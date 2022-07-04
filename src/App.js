@@ -14,7 +14,7 @@ class App extends React.Component {
     offset: 0,
   };
   videoRef = React.createRef();
-  lyricsInstance = null;
+  lyrics;
 
   componentDidMount() {
     if (!this.register) {
@@ -41,7 +41,7 @@ class App extends React.Component {
     }
   }
 
-  componentDidUpdate(_prevProps, _prevState) {
+  componentDidUpdate() {
     this.refreshLyrics();
   }
 
@@ -73,7 +73,7 @@ class App extends React.Component {
   };
 
   refreshLyrics = () => {
-    this.lyricsInstance && this.lyricsInstance.dispose();
+    this.destroyLyrics();
     if (!this.state.lyrics) {
       return;
     }
@@ -85,9 +85,23 @@ class App extends React.Component {
       workerUrl: "subtitles-octopus-worker.js",
       timeOffset: this.state.offset,
     };
-    this.lyricsInstance = new SubtitlesOctopus(opts);
-    video.currentTime = video.currentTime + 0.01;
-    video.play();
+    this.lyrics = new SubtitlesOctopus(opts);
+    this.refreshVideo();
+  };
+
+  destroyLyrics = () => {
+    if (this.lyrics) {
+      this.lyrics.dispose();
+      this.lyrics = undefined;
+    }
+  };
+
+  refreshVideo = () => {
+    const video = this.videoRef.current;
+    if (video) {
+      video.currentTime = video.currentTime + 0.01;
+      video.play();
+    }
   };
 
   handleServerReady(ip, port) {
@@ -107,6 +121,7 @@ class App extends React.Component {
   }
 
   handleStop() {
+    this.destroyLyrics();
     this.setState({
       sequence: 0,
       mv: "",
@@ -128,8 +143,7 @@ class App extends React.Component {
     if (video) {
       video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
       video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
-      video.currentTime = video.currentTime + 0.01;
-      video.play();
+      this.refreshVideo();
     }
   }
 
