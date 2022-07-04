@@ -10,8 +10,6 @@ import Encoder from "./utils/encode/encoder";
 import Player from "./utils/play/player";
 
 class Server {
-  readyCallback;
-
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
   lyricsProviders = [new PetitLyricsLyricsProvider()];
   database;
@@ -21,9 +19,7 @@ class Server {
   server = express();
   listener;
 
-  constructor(onReady, onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
-    this.readyCallback = onReady;
-
+  constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
     // Read config from config.json.
     const rawConfig = fs.readFileSync("config.json");
     const config = JSON.parse(rawConfig);
@@ -212,11 +208,7 @@ class Server {
         res.status(400).send({ error: e.message });
       }
     });
-    this.listener = this.server.listen(
-      serverConfig["port"] ?? 0,
-      "0.0.0.0",
-      this.handleReady
-    );
+    this.listener = this.server.listen(serverConfig["port"] ?? 0, "0.0.0.0");
   }
 
   getMVWithId = async (id) => {
@@ -244,9 +236,10 @@ class Server {
   };
 
   handleReady = () => {
-    if (this.listener) {
-      this.readyCallback(internalIpV4Sync(), this.listener.address().port);
-    }
+    return {
+      ip: internalIpV4Sync(),
+      port: this.listener.address().port,
+    };
   };
 
   handlePlayerEnded = () => {
