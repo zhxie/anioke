@@ -2,13 +2,13 @@ import fetch from "node-fetch";
 import Entry, { NAME } from "./entry";
 
 class Provider {
-  name() {
+  name = () => {
     return NAME;
-  }
+  };
 
-  configure(_config) {}
+  configure = (_config) => {};
 
-  async search(title) {
+  search = async (title) => {
     const res = await fetch(
       `https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=${title}`
     );
@@ -43,9 +43,9 @@ class Provider {
       }
     }
     return result;
-  }
+  };
 
-  async get(id) {
+  get = async (id) => {
     const splits = id.split(".");
     const bvid = splits[1];
     const page = splits[2];
@@ -62,7 +62,7 @@ class Provider {
       page,
       data["pages"][page - 1]["part"]
     );
-  }
+  };
 }
 
 export default Provider;

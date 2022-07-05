@@ -20,29 +20,29 @@ class Downloader {
     this.completeCallback = onComplete;
   }
 
-  list() {
+  list = () => {
     return this.list_;
-  }
+  };
 
-  add(mv, lyrics) {
+  add = (mv, lyrics) => {
     const mvPath = `${this.location}/${mv.id()}.mp4`;
     const lyricsPath = `${this.location}/${lyrics.id()}.ass`;
     let entry = new Entry(mv, mvPath, lyrics, lyricsPath);
     entry.onDownloadQueue();
     this.list_.push(entry);
     this.download();
-  }
+  };
 
-  remove(sequence) {
+  remove = (sequence) => {
     const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
     if (i >= 0 && this.list_[i].isRemovable()) {
       this.list_.splice(i, 1);
     }
 
     this.download();
-  }
+  };
 
-  async download() {
+  download = async () => {
     if (this.downloading) {
       return;
     }
@@ -101,7 +101,7 @@ class Downloader {
     this.list_.splice(i, 1);
     this.downloading = false;
     this.download();
-  }
+  };
 }
 
 export default Downloader;

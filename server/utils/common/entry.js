@@ -28,35 +28,35 @@ class Entry {
     this.lyricsPath_ = lyricsPath;
   }
 
-  sequence() {
+  sequence = () => {
     return this.sequence_;
-  }
+  };
 
-  status() {
+  status = () => {
     return this.status_;
-  }
+  };
 
-  error() {
+  error = () => {
     return this.error_;
-  }
+  };
 
-  mv() {
+  mv = () => {
     return this.mv_;
-  }
+  };
 
-  mvPath() {
+  mvPath = () => {
     return this.mvPath_;
-  }
+  };
 
-  lyrics() {
+  lyrics = () => {
     return this.lyrics_;
-  }
+  };
 
-  lyricsPath() {
+  lyricsPath = () => {
     return this.lyricsPath_;
-  }
+  };
 
-  async format() {
+  format = async () => {
     const lyrics = await this.lyrics_.format(false);
     return {
       sequence: this.sequence_,
@@ -65,37 +65,37 @@ class Entry {
       mv: this.mv_.format(lyrics),
       lyrics: lyrics,
     };
-  }
+  };
 
-  onDownloadQueue() {
+  onDownloadQueue = async () => {
     this.status_ = Status.DownloadQueue;
-  }
+  };
 
-  onDownload() {
+  onDownload = () => {
     this.status_ = Status.Download;
-  }
+  };
 
-  onEncodeQueue() {
+  onEncodeQueue = () => {
     this.status_ = Status.EncodeQueue;
-  }
+  };
 
-  onEncode() {
+  onEncode = () => {
     this.status_ = Status.Encode;
-  }
+  };
 
-  onPlayQueue() {
+  onPlayQueue = () => {
     this.status_ = Status.PlayQueue;
-  }
+  };
 
-  onPlay() {
+  onPlay = () => {
     this.status_ = Status.Play;
-  }
+  };
 
-  onFail() {
+  onFail = () => {
     this.status_ = Status.onFail;
-  }
+  };
 
-  isRemovable() {
+  isRemovable = () => {
     switch (this.status_) {
       case Status.DownloadQueue:
       case Status.EncodeQueue:
@@ -109,23 +109,23 @@ class Entry {
       default:
         throw new Error(`unexpected status "${this.status_}"`);
     }
-  }
+  };
 
-  isDownloadQueued() {
+  isDownloadQueued = () => {
     return this.status_ == Status.DownloadQueue;
-  }
+  };
 
-  isEncodeQueued() {
+  isEncodeQueued = () => {
     return this.status_ == Status.EncodeQueue;
-  }
+  };
 
-  isPlayQueued() {
+  isPlayQueued = () => {
     return this.status_ == Status.PlayQueue;
-  }
+  };
 
-  isPlaying() {
+  isPlaying = () => {
     return this.status_ == Status.Play;
-  }
+  };
 }
 
 export default Entry;

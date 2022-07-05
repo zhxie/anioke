@@ -17,25 +17,25 @@ class Player {
     this.offsetCallback = onOffset;
   }
 
-  list() {
+  list = () => {
     return this.list_;
-  }
+  };
 
-  currentPlay() {
+  currentPlay = () => {
     return this.list_.find((entry) => entry.isPlaying());
-  }
+  };
 
-  currentPlayIndex() {
+  currentPlayIndex = () => {
     return this.list_.findIndex((entry) => entry.isPlaying());
-  }
+  };
 
-  add(entry) {
+  add = (entry) => {
     entry.onPlayQueue();
     this.list_.push(entry);
     this.play();
-  }
+  };
 
-  play() {
+  play = () => {
     const i = this.currentPlayIndex();
     if (i >= 0) {
       return;
@@ -49,18 +49,18 @@ class Player {
 
     entry.onPlay();
     this.playCallback(entry);
-  }
+  };
 
-  next() {
+  next = () => {
     const entry = this.currentPlay();
     if (entry) {
       this.remove(entry.sequence());
     }
 
     this.play();
-  }
+  };
 
-  remove(sequence) {
+  remove = (sequence) => {
     const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
     if (this.list_[i].isPlaying()) {
       this.stopCallback();
@@ -70,44 +70,44 @@ class Player {
     }
 
     this.play();
-  }
+  };
 
-  skip() {
+  skip = () => {
     const entry = this.currentPlay();
     if (!entry) {
       return;
     }
 
     this.remove(entry.sequence());
-  }
+  };
 
-  replay() {
+  replay = () => {
     if (!this.currentPlay()) {
       return;
     }
 
     this.seekCallback(0);
-  }
+  };
 
-  switchTrack() {
+  switchTrack = () => {
     const entry = this.currentPlay();
     if (!entry) {
       return;
     }
 
     this.switchTrackCallback();
-  }
+  };
 
-  offset(offset) {
+  offset = (offset) => {
     const entry = this.currentPlay();
     if (!entry) {
       return;
     }
 
     this.offsetCallback(entry.mv().id(), offset);
-  }
+  };
 
-  shuffle() {
+  shuffle = () => {
     const i = this.currentPlayIndex();
     let entry = undefined;
     if (i >= 0) {
@@ -119,9 +119,9 @@ class Player {
     if (entry) {
       this.list_.unshift(entry);
     }
-  }
+  };
 
-  topmost(sequence) {
+  topmost = (sequence) => {
     if (this.list_.length < 2) {
       return;
     }
@@ -134,7 +134,7 @@ class Player {
     const entry = this.list_[i];
     this.list_.splice(i, 1);
     this.list_.splice(1, 0, entry);
-  }
+  };
 }
 
 export default Player;

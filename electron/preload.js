@@ -2,7 +2,6 @@ import { contextBridge, ipcRenderer } from "electron";
 
 process.once("loaded", () => {
   contextBridge.exposeInMainWorld("server", {
-    onServerReady: (callback) => ipcRenderer.on("server-ready", callback),
     ready: () => ipcRenderer.invoke("ready"),
   });
   contextBridge.exposeInMainWorld("player", {

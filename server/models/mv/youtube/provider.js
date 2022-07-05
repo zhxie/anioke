@@ -4,15 +4,15 @@ import Entry, { NAME } from "./entry";
 class Provider {
   key;
 
-  name() {
+  name = () => {
     return NAME;
-  }
+  };
 
-  configure(config) {
+  configure = (config) => {
     this.key = config.key;
-  }
+  };
 
-  async search(title) {
+  search = async (title) => {
     const res = await fetch(
       `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=50&q=${title}&type=video&key=${this.key}`
     );
@@ -31,9 +31,9 @@ class Provider {
       );
     }
     return result;
-  }
+  };
 
-  async get(id) {
+  get = async (id) => {
     const videoId = id.split(".")[1];
     const res = await fetch(
       `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${videoId}&key=${this.key}`
@@ -42,7 +42,7 @@ class Provider {
 
     const snippet = json["items"][0]["snippet"];
     return new Entry(videoId, snippet["title"], snippet["channelTitle"]);
-  }
+  };
 }
 
 export default Provider;

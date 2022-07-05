@@ -10,8 +10,6 @@ import Encoder from "./utils/encode/encoder";
 import Player from "./utils/play/player";
 
 class Server {
-  readyCallback;
-
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
   lyricsProviders = [new PetitLyricsLyricsProvider()];
   database;
@@ -21,9 +19,7 @@ class Server {
   server = express();
   listener;
 
-  constructor(onReady, onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
-    this.readyCallback = onReady;
-
+  constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
     // Read config from config.json.
     const rawConfig = fs.readFileSync("config.json");
     const config = JSON.parse(rawConfig);
@@ -48,9 +44,7 @@ class Server {
     this.downloader = new Downloader(
       downloadConfig["location"] ?? "./cache",
       downloadConfig["yt-dlp"] ?? "yt-dlp",
-      (entry) => {
-        this.handleDownloadComplete(entry);
-      }
+      this.handleDownloadComplete
     );
 
     // Setup encoder.
@@ -59,9 +53,7 @@ class Server {
       encodeConfig["method"] ?? "ffmpeg",
       encodeConfig["ffmpeg"] ?? "ffmpeg",
       encodeConfig["sox"],
-      (entry) => {
-        this.handleEncodeComplete(entry);
-      }
+      this.handleEncodeComplete
     );
 
     // Setup player.
@@ -117,9 +109,7 @@ class Server {
             await this.lyricsProviders
               .find((provider) => provider.name() == lyricsProvider)
               .searchByTitleAndArtist(title, artist)
-          ).map((entry) => {
-            return entry.format(false);
-          });
+          ).map((entry) => entry.format(false));
           result["lyrics"] = await Promise.all(lyrics);
         }
         res.send(result);
@@ -210,9 +200,7 @@ class Server {
           .list()
           .concat(this.encoder.list())
           .concat(this.downloader.list())
-          .map((entry) => {
-            return entry.format();
-          });
+          .map((entry) => entry.format());
         const result = await Promise.all(list);
         res.send(result);
       } catch (e) {
@@ -220,48 +208,43 @@ class Server {
         res.status(400).send({ error: e.message });
       }
     });
-    this.listener = this.server.listen(
-      serverConfig["port"] ?? 0,
-      "0.0.0.0",
-      () => {
-        this.handleReady();
-      }
-    );
+    this.listener = this.server.listen(serverConfig["port"] ?? 0, "0.0.0.0");
   }
 
-  async getMVWithId(id) {
+  getMVWithId = async (id) => {
     const source = id.split(".")[0];
     const mv = await this.mvProviders
       .find((provider) => provider.name() == source)
       .get(id);
     return mv;
-  }
+  };
 
-  async getLyricsWithId(id) {
+  getLyricsWithId = async (id) => {
     const source = id.split(".")[0];
     const lyrics = await this.lyricsProviders
       .find((provider) => provider.name() == source)
       .get(id);
     return lyrics;
-  }
+  };
 
-  handleDownloadComplete(entry) {
+  handleDownloadComplete = (entry) => {
     this.encoder.add(entry);
-  }
+  };
 
-  handleEncodeComplete(entry) {
+  handleEncodeComplete = (entry) => {
     this.player.add(entry);
-  }
+  };
 
-  handleReady() {
-    if (this && this.listener) {
-      this.readyCallback(internalIpV4Sync(), this.listener.address().port);
-    }
-  }
+  handleReady = () => {
+    return {
+      ip: internalIpV4Sync(),
+      port: this.listener.address().port,
+    };
+  };
 
-  handlePlayerEnded() {
+  handlePlayerEnded = () => {
     this.player.next();
-  }
+  };
 }
 
 export default Server;
