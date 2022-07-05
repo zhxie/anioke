@@ -23,19 +23,19 @@ class Entry {
     this.availableLyricsType = availableLyricsType;
   }
 
-  id() {
+  id = () => {
     return `${this.source()}.${this.lyricsId}`;
-  }
+  };
 
-  title() {
+  title = () => {
     return this.title_;
-  }
+  };
 
-  artist() {
+  artist = () => {
     return this.artist_;
-  }
+  };
 
-  style() {
+  style = () => {
     switch (this.availableLyricsType) {
       case Type.LineSync:
         return Style.Traditional;
@@ -44,13 +44,13 @@ class Entry {
       default:
         throw new Error(`unexpected type "${this.availableLyricsType}"`);
     }
-  }
+  };
 
-  source() {
+  source = () => {
     return NAME;
-  }
+  };
 
-  async format(withLyrics) {
+  format = async (withLyrics) => {
     return {
       id: this.id(),
       title: this.title_,
@@ -58,9 +58,9 @@ class Entry {
       style: this.style(),
       lyrics: withLyrics ? await this.lyrics() : "",
     };
-  }
+  };
 
-  async lyrics() {
+  lyrics = async () => {
     const rawLyrics = await this.rawLyrics();
     const text = await parseXMLString(rawLyrics);
 
@@ -70,9 +70,9 @@ class Entry {
       result.push(line["linestring"][0]);
     }
     return result.join("\n");
-  }
+  };
 
-  async formattedLyrics() {
+  formattedLyrics = async () => {
     const header = Utils.header(this.title_);
     const rawLyrics = await this.rawLyrics();
     const text = await parseXMLString(rawLyrics);
@@ -97,9 +97,9 @@ class Entry {
     }
     const result = Utils.compile(this.style(), ls);
     return `${header}${result}`;
-  }
+  };
 
-  async rawLyrics() {
+  rawLyrics = async () => {
     const res = await fetch(
       "https://p1.petitlyrics.com/api/GetPetitLyricsData.php",
       {
@@ -120,9 +120,9 @@ class Entry {
     let lyrics = text["response"]["songs"][0]["song"][0]["lyricsData"][0];
     let result = decodeURIComponent(escape(atob(lyrics)));
     return result;
-  }
+  };
 
-  isSync() {
+  isSync = () => {
     switch (this.availableLyricsType) {
       case Type.Text:
         return false;
@@ -132,7 +132,7 @@ class Entry {
       default:
         throw new Error(`unexpected type "${this.availableLyricsType}"`);
     }
-  }
+  };
 }
 
 export { NAME };

@@ -14,10 +14,10 @@ class Word {
     this.endTime = endTime;
   }
 
-  compile() {
+  compile = () => {
     const duration = Math.round((this.endTime - this.startTime) * 100);
     return `{\\K${duration}}${this.word}`;
-  }
+  };
 }
 
 class Line {
@@ -32,11 +32,11 @@ class Line {
     this.endTime = endTime;
   }
 
-  isEmpty() {
+  isEmpty = () => {
     return this.line.trim().length == 0;
-  }
+  };
 
-  compile(style, assStyle, advance, delay) {
+  compile = (style, assStyle, advance, delay) => {
     let words = this.line;
     switch (style) {
       case Style.Traditional:
@@ -51,7 +51,7 @@ class Line {
     return `Dialogue: 0,${Utils.convertTime(
       this.startTime - advance
     )},${Utils.convertTime(this.endTime + delay)},${assStyle},,0,0,0,,${words}`;
-  }
+  };
 }
 
 class Utils {
@@ -118,7 +118,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       Math.round((time - 3600 * hour - 60 * min - sec) * 100),
       99
     );
-    return `${hour}:${this.padTime(min)}:${this.padTime(sec)}.${this.padTime(
+    return `${hour}:${Utils.padTime(min)}:${Utils.padTime(sec)}.${Utils.padTime(
       mil
     )}`;
   }

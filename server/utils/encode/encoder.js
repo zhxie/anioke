@@ -22,26 +22,26 @@ class Encoder {
     this.completeCallback = onComplete;
   }
 
-  list() {
+  list = () => {
     return this.list_;
-  }
+  };
 
-  add(entry) {
+  add = (entry) => {
     entry.onEncodeQueue();
     this.list_.push(entry);
     this.encode();
-  }
+  };
 
-  remove(sequence) {
+  remove = (sequence) => {
     const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
     if (i >= 0 && this.list_[i].isRemovable()) {
       this.list_.splice(i, 1);
     }
 
     this.encode();
-  }
+  };
 
-  async encode() {
+  encode = async () => {
     if (this.encoding) {
       return;
     }
@@ -148,7 +148,7 @@ class Encoder {
     this.list_.splice(i, 1);
     this.encoding = false;
     this.encode();
-  }
+  };
 }
 
 export default Encoder;

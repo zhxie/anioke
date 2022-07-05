@@ -11,35 +11,35 @@ class Entry {
     this.channelTitle = channelTitle;
   }
 
-  id() {
+  id = () => {
     return `${this.source()}.${this.videoId}`;
-  }
+  };
 
-  title() {
+  title = () => {
     return this.title_;
-  }
+  };
 
-  subtitle() {
+  subtitle = () => {
     return "";
-  }
+  };
 
-  uploader() {
+  uploader = () => {
     return this.channelTitle;
-  }
+  };
 
-  source() {
+  source = () => {
     return NAME;
-  }
+  };
 
-  url() {
+  url = () => {
     return `https://www.youtube.com/watch?v=${this.videoId}`;
-  }
+  };
 
-  downloadOptions() {
+  downloadOptions = () => {
     return ["-f", "mp4"];
-  }
+  };
 
-  format(lyrics) {
+  format = (lyrics) => {
     return {
       id: this.id(),
       title: this.title_,
@@ -48,7 +48,7 @@ class Entry {
       url: this.url(),
       lyrics: lyrics,
     };
-  }
+  };
 }
 
 export { NAME };

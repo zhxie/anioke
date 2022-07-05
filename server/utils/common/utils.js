@@ -6,7 +6,7 @@ class Utils {
 
   static generateSequence() {
     // Sequence starts from 1.
-    return ++this.sequence;
+    return ++Utils.sequence;
   }
 
   static exec(cmd) {

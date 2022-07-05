@@ -79,12 +79,17 @@ class App extends React.Component {
 
   handleOffset(_offset) {}
 
+  async ready() {
+    const addr = await window.server.ready();
+    this.setState({
+      ip: addr.ip,
+      port: addr.port,
+    });
+  }
+
   componentDidMount() {
     if (!this.register) {
       this.register = true;
-      window.server.onServerReady((_event, ip, port) => {
-        this.handleServerReady(ip, port);
-      });
       window.player.onPlay((_event, sequence, mv, lyrics, offset) => {
         this.handlePlay(sequence, mv, lyrics, offset);
       });
@@ -100,7 +105,7 @@ class App extends React.Component {
       window.player.onOffset((_event, offset) => {
         this.handleOffset(offset);
       });
-      window.server.ready();
+      this.ready();
     }
   }
 }

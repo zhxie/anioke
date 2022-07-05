@@ -43,9 +43,6 @@ app.whenReady().then(() => {
   const mainWindow = createWindow();
 
   // Setup server.
-  const ready = (ip, port) => {
-    mainWindow.webContents.send("server-ready", ip, port);
-  };
   const play = (sequence, mv, lyrics, offset) => {
     mainWindow.webContents.send(
       "play",
@@ -67,15 +64,11 @@ app.whenReady().then(() => {
   const offset = (offset) => {
     mainWindow.webContents.send("offset", offset);
   };
-  let server = new Server(ready, play, stop, seek, switchTrack, offset);
+  let server = new Server(play, stop, seek, switchTrack, offset);
 
   // Register renderer-to-main IPC.
-  ipcMain.handle("ready", () => {
-    server.handleReady();
-  });
-  ipcMain.handle("end", () => {
-    server.handlePlayerEnded();
-  });
+  ipcMain.handle("ready", server.handleReady);
+  ipcMain.handle("end", server.handlePlayerEnded);
 });
 
 app.on("window-all-closed", () => {
