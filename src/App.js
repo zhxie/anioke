@@ -3,7 +3,6 @@ import React from "react";
 import "./App.css";
 
 class App extends React.Component {
-  register = false;
   state = {
     ip: "",
     port: 0,
@@ -13,27 +12,19 @@ class App extends React.Component {
     lyrics: "",
     offset: 0,
   };
+
+  register = false;
   videoRef = React.createRef();
   lyrics;
 
   componentDidMount() {
     if (!this.register) {
       this.register = true;
-      window.player.onPlay((_event, sequence, mv, lyrics, offset) => {
-        this.handlePlay(sequence, mv, lyrics, offset);
-      });
-      window.player.onStop((_event) => {
-        this.handleStop();
-      });
-      window.player.onSeek((_event, time) => {
-        this.handleSeek(time);
-      });
-      window.player.onSwitchTrack((_event) => {
-        this.handleSwitchTrack();
-      });
-      window.player.onOffset((_event, offset) => {
-        this.handleOffset(offset);
-      });
+      window.player.onPlay(this.handlePlay);
+      window.player.onStop(this.handleStop);
+      window.player.onSeek(this.handleSeek);
+      window.player.onSwitchTrack(this.handleSwitchTrack);
+      window.player.onOffset(this.handleOffset);
       this.ready();
     }
   }
@@ -101,16 +92,16 @@ class App extends React.Component {
     }
   };
 
-  handlePlay(sequence, mv, lyrics, offset) {
+  handlePlay = (_event, sequence, mv, lyrics, offset) => {
     this.setState({
       sequence: sequence,
       mv: mv,
       lyrics: lyrics,
       offset: offset,
     });
-  }
+  };
 
-  handleStop() {
+  handleStop = (_event) => {
     this.destroyLyrics();
     this.setState({
       sequence: 0,
@@ -118,38 +109,38 @@ class App extends React.Component {
       lyrics: "",
       offset: 0,
     });
-  }
+  };
 
-  handleSeek() {
+  handleSeek = (_event, time) => {
     const video = this.videoRef.current;
     if (video) {
-      video.currentTime = 0;
+      video.currentTime = time;
       video.play();
     }
-  }
+  };
 
-  handleSwitchTrack() {
+  handleSwitchTrack = (_event) => {
     const video = this.videoRef.current;
     if (video) {
       video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
       video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
       this.refreshVideo();
     }
-  }
+  };
 
-  handleOffset(_offset) {
+  handleOffset = (_event, offset) => {
     this.setState({
-      offset: _offset,
+      offset: offset,
     });
-  }
+  };
 
-  async ready() {
+  ready = async () => {
     const addr = await window.server.ready();
     this.setState({
       ip: addr.ip,
       port: addr.port,
     });
-  }
+  };
 }
 
 export default App;
