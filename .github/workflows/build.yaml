@@ -41,4 +41,6 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: anioke-latest-${{ runner.os }}-amd64
-          path: dist/anioke-0.1.0.dmg
+          path: |
+            dist/anioke-*.dmg
+            dist/anioke Setup *.exe
