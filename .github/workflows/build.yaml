@@ -10,9 +10,11 @@ on:
 
 jobs:
   build:
-    runs-on:
-      - windows-latest
-      - macos-latest
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
 
     steps:
       - name: Checkout
