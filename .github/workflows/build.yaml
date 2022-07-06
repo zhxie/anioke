@@ -35,7 +35,7 @@ jobs:
         run: npm run build
 
       - name: Distribution
-        run: npm exec electron-builder --publish=never
+        run: npm exec electron-builder -- -p never
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v3
