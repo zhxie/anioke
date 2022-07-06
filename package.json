@@ -4,15 +4,24 @@
   "private": true,
   "author": "Sketch",
   "description": "Karaoki your anime songs.",
-  "homepage": ".",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zhxie/anioke.git"
+  },
   "main": "public/main.js",
   "build": {
+    "appId": "name.sketch.anioke",
+    "productName": "Anioke",
     "extraMetadata": {
       "main": "build/main.js"
     },
     "files": [
       "build/**/*"
-    ]
+    ],
+    "mac": {
+      "category": "entertainment"
+    }
   },
   "dependencies": {
     "better-sqlite3": "^7.5.3",
