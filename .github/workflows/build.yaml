@@ -35,4 +35,10 @@ jobs:
         run: npm run build
 
       - name: Distribution
-        run: npm exec electron-builder
+        run: npm exec electron-builder --publish=never
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: anioke-latest-${{ runner.os }}-amd64
+          path: dist/anioke-0.1.0.dmg
