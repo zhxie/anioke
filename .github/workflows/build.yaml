@@ -42,5 +42,5 @@ jobs:
         with:
           name: anioke-latest-${{ runner.os }}-amd64
           path: |
-            dist/anioke-*.dmg
-            dist/anioke Setup *.exe
+            dist/Anioke-*.dmg
+            dist/Anioke Setup *.exe
