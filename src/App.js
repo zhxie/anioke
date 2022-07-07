@@ -1,4 +1,4 @@
-import SubtitlesOctopus from "libass-wasm";
+import SubtitlesOctopus from "@jellyfin/libass-wasm";
 import React from "react";
 import "./App.css";
 
