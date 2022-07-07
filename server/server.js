@@ -21,7 +21,12 @@ class Server {
 
   constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
     // Read config from config.json.
-    const rawConfig = fs.readFileSync("config.json");
+    let rawConfig;
+    try {
+      rawConfig = fs.readFileSync("config.json");
+    } catch (e) {
+      rawConfig = "{}";
+    }
     const config = JSON.parse(rawConfig);
 
     // Configure providers.

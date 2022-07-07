@@ -1,5 +1,5 @@
 // This is an example config in JSONC format. Please remove all comments,
-// rename the file with suffix .json and have it located in the root directory.
+// rename the file to config.json and have it located in the root directory.
 {
   "server": {
     // The port for listening. The RESTful server will start and listen on
