@@ -1,3 +1,4 @@
+import getAppDataPath from "appdata-path";
 import express from "express";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
@@ -20,11 +21,20 @@ class Server {
   listener;
 
   constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
+    // Create app data directory.
+    const appDataPath = getAppDataPath("Anioke");
+    console.log(appDataPath);
+    fs.mkdirSync(appDataPath, { recursive: true });
+
     // Read config from config.json.
+    const localConfigPath = "config.json";
+    const defaultConfigPath = `${appDataPath}/config.json`;
     let rawConfig;
-    try {
-      rawConfig = fs.readFileSync("config.json");
-    } catch (e) {
+    if (fs.existsSync(localConfigPath)) {
+      rawConfig = fs.readFileSync(localConfigPath);
+    } else if (fs.existsSync(defaultConfigPath)) {
+      rawConfig = fs.readFileSync(defaultConfigPath);
+    } else {
       rawConfig = "{}";
     }
     const config = JSON.parse(rawConfig);
@@ -42,12 +52,14 @@ class Server {
 
     // Setup database.
     const databaseConfig = config["database"] ?? {};
-    this.database = new Database(databaseConfig["location"] ?? "./anioke.db");
+    this.database = new Database(
+      databaseConfig["location"] ?? `${appDataPath}/Anioke.db`
+    );
 
     // Setup downloader.
     const downloadConfig = config["download"] ?? {};
     this.downloader = new Downloader(
-      downloadConfig["location"] ?? "./cache",
+      downloadConfig["location"] ?? `${appDataPath}/Media`,
       downloadConfig["yt-dlp"] ?? "yt-dlp",
       this.handleDownloadComplete
     );

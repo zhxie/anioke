@@ -1,5 +1,11 @@
 // This is an example config in JSONC format. Please remove all comments,
-// rename the file to config.json and have it located in the root directory.
+// rename the file with suffix .json and have it located in the app data
+// directory.
+//
+// Your default app data directory is:
+// Windows: %APPDATA%\Roaming\Anioke
+// macOS: ~/Library/Application Support/Anioke
+// Linux: ~/.Anioke
 {
   "server": {
     // The port for listening. The RESTful server will start and listen on
@@ -8,15 +14,15 @@
     "port": 0
   },
   "database": {
-    // The location of database. If it is unspecified, `./anioke.db` will used
-    // by default. You can allocate it in a sync folder is you want to keep the
-    // database safely.
-    "location": "./anioke.db"
+    // The location of database. If it is unspecified, `Anioke.db` in the app
+    // data directory will used by default. You can allocate it in a sync
+    // folder is you want to keep the database safely.
+    "location": ""
   },
   "download": {
     // The download location for MVs and lyrics. If it is unspecified,
-    // `./cache` will be used by default.
-    "location": "./cache",
+    // `Media` in the app data directory will be used by default.
+    "location": "",
     // The location of yt-dlp. You may acquire an executable binary in
     // https://github.com/yt-dlp/yt-dlp/releases. If it is unspecified,
     // `yt-dlp` will be used by default.
