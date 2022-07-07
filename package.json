@@ -9,6 +9,7 @@
     "type": "git",
     "url": "https://github.com/zhxie/anioke.git"
   },
+  "homepage": ".",
   "main": "public/main.js",
   "build": {
     "appId": "name.sketch.anioke",
