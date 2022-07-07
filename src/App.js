@@ -46,7 +46,6 @@ class App extends React.Component {
               window.player.end();
             }}
             onLoadedData={this.onVideoLoad}
-            controls
           >
             <source src={this.state.mv} type="video/mp4" />
           </video>
