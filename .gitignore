@@ -29,7 +29,3 @@ yarn-debug.log*
 yarn-error.log*
 
 /.vscode
-
-*.db
-/cache
-config.json
