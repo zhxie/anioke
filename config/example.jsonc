@@ -31,15 +31,15 @@
   "encode": {
     // The encoding method. Anioke will encode the MV and add an audio track
     // without human voice for karaoke automatically. It can be one of `ffmpeg`
-    // or `sox`. If it is unspecified, `ffmpeg` will be used by default.
+    // or `custom`. If it is unspecified, `ffmpeg` will be used by default.
     "method": "ffmpeg",
     // The location of FFmpeg. You may acquire an executable binary in
     // https://ffmpeg.org/download.html. If it is unspecified, `ffmpeg` will be
     // used by default.
     "ffmpeg": "ffmpeg",
-    // The location of SoX. You may acquire an executable binary in
-    // https://sourceforge.net/projects/sox/files/sox.
-    "sox": "sox"
+    // Custom encoding scripts. Use `${input}` for input and `${output}` for
+    // output. E.g., ffmpeg -i "${input}" -vcodec libx264 -crf 20 "${output}".
+    "custom": ""
   },
   "providers": {
     "mv": {

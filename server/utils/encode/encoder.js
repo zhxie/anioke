@@ -3,22 +3,22 @@ import Utils from "../common/utils";
 
 const Encoding = {
   FFmpeg: "ffmpeg",
-  SoX: "sox",
+  Custom: "custom",
 };
 
 class Encoder {
   method;
   ffmpegLocation;
-  soxLocation;
+  custom;
   completeCallback;
 
   encoding = false;
   list_ = [];
 
-  constructor(method, ffmpegLocation, soxLocation, onComplete) {
+  constructor(method, ffmpegLocation, custom, onComplete) {
     this.method = method;
     this.ffmpegLocation = ffmpegLocation;
-    this.soxLocation = soxLocation;
+    this.custom = custom;
     this.completeCallback = onComplete;
   }
 
@@ -100,37 +100,19 @@ class Encoder {
             }
           }
           break;
-        case Encoding.SoX:
+        case Encoding.Custom:
           {
-            const musicPath = `${mvPath}.mp3`;
-            const karaokePath = `${mvPath}.k.mp3`;
             const genMVPath = `${mvPath}.gen.mp4`;
             try {
               await Utils.exec(
-                `"${this.ffmpegLocation}" -i "${mvPath}" -map 0:a:0 -y "${musicPath}"`
+                this.custom
+                  .replace("${input}", mvPath)
+                  .replace("${output}", genMVPath)
               );
-              await Utils.exec(
-                `"${this.soxLocation}" "${musicPath}" "${karaokePath}" oops`
-              );
-              fs.rmSync(musicPath);
-              await Utils.exec(
-                `"${this.ffmpegLocation}" -i "${mvPath}" -i "${karaokePath}" -map 0:v -map 0:a:0 -map 1 -y "${genMVPath}"`
-              );
-              fs.rmSync(karaokePath);
               fs.rmSync(mvPath);
               fs.renameSync(genMVPath, mvPath);
             } catch (e) {
               console.error(e);
-              // Clean up.
-              if (fs.existsSync(musicPath)) {
-                fs.rmSync(musicPath);
-              }
-              if (fs.existsSync(karaokePath)) {
-                fs.rmSync(karaokePath);
-              }
-              if (fs.existsSync(genMVPath)) {
-                fs.rmSync(genMVPath);
-              }
 
               entry.onFail(e.message);
               this.encoding = false;

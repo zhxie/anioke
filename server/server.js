@@ -69,7 +69,7 @@ class Server {
     this.encoder = new Encoder(
       encodeConfig["method"] || "ffmpeg",
       encodeConfig["ffmpeg"] || "ffmpeg",
-      encodeConfig["sox"],
+      encodeConfig["custom"],
       this.handleEncodeComplete
     );
 
