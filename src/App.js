@@ -1,8 +1,8 @@
+import SubtitlesOctopus from "libass-wasm";
 import React from "react";
 import "./App.css";
 
 class App extends React.Component {
-  register = false;
   state = {
     ip: "",
     port: 0,
@@ -13,18 +13,39 @@ class App extends React.Component {
     offset: 0,
   };
 
+  register = false;
+  videoRef = React.createRef();
+  lyrics;
+
+  componentDidMount() {
+    if (!this.register) {
+      this.register = true;
+      window.player.onPlay(this.handlePlay);
+      window.player.onStop(this.handleStop);
+      window.player.onSeek(this.handleSeek);
+      window.player.onSwitchTrack(this.handleSwitchTrack);
+      window.player.onOffset(this.handleOffset);
+      this.ready();
+    }
+  }
+
+  componentDidUpdate() {
+    this.refreshLyrics();
+  }
+
   render() {
     return (
-      <div>
+      <div className="wrapper">
         {this.state.mv && (
           <video
             id="video"
+            ref={this.videoRef}
             className="video"
             autoPlay
             onEnded={() => {
               window.player.end();
             }}
-            controls
+            onLoadedData={this.onVideoLoad}
           >
             <source src={this.state.mv} type="video/mp4" />
           </video>
@@ -34,80 +55,91 @@ class App extends React.Component {
     );
   }
 
-  handleServerReady(ip, port) {
-    this.setState({
-      ip: ip,
-      port: port,
-    });
-  }
+  onVideoLoad = () => {
+    this.refreshLyrics();
+  };
 
-  handlePlay(sequence, mv, lyrics, offset) {
+  refreshLyrics = () => {
+    this.destroyLyrics();
+    if (!this.state.lyrics) {
+      return;
+    }
+    const video = this.videoRef.current;
+    const opts = {
+      video: video,
+      subUrl: this.state.lyrics,
+      fonts: ["fonts/SourceHanSerif-Regular.ttc"],
+      workerUrl: "subtitles-octopus-worker.js",
+      timeOffset: this.state.offset,
+    };
+    this.lyrics = new SubtitlesOctopus(opts);
+    this.refreshVideo();
+  };
+
+  destroyLyrics = () => {
+    if (this.lyrics) {
+      this.lyrics.dispose();
+      this.lyrics = undefined;
+    }
+  };
+
+  refreshVideo = () => {
+    const video = this.videoRef.current;
+    if (video) {
+      video.currentTime = video.currentTime + 0.01;
+      video.play();
+    }
+  };
+
+  handlePlay = (_event, sequence, mv, lyrics, offset) => {
     this.setState({
       sequence: sequence,
       mv: mv,
       lyrics: lyrics,
       offset: offset,
     });
-  }
+  };
 
-  handleStop() {
+  handleStop = (_event) => {
+    this.destroyLyrics();
     this.setState({
       sequence: 0,
       mv: "",
       lyrics: "",
       offset: 0,
     });
-  }
+  };
 
-  handleSeek() {
-    const video = document.getElementById("video");
+  handleSeek = (_event, time) => {
+    const video = this.videoRef.current;
     if (video) {
-      video.currentTime = 0;
+      video.currentTime = time;
       video.play();
     }
-  }
+  };
 
-  handleSwitchTrack() {
-    const video = document.getElementById("video");
+  handleSwitchTrack = (_event) => {
+    const video = this.videoRef.current;
     if (video) {
       video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
       video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
-      video.currentTime = video.currentTime + 0.01;
-      video.play();
+      this.refreshVideo();
     }
-  }
+  };
 
-  handleOffset(_offset) {}
+  handleOffset = (_event, offset) => {
+    this.setState({
+      offset: offset,
+    });
+  };
 
-  async ready() {
+  ready = async () => {
     const addr = await window.server.ready();
     this.setState({
       ip: addr.ip,
       port: addr.port,
     });
-  }
-
-  componentDidMount() {
-    if (!this.register) {
-      this.register = true;
-      window.player.onPlay((_event, sequence, mv, lyrics, offset) => {
-        this.handlePlay(sequence, mv, lyrics, offset);
-      });
-      window.player.onStop((_event) => {
-        this.handleStop();
-      });
-      window.player.onSeek((_event, time) => {
-        this.handleSeek(time);
-      });
-      window.player.onSwitchTrack((_event) => {
-        this.handleSwitchTrack();
-      });
-      window.player.onOffset((_event, offset) => {
-        this.handleOffset(offset);
-      });
-      this.ready();
-    }
-  }
+  };
 }
 
 export default App;

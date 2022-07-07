@@ -12,8 +12,10 @@
 /build
 /dist
 /public/.build-electron-done
+/public/*.data
 /public/*.js
 /public/*.txt
+/public/*.wasm
 
 # misc
 .DS_Store
