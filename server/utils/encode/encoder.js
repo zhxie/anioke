@@ -59,7 +59,7 @@ class Encoder {
     // Check count of audio tracks in advance.
     let tracks = 2;
     try {
-      await Utils.exec(`${this.ffmpegLocation} -i ${mvPath}`);
+      await Utils.exec(`"${this.ffmpegLocation}" -i "${mvPath}"`);
     } catch (e) {
       tracks = e.stderr
         .split(/[\r\n]+/)
@@ -75,10 +75,10 @@ class Encoder {
             const genMVPath = `${mvPath}.gen.mp4`;
             try {
               await Utils.exec(
-                `${this.ffmpegLocation} -i ${mvPath} -map 0:a:0 -af pan="stereo|c0=c0|c1=-1*c1" -ac 1 -y ${karaokePath}`
+                `"${this.ffmpegLocation}" -i "${mvPath}" -map 0:a:0 -af pan="stereo|c0=c0|c1=-1*c1" -ac 1 -y "${karaokePath}"`
               );
               await Utils.exec(
-                `${this.ffmpegLocation} -i ${mvPath} -i ${karaokePath} -map 0:v -map 0:a:0 -map 1 -y ${genMVPath}`
+                `"${this.ffmpegLocation}" -i "${mvPath}" -i "${karaokePath}" -map 0:v -map 0:a:0 -map 1 -y "${genMVPath}"`
               );
               fs.rmSync(karaokePath);
               fs.rmSync(mvPath);
@@ -107,14 +107,14 @@ class Encoder {
             const genMVPath = `${mvPath}.gen.mp4`;
             try {
               await Utils.exec(
-                `${this.ffmpegLocation} -i ${mvPath} -map 0:a:0 -y ${musicPath}`
+                `"${this.ffmpegLocation}" -i "${mvPath}" -map 0:a:0 -y "${musicPath}"`
               );
               await Utils.exec(
-                `${this.soxLocation} ${musicPath} ${karaokePath} oops`
+                `"${this.soxLocation}" "${musicPath}" "${karaokePath}" oops`
               );
               fs.rmSync(musicPath);
               await Utils.exec(
-                `${this.ffmpegLocation} -i ${mvPath} -i ${karaokePath} -map 0:v -map 0:a:0 -map 1 -y ${genMVPath}`
+                `"${this.ffmpegLocation}" -i "${mvPath}" -i "${karaokePath}" -map 0:v -map 0:a:0 -map 1 -y "${genMVPath}"`
               );
               fs.rmSync(karaokePath);
               fs.rmSync(mvPath);
