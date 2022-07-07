@@ -53,22 +53,22 @@ class Server {
     // Setup database.
     const databaseConfig = config["database"] ?? {};
     this.database = new Database(
-      databaseConfig["location"] ?? `${appDataPath}/Anioke.db`
+      databaseConfig["location"] || `${appDataPath}/Anioke.db`
     );
 
     // Setup downloader.
     const downloadConfig = config["download"] ?? {};
     this.downloader = new Downloader(
-      downloadConfig["location"] ?? `${appDataPath}/Media`,
-      downloadConfig["yt-dlp"] ?? "yt-dlp",
+      downloadConfig["location"] || `${appDataPath}/Media`,
+      downloadConfig["yt-dlp"] || "yt-dlp",
       this.handleDownloadComplete
     );
 
     // Setup encoder.
     const encodeConfig = config["encode"] ?? {};
     this.encoder = new Encoder(
-      encodeConfig["method"] ?? "ffmpeg",
-      encodeConfig["ffmpeg"] ?? "ffmpeg",
+      encodeConfig["method"] || "ffmpeg",
+      encodeConfig["ffmpeg"] || "ffmpeg",
       encodeConfig["sox"],
       this.handleEncodeComplete
     );
@@ -225,7 +225,7 @@ class Server {
         res.status(400).send({ error: e.message });
       }
     });
-    this.listener = this.server.listen(serverConfig["port"] ?? 0, "0.0.0.0");
+    this.listener = this.server.listen(serverConfig["port"] || 0, "0.0.0.0");
   }
 
   getMVWithId = async (id) => {
