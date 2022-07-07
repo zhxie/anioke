@@ -1,0 +1,48 @@
+name: Build
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - windows-latest
+          - macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Use Node.js 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Distribution
+        run: npm exec electron-builder -- -p never
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: anioke-latest-${{ runner.os }}-amd64
+          path: |
+            dist/Anioke-*.dmg
+            dist/Anioke Setup *.exe

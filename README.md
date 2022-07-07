@@ -12,7 +12,6 @@ Karaoki your anime songs.
 
 ```sh
 npm install
-npm run rebuild
 npm run electron
 ```
 
