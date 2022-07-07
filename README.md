@@ -18,12 +18,6 @@ npm run electron
 
 ## Configuration
 
-You should have a `config.json` located in the root directory with at least the content
-
-```json
-{}
-```
-
 Please refer to [the example config](/config/example.jsonc) for detailed configuration.
 
 ## License
