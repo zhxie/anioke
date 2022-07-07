@@ -1,4 +1,4 @@
-import SubtitlesOctopus from "libass-wasm";
+import SubtitlesOctopus from "@jellyfin/libass-wasm";
 import React from "react";
 import "./App.css";
 
@@ -71,6 +71,7 @@ class App extends React.Component {
       fonts: ["fonts/SourceHanSerif-Regular.ttc"],
       workerUrl: "subtitles-octopus-worker.js",
       timeOffset: this.state.offset,
+      targetFps: 60,
     };
     this.lyrics = new SubtitlesOctopus(opts);
     this.refreshVideo();

@@ -29,7 +29,7 @@
     "better-sqlite3": "^7.5.3",
     "express": "^4.18.1",
     "internal-ip": "^7.0.0",
-    "libass-wasm": "^4.0.0",
+    "@jellyfin/libass-wasm": "^4.1.1",
     "node-fetch": "^3.2.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -40,7 +40,7 @@
     "start": "react-scripts start",
     "build": "build-electron && react-scripts build",
     "electron": "concurrently -k \"cross-env BROWSER=none npm start\" \"build-electron -d\" \"wait-on public/.build-electron-done http://127.0.0.1:3000 && electronmon .\"",
-    "postinstall": "electron-builder install-app-deps && cp node_modules/libass-wasm/dist/js/subtitles-octopus-worker.* public/"
+    "postinstall": "electron-builder install-app-deps && cp node_modules/@jellyfin/libass-wasm/dist/js/subtitles-octopus-worker.* public/"
   },
   "electronmon": {
     "patterns": [
