@@ -5,6 +5,7 @@ import { internalIpV4Sync } from "internal-ip";
 import PetitLyricsLyricsProvider from "./models/lyrics/petit-lyrics/provider";
 import BilibiliMVProvider from "./models/mv/bilibili/provider";
 import YoutubeMVProvider from "./models/mv/youtube/provider";
+import Utils from "./utils/common/utils";
 import Database from "./utils/database/database";
 import Downloader from "./utils/download/downloader";
 import Encoder from "./utils/encode/encoder";
@@ -60,7 +61,7 @@ class Server {
     const downloadConfig = config["download"] ?? {};
     this.downloader = new Downloader(
       downloadConfig["location"] || `${appDataPath}/Media`,
-      downloadConfig["yt-dlp"] || "yt-dlp",
+      downloadConfig["yt-dlp"] || Utils.binary("yt-dlp"),
       this.handleDownloadComplete
     );
 
@@ -68,7 +69,7 @@ class Server {
     const encodeConfig = config["encode"] ?? {};
     this.encoder = new Encoder(
       encodeConfig["method"] || "ffmpeg",
-      encodeConfig["ffmpeg"] || "ffmpeg",
+      encodeConfig["ffmpeg"] || Utils.binary(ffmpeg),
       encodeConfig["custom"],
       this.handleEncodeComplete
     );

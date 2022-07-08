@@ -25,11 +25,12 @@
     }
   },
   "dependencies": {
+    "@jellyfin/libass-wasm": "^4.1.1",
     "appdata-path": "^1.0.0",
     "better-sqlite3": "^7.5.3",
     "express": "^4.18.1",
     "internal-ip": "^7.0.0",
-    "@jellyfin/libass-wasm": "^4.1.1",
+    "is-windows": "^1.0.2",
     "node-fetch": "^3.2.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

@@ -25,7 +25,7 @@
     "location": "",
     // The location of yt-dlp. You may acquire an executable binary in
     // https://github.com/yt-dlp/yt-dlp/releases. If it is unspecified,
-    // `yt-dlp` will be used by default.
+    // `yt-dlp.exe` will be used by default on Windows and `yt-dlp` on others.
     "yt-dlp": "yt-dlp"
   },
   "encode": {
@@ -34,8 +34,8 @@
     // or `custom`. If it is unspecified, `ffmpeg` will be used by default.
     "method": "ffmpeg",
     // The location of FFmpeg. You may acquire an executable binary in
-    // https://ffmpeg.org/download.html. If it is unspecified, `ffmpeg` will be
-    // used by default.
+    // https://ffmpeg.org/download.html. If it is unspecified, `ffmpeg.exe`
+    // will be used by default on Windows and `ffmpeg` on others.
     "ffmpeg": "ffmpeg",
     // Custom encoding scripts. Use `${input}` for input and `${output}` for
     // output. E.g., ffmpeg -i "${input}" -vcodec libx264 -crf 20 "${output}".
