@@ -5,6 +5,7 @@ import "./App.css";
 const App = () => {
   const [ip, setIp] = useState("");
   const [port, setPort] = useState(0);
+  // eslint-disable-next-line no-unused-vars
   const [sequence, setSequence] = useState(0);
   const [mv, setMv] = useState("");
   const [lyrics, setLyrics] = useState("");
