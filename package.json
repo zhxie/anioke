@@ -21,7 +21,11 @@
       "build/**/*"
     ],
     "mac": {
-      "category": "entertainment"
+      "category": "entertainment",
+      "icon": "assets/icon.icns"
+    },
+    "win": {
+      "icon": "assets/icon.ico"
     }
   },
   "dependencies": {
