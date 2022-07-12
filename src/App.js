@@ -1,5 +1,8 @@
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
+import { Result, message } from "antd";
 import React from "react";
+import { withTranslation } from "react-i18next";
+import "antd/dist/antd.dark.min.css";
 import "./App.css";
 
 class App extends React.Component {
@@ -35,8 +38,8 @@ class App extends React.Component {
 
   render() {
     return (
-      <div className="wrapper">
-        {this.state.mv && (
+      <div className="video-wrapper">
+        {this.state.mv ? (
           <video
             id="video"
             ref={this.videoRef}
@@ -49,8 +52,24 @@ class App extends React.Component {
           >
             <source src={this.state.mv} type="video/mp4" />
           </video>
+        ) : (
+          <div className="result-wrapper">
+            <Result
+              title="Anioke"
+              subTitle={`${this.state.ip}:${this.state.port}`}
+              icon={
+                <svg
+                  className="anticon"
+                  viewBox="0 0 72 72"
+                  width="1em"
+                  height="1em"
+                >
+                  <circle cx="50%" cy="50%" r="50%" fill="#39c5bb" />
+                </svg>
+              }
+            />
+          </div>
         )}
-        <p className="overlay">{`${this.state.ip}:${this.state.port}`}</p>
       </div>
     );
   }
@@ -92,13 +111,14 @@ class App extends React.Component {
     }
   };
 
-  handlePlay = (_event, sequence, mv, lyrics, offset) => {
+  handlePlay = (_event, sequence, title, artist, mv, lyrics, offset) => {
     this.setState({
       sequence: sequence,
       mv: mv,
       lyrics: lyrics,
       offset: offset,
     });
+    message.open({ content: `${title} - ${artist}` });
   };
 
   handleStop = (_event) => {
@@ -116,21 +136,35 @@ class App extends React.Component {
     if (video) {
       video.currentTime = time;
       video.play();
+      if (time === 0) {
+        message.open({ content: this.props.t("replay") });
+      }
     }
   };
 
   handleSwitchTrack = (_event) => {
     const video = this.videoRef.current;
     if (video) {
-      video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
-      video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
+      const prev = video.audioTracks[0].enabled;
+      video.audioTracks[0].enabled = !prev;
+      video.audioTracks[1].enabled = prev;
       this.refreshVideo();
+      message.open({
+        content: prev ? this.props.t("karaoke") : this.props.t("original"),
+      });
     }
   };
 
   handleOffset = (_event, offset) => {
+    const delta = offset - this.state.offset;
     this.setState({
       offset: offset,
+    });
+    message.open({
+      content:
+        delta > 0
+          ? this.props.t("subtitles_advance", { val: delta })
+          : this.props.t("subtitles_delay", { val: -delta }),
     });
   };
 
@@ -143,4 +177,4 @@ class App extends React.Component {
   };
 }
 
-export default App;
+export default withTranslation()(App);
