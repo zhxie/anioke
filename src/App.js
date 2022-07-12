@@ -5,9 +5,9 @@ import "./App.css";
 const App = () => {
   const [ip, setIp] = useState("");
   const [port, setPort] = useState(0);
-  // eslint-disable-next-line no-unused-vars
   const [sequence, setSequence] = useState(0);
   const [mv, setMv] = useState("");
+  const [mvLoaded, setMvLoaded] = useState(false);
   const [lyrics, setLyrics] = useState("");
   const [offset, setOffset] = useState(0);
 
@@ -37,13 +37,10 @@ const App = () => {
 
   const refreshSubtitle = useCallback(() => {
     destroySubtitle();
-    if (!lyrics) {
+    if (!lyrics || !mvLoaded) {
       return;
     }
     const video = videoRef.current;
-    if (!video) {
-      return;
-    }
     const opts = {
       video: video,
       subUrl: lyrics,
@@ -54,11 +51,12 @@ const App = () => {
     };
     subtitleRef.current = new SubtitlesOctopus(opts);
     refreshVideo();
-  }, [destroySubtitle, lyrics, offset, refreshVideo]);
+  }, [destroySubtitle, lyrics, mvLoaded, offset, refreshVideo]);
 
   const handlePlay = useCallback((_event, sequence, mv, lyrics, offset) => {
     setSequence(sequence);
     setMv(mv);
+    setMvLoaded(false);
     setLyrics(lyrics);
     setOffset(offset);
   }, []);
@@ -67,6 +65,7 @@ const App = () => {
     (_event) => {
       setSequence(0);
       setMv("");
+      setMvLoaded(false);
       setLyrics("");
       setOffset(0);
       destroySubtitle();
@@ -99,8 +98,8 @@ const App = () => {
   }, []);
 
   const onVideoLoad = useCallback(() => {
-    refreshSubtitle();
-  }, [refreshSubtitle]);
+    setMvLoaded(true);
+  }, []);
 
   useEffect(() => {
     window.player.onPlay(handlePlay);
@@ -134,6 +133,7 @@ const App = () => {
       {mv && (
         <video
           id="video"
+          key={sequence}
           ref={videoRef}
           className="video"
           autoPlay
