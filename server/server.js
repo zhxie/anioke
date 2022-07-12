@@ -23,7 +23,6 @@ class Server {
   constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
     // Create app data directory.
     const appDataPath = getAppDataPath("Anioke");
-    console.log(appDataPath);
     fs.mkdirSync(appDataPath, { recursive: true });
 
     // Read config from config.json.
