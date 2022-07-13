@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "antd/dist/antd.dark.min.css";
 import "./App.css";
+import icon from "./assets/Icon.png";
 
 const App = () => {
   const { t } = useTranslation();
@@ -180,14 +181,13 @@ const App = () => {
             title="Anioke"
             subTitle={`${ip}:${port}`}
             icon={
-              <svg
+              <img
                 className="anticon"
-                viewBox="0 0 72 72"
-                width="1em"
-                height="1em"
-              >
-                <circle cx="50%" cy="50%" r="50%" fill="#39c5bb" />
-              </svg>
+                src={icon}
+                alt={icon}
+                width="72px"
+                height="72px"
+              />
             }
           />
         </div>
