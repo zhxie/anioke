@@ -1,180 +1,199 @@
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
 import { Result, message } from "antd";
-import React from "react";
-import { withTranslation } from "react-i18next";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "antd/dist/antd.dark.min.css";
 import "./App.css";
 
-class App extends React.Component {
-  state = {
-    ip: "",
-    port: 0,
+const App = () => {
+  const { t } = useTranslation();
 
-    sequence: 0,
-    mv: "",
-    lyrics: "",
-    offset: 0,
-  };
+  const [ip, setIp] = useState("");
+  const [port, setPort] = useState(0);
+  const [sequence, setSequence] = useState(0);
+  const [mv, setMv] = useState("");
+  const [mvLoaded, setMvLoaded] = useState(false);
+  const [lyrics, setLyrics] = useState("");
+  const [offset, setOffset] = useState(0);
 
-  register = false;
-  videoRef = React.createRef();
-  lyrics;
+  const videoRef = useRef();
+  const subtitleRef = useRef();
 
-  componentDidMount() {
-    if (!this.register) {
-      this.register = true;
-      window.player.onPlay(this.handlePlay);
-      window.player.onStop(this.handleStop);
-      window.player.onSeek(this.handleSeek);
-      window.player.onSwitchTrack(this.handleSwitchTrack);
-      window.player.onOffset(this.handleOffset);
-      this.ready();
-    }
-  }
+  const ready = useCallback(async () => {
+    const addr = await window.server.ready();
+    setIp(addr.ip);
+    setPort(addr.port);
+  }, []);
 
-  componentDidUpdate() {
-    this.refreshLyrics();
-  }
-
-  render() {
-    return (
-      <div className="video-wrapper">
-        {this.state.mv ? (
-          <video
-            id="video"
-            ref={this.videoRef}
-            className="video"
-            autoPlay
-            onEnded={() => {
-              window.player.end();
-            }}
-            onLoadedData={this.onVideoLoad}
-          >
-            <source src={this.state.mv} type="video/mp4" />
-          </video>
-        ) : (
-          <div className="result-wrapper">
-            <Result
-              title="Anioke"
-              subTitle={`${this.state.ip}:${this.state.port}`}
-              icon={
-                <svg
-                  className="anticon"
-                  viewBox="0 0 72 72"
-                  width="1em"
-                  height="1em"
-                >
-                  <circle cx="50%" cy="50%" r="50%" fill="#39c5bb" />
-                </svg>
-              }
-            />
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  onVideoLoad = () => {
-    this.refreshLyrics();
-  };
-
-  refreshLyrics = () => {
-    this.destroyLyrics();
-    if (!this.state.lyrics) {
-      return;
-    }
-    const video = this.videoRef.current;
-    const opts = {
-      video: video,
-      subUrl: this.state.lyrics,
-      fonts: ["fonts/SourceHanSerif-Regular.ttc"],
-      workerUrl: "subtitles-octopus-worker.js",
-      timeOffset: this.state.offset,
-      targetFps: 60,
-    };
-    this.lyrics = new SubtitlesOctopus(opts);
-    this.refreshVideo();
-  };
-
-  destroyLyrics = () => {
-    if (this.lyrics) {
-      this.lyrics.dispose();
-      this.lyrics = undefined;
-    }
-  };
-
-  refreshVideo = () => {
-    const video = this.videoRef.current;
+  const refreshVideo = useCallback(() => {
+    const video = videoRef.current;
     if (video) {
       video.currentTime = video.currentTime + 0.01;
       video.play();
     }
-  };
+  }, []);
 
-  handlePlay = (_event, sequence, title, artist, mv, lyrics, offset) => {
-    this.setState({
-      sequence: sequence,
-      mv: mv,
-      lyrics: lyrics,
-      offset: offset,
-    });
-    message.open({ content: `${title} - ${artist}` });
-  };
+  const destroySubtitle = useCallback(() => {
+    if (subtitleRef.current) {
+      subtitleRef.current.dispose();
+      subtitleRef.current = undefined;
+    }
+  }, []);
 
-  handleStop = (_event) => {
-    this.destroyLyrics();
-    this.setState({
-      sequence: 0,
-      mv: "",
-      lyrics: "",
-      offset: 0,
-    });
-  };
+  const refreshSubtitle = useCallback(() => {
+    destroySubtitle();
+    if (!lyrics || !mvLoaded) {
+      return;
+    }
+    const video = videoRef.current;
+    const opts = {
+      video: video,
+      subUrl: lyrics,
+      fonts: ["fonts/SourceHanSerif-Regular.ttc"],
+      workerUrl: "subtitles-octopus-worker.js",
+      timeOffset: offset,
+      targetFps: 60,
+    };
+    subtitleRef.current = new SubtitlesOctopus(opts);
+    refreshVideo();
+  }, [destroySubtitle, lyrics, mvLoaded, offset, refreshVideo]);
 
-  handleSeek = (_event, time) => {
-    const video = this.videoRef.current;
-    if (video) {
-      video.currentTime = time;
-      video.play();
-      if (time === 0) {
-        message.open({ content: this.props.t("replay") });
+  const handlePlay = useCallback(
+    (_event, sequence, title, artist, mv, lyrics, offset) => {
+      setSequence(sequence);
+      setMv(mv);
+      setMvLoaded(false);
+      setLyrics(lyrics);
+      setOffset(offset);
+      message.open({ content: `${artist} - ${title}` });
+    },
+    []
+  );
+
+  const handleStop = useCallback(
+    (_event) => {
+      setSequence(0);
+      setMv("");
+      setMvLoaded(false);
+      setLyrics("");
+      setOffset(0);
+      destroySubtitle();
+    },
+    [destroySubtitle]
+  );
+
+  const handleSeek = useCallback(
+    (_event, time) => {
+      const video = videoRef.current;
+      if (video) {
+        video.currentTime = time;
+        video.play();
+        if (time === 0) {
+          message.open({ content: t("replay") });
+        }
       }
-    }
-  };
+    },
+    [t]
+  );
 
-  handleSwitchTrack = (_event) => {
-    const video = this.videoRef.current;
-    if (video) {
-      const prev = video.audioTracks[0].enabled;
-      video.audioTracks[0].enabled = !prev;
-      video.audioTracks[1].enabled = prev;
-      this.refreshVideo();
+  const handleSwitchTrack = useCallback(
+    (_event) => {
+      const video = videoRef.current;
+      if (video) {
+        const prev = video.audioTracks[0].enabled;
+        video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
+        video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
+        refreshVideo();
+        message.open({
+          content: prev ? t("karaoke") : t("original"),
+        });
+      }
+    },
+    [t, refreshVideo]
+  );
+
+  const handleOffset = useCallback(
+    (_event, newOffset) => {
+      const delta = newOffset - offset;
+      console.log(newOffset, offset, delta);
+      setOffset(newOffset);
       message.open({
-        content: prev ? this.props.t("karaoke") : this.props.t("original"),
+        content:
+          delta > 0
+            ? t("subtitles_advance", { val: delta })
+            : t("subtitles_delay", { val: -delta }),
       });
+    },
+    [t, offset]
+  );
+
+  const onVideoLoad = useCallback(() => {
+    setMvLoaded(true);
+  }, []);
+
+  useEffect(() => {
+    window.player.onPlay(handlePlay);
+    window.player.onStop(handleStop);
+    window.player.onSeek(handleSeek);
+    window.player.onSwitchTrack(handleSwitchTrack);
+    window.player.onOffset(handleOffset);
+    ready();
+    return () => {
+      window.player.removeAllControllerBinds();
+    };
+  }, [
+    handleOffset,
+    handlePlay,
+    handleSeek,
+    handleStop,
+    handleSwitchTrack,
+    ready,
+  ]);
+
+  useEffect(() => {
+    if (!mv || !lyrics) {
+      destroySubtitle();
+    } else {
+      refreshSubtitle();
     }
-  };
+  }, [mv, lyrics, destroySubtitle, refreshSubtitle]);
 
-  handleOffset = (_event, offset) => {
-    const delta = offset - this.state.offset;
-    this.setState({
-      offset: offset,
-    });
-    message.open({
-      content:
-        delta > 0
-          ? this.props.t("subtitles_advance", { val: delta })
-          : this.props.t("subtitles_delay", { val: -delta }),
-    });
-  };
+  return (
+    <div className="wrapper">
+      {mv ? (
+        <video
+          id="video"
+          key={sequence}
+          ref={videoRef}
+          className="video"
+          autoPlay
+          onEnded={() => {
+            window.player.end();
+          }}
+          onLoadedData={onVideoLoad}
+        >
+          <source src={mv} type="video/mp4" />
+        </video>
+      ) : (
+        <div className="result-wrapper">
+          <Result
+            title="Anioke"
+            subTitle={`${ip}:${port}`}
+            icon={
+              <svg
+                className="anticon"
+                viewBox="0 0 72 72"
+                width="1em"
+                height="1em"
+              >
+                <circle cx="50%" cy="50%" r="50%" fill="#39c5bb" />
+              </svg>
+            }
+          />
+        </div>
+      )}
+    </div>
+  );
+};
 
-  ready = async () => {
-    const addr = await window.server.ready();
-    this.setState({
-      ip: addr.ip,
-      port: addr.port,
-    });
-  };
-}
-
-export default withTranslation()(App);
+export default App;
