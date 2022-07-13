@@ -1,8 +1,14 @@
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
+import { Result, message } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import "antd/dist/antd.dark.min.css";
 import "./App.css";
+import icon from "./assets/Icon.png";
 
 const App = () => {
+  const { t } = useTranslation();
+
   const [ip, setIp] = useState("");
   const [port, setPort] = useState(0);
   const [sequence, setSequence] = useState(0);
@@ -53,13 +59,17 @@ const App = () => {
     refreshVideo();
   }, [destroySubtitle, lyrics, mvLoaded, offset, refreshVideo]);
 
-  const handlePlay = useCallback((_event, sequence, mv, lyrics, offset) => {
-    setSequence(sequence);
-    setMv(mv);
-    setMvLoaded(false);
-    setLyrics(lyrics);
-    setOffset(offset);
-  }, []);
+  const handlePlay = useCallback(
+    (_event, sequence, title, artist, mv, lyrics, offset) => {
+      setSequence(sequence);
+      setMv(mv);
+      setMvLoaded(false);
+      setLyrics(lyrics);
+      setOffset(offset);
+      message.open({ content: `${artist} - ${title}` });
+    },
+    []
+  );
 
   const handleStop = useCallback(
     (_event) => {
@@ -73,29 +83,50 @@ const App = () => {
     [destroySubtitle]
   );
 
-  const handleSeek = useCallback((_event, time) => {
-    const video = videoRef.current;
-    if (video) {
-      video.currentTime = time;
-      video.play();
-    }
-  }, []);
+  const handleSeek = useCallback(
+    (_event, time) => {
+      const video = videoRef.current;
+      if (video) {
+        video.currentTime = time;
+        video.play();
+        if (time === 0) {
+          message.open({ content: t("replay") });
+        }
+      }
+    },
+    [t]
+  );
 
   const handleSwitchTrack = useCallback(
     (_event) => {
       const video = videoRef.current;
       if (video) {
+        const prev = video.audioTracks[0].enabled;
         video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
         video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
         refreshVideo();
+        message.open({
+          content: prev ? t("karaoke") : t("original"),
+        });
       }
     },
-    [refreshVideo]
+    [t, refreshVideo]
   );
 
-  const handleOffset = useCallback((_event, offset) => {
-    setOffset(offset);
-  }, []);
+  const handleOffset = useCallback(
+    (_event, newOffset) => {
+      const delta = newOffset - offset;
+      console.log(newOffset, offset, delta);
+      setOffset(newOffset);
+      message.open({
+        content:
+          delta > 0
+            ? t("subtitles_advance", { val: delta })
+            : t("subtitles_delay", { val: -delta }),
+      });
+    },
+    [t, offset]
+  );
 
   const onVideoLoad = useCallback(() => {
     setMvLoaded(true);
@@ -130,7 +161,7 @@ const App = () => {
 
   return (
     <div className="wrapper">
-      {mv && (
+      {mv ? (
         <video
           id="video"
           key={sequence}
@@ -144,8 +175,23 @@ const App = () => {
         >
           <source src={mv} type="video/mp4" />
         </video>
+      ) : (
+        <div className="result-wrapper">
+          <Result
+            title="Anioke"
+            subTitle={`${ip}:${port}`}
+            icon={
+              <img
+                className="anticon"
+                src={icon}
+                alt={icon}
+                width="72px"
+                height="72px"
+              />
+            }
+          />
+        </div>
       )}
-      <p className="overlay">{`${ip}:${port}`}</p>
     </div>
   );
 };

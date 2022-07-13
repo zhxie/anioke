@@ -43,10 +43,12 @@ app.whenReady().then(() => {
   const mainWindow = createWindow();
 
   // Setup server.
-  const play = (sequence, mv, lyrics, offset) => {
+  const play = (sequence, title, artist, mv, lyrics, offset) => {
     mainWindow.webContents.send(
       "play",
       sequence,
+      title,
+      artist,
       url.pathToFileURL(mv).toString().replace("file", "anifile"),
       url.pathToFileURL(lyrics).toString().replace("file", "anifile"),
       offset

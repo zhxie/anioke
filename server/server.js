@@ -23,7 +23,6 @@ class Server {
   constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
     // Create app data directory.
     const appDataPath = getAppDataPath("Anioke");
-    console.log(appDataPath);
     fs.mkdirSync(appDataPath, { recursive: true });
 
     // Read config from config.json.
@@ -77,7 +76,14 @@ class Server {
     this.player = new Player(
       (entry) => {
         const offset = this.database.select(entry.mv().id()).offset ?? 0;
-        onPlay(entry.sequence(), entry.mvPath(), entry.lyricsPath(), offset);
+        onPlay(
+          entry.sequence(),
+          entry.lyrics().title(),
+          entry.lyrics().artist(),
+          entry.mvPath(),
+          entry.lyricsPath(),
+          offset
+        );
       },
       onStop,
       onSeek,
