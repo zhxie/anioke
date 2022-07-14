@@ -106,8 +106,8 @@ class Encoder {
             try {
               await Utils.exec(
                 this.custom
-                  .replace("${input}", mvPath)
-                  .replace("${output}", genMVPath)
+                  .replaceAll("${input}", mvPath)
+                  .replaceAll("${output}", genMVPath)
               );
               fs.rmSync(mvPath);
               fs.renameSync(genMVPath, mvPath);
