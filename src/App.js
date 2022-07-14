@@ -16,6 +16,7 @@ const App = () => {
   const [mvLoaded, setMvLoaded] = useState(false);
   const [lyrics, setLyrics] = useState("");
   const [offset, setOffset] = useState(0);
+  const [audioMode, setAudioMode] = useState("original");
 
   const videoRef = useRef();
   const subtitleRef = useRef();
@@ -101,16 +102,14 @@ const App = () => {
     (_event) => {
       const video = videoRef.current;
       if (video) {
-        const prev = video.audioTracks[0].enabled;
-        video.audioTracks[0].enabled = !video.audioTracks[0].enabled;
-        video.audioTracks[1].enabled = !video.audioTracks[1].enabled;
-        refreshVideo();
+        const newMode = audioMode === "original" ? "karaoke" : "original";
+        setAudioMode(newMode);
         message.open({
-          content: prev ? t("karaoke") : t("original"),
+          content: t(newMode),
         });
       }
     },
-    [t, refreshVideo]
+    [audioMode, t]
   );
 
   const handleOffset = useCallback(
@@ -158,6 +157,18 @@ const App = () => {
       refreshSubtitle();
     }
   }, [mv, lyrics, destroySubtitle, refreshSubtitle]);
+
+  useEffect(() => {
+    if (!mvLoaded) {
+      return;
+    }
+    const video = videoRef.current;
+    const targetTrack = audioMode === "original" ? 0 : 1;
+    Array.prototype.forEach.call(video.audioTracks, (track, index) => {
+      track.enabled = index === targetTrack;
+    });
+    refreshVideo();
+  }, [audioMode, refreshVideo, mvLoaded]);
 
   return (
     <div className="wrapper">
