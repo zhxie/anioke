@@ -4,13 +4,17 @@ class Entry {
   author;
   bvid;
   title_;
+  pic;
+  upic;
   page;
   part;
 
-  constructor(author, bvid, title, page, part) {
+  constructor(author, bvid, title, pic, upic, page, part) {
     this.author = author;
     this.bvid = bvid;
     this.title_ = title;
+    this.pic = pic;
+    this.upic = upic;
     this.page = page;
     this.part = part;
   }
@@ -31,6 +35,14 @@ class Entry {
     return this.author;
   };
 
+  thumbnail = () => {
+    return this.pic;
+  };
+
+  uploaderIcon = () => {
+    return this.upic;
+  };
+
   source = () => {
     return NAME;
   };
@@ -49,6 +61,8 @@ class Entry {
       title: this.title_,
       subtitle: this.part,
       uploader: this.author,
+      thumbnail: this.pic,
+      uploaderIcon: this.upic,
       url: this.url(),
       lyrics: lyrics,
     };
