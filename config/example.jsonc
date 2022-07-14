@@ -25,21 +25,22 @@
     "location": "",
     // The location of yt-dlp. You may acquire an executable binary in
     // https://github.com/yt-dlp/yt-dlp/releases. If it is unspecified,
-    // `yt-dlp` will be used by default.
+    // `yt-dlp.exe` will be used by default on Windows and `yt-dlp` on others.
     "yt-dlp": "yt-dlp"
   },
   "encode": {
     // The encoding method. Anioke will encode the MV and add an audio track
     // without human voice for karaoke automatically. It can be one of `ffmpeg`
-    // or `sox`. If it is unspecified, `ffmpeg` will be used by default.
+    // or `custom`. If it is unspecified, `ffmpeg` will be used by default.
     "method": "ffmpeg",
     // The location of FFmpeg. You may acquire an executable binary in
-    // https://ffmpeg.org/download.html. If it is unspecified, `ffmpeg` will be
-    // used by default.
+    // https://ffmpeg.org/download.html. If it is unspecified, `ffmpeg.exe`
+    // will be used by default on Windows and `ffmpeg` on others.
     "ffmpeg": "ffmpeg",
-    // The location of SoX. You may acquire an executable binary in
-    // https://sourceforge.net/projects/sox/files/sox.
-    "sox": "sox"
+    // Custom encoding scripts. Use `${input}` for input and `${output}` for
+    // output. E.g., ffmpeg -i "${input}" -af pan="stereo|c0=c0|c1=-1*c1" -ac 1
+    // -y "${output}".
+    "custom": ""
   },
   "providers": {
     "mv": {

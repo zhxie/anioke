@@ -6,7 +6,6 @@ Karaoki your anime songs.
 
 - [FFmpeg](https://ffmpeg.org/)
 - [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-- (Optional) [SoX](http://sox.sourceforge.net/)
 
 ## Usage
 

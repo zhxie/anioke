@@ -13,7 +13,7 @@ const Status = {
 class Entry {
   sequence_;
   status_ = Status.DownloadQueue;
-  error_ = 0;
+  error_ = "";
 
   mv_;
   mvPath_;
@@ -91,8 +91,9 @@ class Entry {
     this.status_ = Status.Play;
   };
 
-  onFail = () => {
-    this.status_ = Status.onFail;
+  onFail = (e) => {
+    this.status_ = Status.Fail;
+    this.error_ = e;
   };
 
   isRemovable = () => {

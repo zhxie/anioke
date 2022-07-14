@@ -1,4 +1,5 @@
 import { exec } from "child_process";
+import isWindows from "is-windows";
 import { promisify } from "util";
 
 class Utils {
@@ -19,6 +20,14 @@ class Utils {
       var temp = array[i];
       array[i] = array[j];
       array[j] = temp;
+    }
+  }
+
+  static binary(name) {
+    if (isWindows()) {
+      return `${name}.exe`;
+    } else {
+      return name;
     }
   }
 }
