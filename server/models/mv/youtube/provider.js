@@ -14,7 +14,7 @@ class Utils {
     } else if ("default" in thumbnails) {
       return thumbnails["default"]["url"];
     } else {
-      throw new Error(`unexpected thumbnail`);
+      throw new Error(`unexpected thumbnails`);
     }
   };
 }
