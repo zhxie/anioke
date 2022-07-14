@@ -38,7 +38,8 @@
     // will be used by default on Windows and `ffmpeg` on others.
     "ffmpeg": "ffmpeg",
     // Custom encoding scripts. Use `${input}` for input and `${output}` for
-    // output. E.g., ffmpeg -i "${input}" -vcodec libx264 -crf 20 "${output}".
+    // output. E.g., ffmpeg -i "${input}" -af pan="stereo|c0=c0|c1=-1*c1" -ac 1
+    // -y "${output}".
     "custom": ""
   },
   "providers": {
