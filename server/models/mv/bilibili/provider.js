@@ -17,29 +17,26 @@ class Provider {
     let result = [];
     const r = json["data"]["result"];
     for (const ele of r) {
-      try {
-        const bvid = ele["bvid"];
-        const res2 = await fetch(
-          `http://api.bilibili.com/x/web-interface/view?bvid=${bvid}`
-        );
-        const json2 = await res2.json();
+      const bvid = ele["bvid"];
+      const res2 = await fetch(
+        `http://api.bilibili.com/x/web-interface/view?bvid=${bvid}`
+      );
+      const json2 = await res2.json();
 
-        const data = json2["data"];
-        const pages = data["pages"];
-        for (const page of pages) {
-          result.push(
-            new Entry(
-              ele["author"],
-              bvid,
-              data["title"],
-              page["page"],
-              page["part"]
-            )
-          );
-        }
-      } catch (e) {
-        console.error(e);
-        continue;
+      const data = json2["data"];
+      const pages = data["pages"];
+      for (const page of pages) {
+        result.push(
+          new Entry(
+            ele["author"],
+            bvid,
+            data["title"],
+            "http:" + ele["pic"],
+            ele["upic"],
+            page["page"],
+            page["part"]
+          )
+        );
       }
     }
     return result;
@@ -55,10 +52,13 @@ class Provider {
     const json = await res.json();
 
     const data = json["data"];
+    const owner = data["owner"];
     return new Entry(
-      data["owner"]["name"],
+      owner["name"],
       bvid,
       data["title"],
+      data["pic"],
+      owner["face"],
       page,
       data["pages"][page - 1]["part"]
     );
