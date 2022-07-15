@@ -7,6 +7,7 @@ function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1280,
     height: 720,
+    useContentSize: true,
     webPreferences: {
       experimentalFeatures: true,
       preload: path.join(__dirname, "preload.js"),
