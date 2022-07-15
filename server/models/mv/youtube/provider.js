@@ -4,7 +4,7 @@ import Entry, { NAME } from "./entry";
 class Utils {
   static best = (thumbnails) => {
     const priorities = ["maxres", "standard", "high", "medium", "default"];
-    for (let key in priorities) {
+    for (let key of priorities) {
       if (thumbnails[key]) {
         return thumbnails[key].url;
       }
