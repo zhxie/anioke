@@ -43,7 +43,7 @@ const SearchWindow = (props) => {
     setSearchInput(e.target.value);
   }, []);
 
-  const onSearch = useCallback(async () => {
+  const onSearchMV = useCallback(async () => {
     setSelectedMV("");
 
     // Search MV
@@ -53,9 +53,16 @@ const SearchWindow = (props) => {
     );
     const json = await res.json();
 
+    if ("error" in json) {
+      console.error(json["error"]);
+    } else {
+      console.log(json["mv"]);
     setMVList(json["mv"]);
+    }
     setLoading(false);
   }, [addr, searchInput, selectedMVProvider]);
+
+  const onSearchLyrics = useCallback(async () => {}, []);
 
   const onMVCardClick = useCallback(
     async (id) => {
@@ -66,8 +73,9 @@ const SearchWindow = (props) => {
       }
 
       setMVList([]);
+      await onSearchLyrics();
     },
-    [mvList]
+    [mvList, onSearchLyrics]
   );
 
   return (
@@ -79,7 +87,7 @@ const SearchWindow = (props) => {
           value={searchInput}
           onChange={onInputChange}
         />
-        <Button disabled={isLoading} onClick={onSearch}>
+        <Button disabled={isLoading} onClick={onSearchMV}>
           {t("search")}
         </Button>
       </Space>
