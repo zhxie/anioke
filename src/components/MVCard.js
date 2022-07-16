@@ -15,7 +15,7 @@ const MVCard = (props) => {
           </Text>
         </Space>
         <Space direction="vertical" size={0}>
-          {subtitle ?? (
+          {subtitle && (
             <Space>
               <NumberOutlined />
               <Text ellipsis>{subtitle}</Text>
