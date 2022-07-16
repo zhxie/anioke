@@ -1,3 +1,4 @@
+import { ConfigProvider } from "antd";
 import i18n from "i18next";
 import React from "react";
 import ReactDOM from "react-dom/client";
@@ -23,6 +24,8 @@ i18n.use(initReactI18next).init({
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <App />
+    <ConfigProvider autoInsertSpaceInButton={false}>
+      <App />
+    </ConfigProvider>
   </React.StrictMode>
 );
