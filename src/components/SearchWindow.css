@@ -3,6 +3,10 @@
   overflow-y: auto;
 }
 
+.search-space > .ant-space-item:nth-child(3)::-webkit-scrollbar {
+  display: none;
+}
+
 .spin-wrapper {
   display: flex;
   height: 100%;
