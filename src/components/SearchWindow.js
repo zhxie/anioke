@@ -6,7 +6,7 @@ import "./SearchWindow.css";
 import MVCard from "./MVCard";
 
 const SearchWindow = (props) => {
-  const { addr } = props;
+  const { className, addr } = props;
 
   const { t } = useTranslation();
 
@@ -48,7 +48,6 @@ const SearchWindow = (props) => {
 
     // Search MV
     setLoading(true);
-    return;
     const res = await fetch(
       `http://${addr}/search?mv=${selectedMVProvider}&title=${searchInput}`
     );
@@ -72,7 +71,7 @@ const SearchWindow = (props) => {
   );
 
   return (
-    <Space direction="vertical">
+    <Space className={`search-space ${className}`} direction="vertical">
       <Space>
         <Input
           placeholder={t("title")}
@@ -101,7 +100,7 @@ const SearchWindow = (props) => {
           <Spin indicator={<LoadingOutlined spin />} />
         </div>
       ) : (
-        <Space className="mv-list" direction="vertical">
+        <Space direction="vertical">
           {mvList.map((value, index) => {
             return (
               <MVCard
