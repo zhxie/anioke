@@ -3,7 +3,6 @@ import i18n from "i18next";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { initReactI18next } from "react-i18next";
-import "./index.css";
 import App from "./App";
 import zh from "./locales/zh";
 
