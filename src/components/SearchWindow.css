@@ -13,3 +13,7 @@
   align-items: center;
   justify-content: center;
 }
+
+.mv-list {
+  width: 100%;
+}

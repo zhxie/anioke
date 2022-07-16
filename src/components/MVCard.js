@@ -7,10 +7,10 @@ const MVCard = (props) => {
   const { id, title, subtitle, uploader, url, onClick } = props;
 
   return (
-    <Card onClick={onClick.bind(id)}>
+    <Card onClick={onClick.bind(id)} size="small">
       <Space direction="vertical">
         <Space>
-          <Text strong level={5} ellipsis>
+          <Text strong level={5} ellipsis={{ rows: 2 }}>
             {title}
           </Text>
         </Space>

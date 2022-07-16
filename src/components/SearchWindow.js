@@ -10,7 +10,7 @@ const SearchWindow = (props) => {
 
   const { t } = useTranslation();
 
-  const [isLoading, setLoading] = useState(false);
+  const [isLoading, setLoading] = useState(true);
   const [mvProviders, setMVProviders] = useState([]);
   const [lyricsProviders, setLyricsProviders] = useState([]);
   const [searchInput, setSearchInput] = useState("");
@@ -108,7 +108,7 @@ const SearchWindow = (props) => {
           <Spin indicator={<LoadingOutlined spin />} />
         </div>
       ) : (
-        <Space direction="vertical">
+        <Space className="mv-list" direction="vertical">
           {mvList.map((value, index) => {
             return (
               <MVCard
