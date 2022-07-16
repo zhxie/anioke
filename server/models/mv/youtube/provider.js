@@ -3,19 +3,13 @@ import Entry, { NAME } from "./entry";
 
 class Utils {
   static best = (thumbnails) => {
-    if ("maxres" in thumbnails) {
-      return thumbnails["maxres"]["url"];
-    } else if ("standard" in thumbnails) {
-      return thumbnails["standard"]["url"];
-    } else if ("high" in thumbnails) {
-      return thumbnails["high"]["url"];
-    } else if ("medium" in thumbnails) {
-      return thumbnails["medium"]["url"];
-    } else if ("default" in thumbnails) {
-      return thumbnails["default"]["url"];
-    } else {
-      throw new Error(`unexpected thumbnails`);
+    const priorities = ["maxres", "standard", "high", "medium", "default"];
+    for (let key of priorities) {
+      if (thumbnails[key]) {
+        return thumbnails[key].url;
+      }
     }
+    throw new Error(`unexpected thumbnails`);
   };
 }
 
