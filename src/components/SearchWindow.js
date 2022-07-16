@@ -57,7 +57,7 @@ const SearchWindow = (props) => {
       console.error(json["error"]);
     } else {
       console.log(json["mv"]);
-    setMVList(json["mv"]);
+      setMVList(json["mv"]);
     }
     setLoading(false);
   }, [addr, searchInput, selectedMVProvider]);
@@ -117,6 +117,7 @@ const SearchWindow = (props) => {
                 title={value.title}
                 subtitle={value.subtitle}
                 uploader={value.uploader}
+                url={value.url}
                 onClick={onMVCardClick}
               />
             );
