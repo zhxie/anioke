@@ -1,7 +1,7 @@
 import { LinkOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
 import { Card, Space, Typography, message } from "antd";
 import { useTranslation } from "react-i18next";
-import "./MVCard.css";
+import "./Card.css";
 
 const { Link, Paragraph, Text } = Typography;
 
@@ -11,23 +11,29 @@ const MVCard = (props) => {
   const { id, title, subtitle, uploader, url, onClick } = props;
 
   return (
-    <Card className="mv-card" onClick={onClick.bind(id)} size="small">
-      <Space className="mv-card-space" direction="vertical">
-        <Paragraph className="mv-card-paragraph" strong ellipsis={{ rows: 2 }}>
+    <Card
+      className="card"
+      onClick={() => {
+        onClick(id);
+      }}
+      size="small"
+    >
+      <Space className="card-space" direction="vertical">
+        <Paragraph className="card-paragraph" strong ellipsis={{ rows: 2 }}>
           {title}
         </Paragraph>
-        <Space className="mv-card-space" direction="vertical" size={0}>
+        <Space className="card-space" direction="vertical" size={0}>
           {subtitle && (
-            <Space className="mv-card-space mv-card-space-inner">
+            <Space className="card-space card-space-inner">
               <NumberOutlined />
               <Text ellipsis>{subtitle}</Text>
             </Space>
           )}
-          <Space className="mv-card-space mv-card-space-inner">
+          <Space className="card-space card-space-inner">
             <UserOutlined />
             <Text ellipsis>{uploader}</Text>
           </Space>
-          <Space className="mv-card-space mv-card-space-inner">
+          <Space className="card-space card-space-inner">
             <LinkOutlined />
             <Link
               onClick={async () => {
