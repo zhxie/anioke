@@ -1,7 +1,20 @@
+.mv-card {
+  cursor: pointer;
+}
+
 .mv-card-space {
   width: 100%;
 }
 
 .mv-card-paragraph {
   margin-bottom: 0 !important;
+}
+
+.mv-card-space-inner > .ant-space-item:nth-child(2) {
+  overflow: hidden;
+}
+
+/* TODO: We want to ellipse text from the beginning and the method should be optimized. */
+.mv-card-text-ellipse-begin {
+  direction: rtl;
 }

@@ -10,6 +10,7 @@ const zh = {
   youtube: "YouTube",
   bilibili: "哔哩哔哩",
   petit_lyrics: "プチリリ",
+  copied_to_clipboard: "复制到剪贴板",
 };
 
 export default zh;
