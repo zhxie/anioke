@@ -8,7 +8,6 @@ module.exports = function override(config, env) {
     main: "./src/player/index.js",
     order: "./src/order/index.js",
   };
-  config.output.clean = true;
 
   if (!isEnvProduction) {
     config.output.filename = "static/js/[name].bundle.js";
