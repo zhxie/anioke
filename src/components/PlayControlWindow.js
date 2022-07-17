@@ -11,20 +11,20 @@ const PlayControlWindow = (props) => {
   const { t } = useTranslation("playControl");
 
   const onSkip = useCallback(async () => {
-    await fetch(`http://${addr}/skip`);
+    await fetch(`${addr}/skip`);
   }, [addr]);
 
   const onReplay = useCallback(async () => {
-    await fetch(`http://${addr}/replay`);
+    await fetch(`${addr}/replay`);
   }, [addr]);
 
   const onSwitch = useCallback(async () => {
-    await fetch(`http://${addr}/switch`);
+    await fetch(`${addr}/switch`);
   }, [addr]);
 
   const onOffset = useCallback(
     async (time) => {
-      await fetch(`http://${addr}/offset?time=${time}`);
+      await fetch(`${addr}/offset?time=${time}`);
     },
     [addr]
   );

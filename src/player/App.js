@@ -216,7 +216,10 @@ const App = () => {
       <div className="fixed-widget-wrapper">
         <Space direction="vertical">
           <FixedWidget icon={<SearchOutlined />}>
-            <SearchWindow className="fixed-window" addr={`${ip}:${port}`} />
+            <SearchWindow
+              className="fixed-window"
+              addr={`http://${ip}:${port}`}
+            />
           </FixedWidget>
           <FixedWidget
             icon={<UnorderedListOutlined />}
@@ -224,12 +227,15 @@ const App = () => {
           >
             <PlaylistWindow
               className="fixed-window"
-              addr={`${ip}:${port}`}
+              addr={`http://${ip}:${port}`}
               visibility={showPlaylist}
             />
           </FixedWidget>
           <FixedWidget icon={<PlaySquareOutlined />}>
-            <PlayControlWindow className="window" addr={`${ip}:${port}`} />
+            <PlayControlWindow
+              className="window"
+              addr={`http://${ip}:${port}`}
+            />
           </FixedWidget>
         </Space>
       </div>

@@ -24,19 +24,17 @@ const SearchWindow = (props) => {
 
   useEffect(() => {
     const fetchProviders = async () => {
-      if (addr) {
-        setLoading(true);
-        const res = await fetch(`http://${addr}/connect`);
-        const json = await res.json();
+      setLoading(true);
+      const res = await fetch(`${addr}/connect`);
+      const json = await res.json();
 
-        const mv = json["mv"];
-        setMVProviders(mv);
-        setSelectedMVProvider(mv[0]);
-        const lyrics = json["lyrics"];
-        setLyricsProviders(lyrics);
-        setSelectedLyricsProvider(lyrics[0]);
-        setLoading(false);
-      }
+      const mv = json["mv"];
+      setMVProviders(mv);
+      setSelectedMVProvider(mv[0]);
+      const lyrics = json["lyrics"];
+      setLyricsProviders(lyrics);
+      setSelectedLyricsProvider(lyrics[0]);
+      setLoading(false);
     };
     fetchProviders();
   }, [addr]);
@@ -54,7 +52,7 @@ const SearchWindow = (props) => {
         // Search MV.
         setLoading(true);
         const res = await fetch(
-          `http://${addr}/search?mv=${selectedMVProvider}&title=${title}`
+          `${addr}/search?mv=${selectedMVProvider}&title=${title}`
         );
         const json = await res.json();
 
@@ -70,7 +68,7 @@ const SearchWindow = (props) => {
       // Search lyrics.
       setLoading(true);
       const res = await fetch(
-        `http://${addr}/search?lyrics=${selectedLyricsProvider}&title=${title}`
+        `${addr}/search?lyrics=${selectedLyricsProvider}&title=${title}`
       );
       const json = await res.json();
 
@@ -89,7 +87,7 @@ const SearchWindow = (props) => {
       // Order.
       setLoading(true);
       const res = await fetch(
-        `http://${addr}/order?mv=${forceMV ?? selectedMV}&lyrics=${id}`
+        `${addr}/order?mv=${forceMV ?? selectedMV}&lyrics=${id}`
       );
       const json = await res.json();
 
