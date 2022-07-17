@@ -2,11 +2,11 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const isEnvProduction = process.env.NODE_ENV === "production";
 
-module.exports = function override(config, env) {
+module.exports = function override(config) {
   config.entry = {
     // Using "main" as key instead of "player" is restricted by react-scripts
     main: "./src/player/index.js",
-    webui: "./src/webui/index.js",
+    webUI: "./src/web-ui/index.js",
   };
 
   if (!isEnvProduction) {
@@ -17,12 +17,12 @@ module.exports = function override(config, env) {
     return p.constructor.name === "HtmlWebpackPlugin";
   }).userOptions;
   mainHtmlOptions.chunks = ["main"];
-  const webuiHtmlPlugin = new HtmlWebpackPlugin({
+  const webUIHtmlPlugin = new HtmlWebpackPlugin({
     ...mainHtmlOptions,
-    template: "public/webui.html",
-    chunks: ["webui"],
-    filename: "webui.html",
+    template: "public/web-ui/index.html",
+    chunks: ["webUI"],
+    filename: "web-ui/index.html",
   });
-  config.plugins.push(webuiHtmlPlugin);
+  config.plugins.push(webUIHtmlPlugin);
   return config;
 };
