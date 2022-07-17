@@ -4,7 +4,7 @@ import {
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
-import { Result, Space, message } from "antd";
+import { Result, Space, Typography, message } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./App.css";
@@ -14,6 +14,8 @@ import PopoverWidget from "../components/PopoverWidget";
 import SearchWindow from "../components/SearchWindow";
 import PlayControlWindow from "../components/PlayControlWindow";
 import PlaylistWindow from "../components/PlaylistWindow";
+
+const { Text, Link } = Typography;
 
 const App = () => {
   const { t } = useTranslation(["player"]);
@@ -200,7 +202,24 @@ const App = () => {
         <div className="result-wrapper">
           <Result
             title="Anioke"
-            subTitle={`${ip}:${port}`}
+            subTitle={
+              <Space>
+                <Text>{t("order_songs_from_1")}</Text>
+                <Link
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(
+                        `http://${ip}:${port}/web-ui`
+                      );
+                      message.open({ content: t("copied_to_clipboard") });
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  }}
+                >{`http://${ip}:${port}/web-ui`}</Link>
+                <Text>{t("order_songs_from_2")}</Text>
+              </Space>
+            }
             icon={
               <img
                 className="anticon"

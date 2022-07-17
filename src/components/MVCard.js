@@ -39,7 +39,9 @@ const MVCard = (props) => {
               onClick={async () => {
                 try {
                   await navigator.clipboard.writeText(url);
-                  message.open({ content: t("copied_to_clipboard") });
+                  message.open({
+                    content: t("copied_to_clipboard", { ns: "player" }),
+                  });
                 } catch (e) {
                   console.error(e);
                 }
