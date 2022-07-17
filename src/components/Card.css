@@ -1,5 +1,9 @@
-.card {
+.clickable-card {
   cursor: pointer;
+}
+
+.card > .ant-card-actions > li {
+  margin: 4px 0;
 }
 
 .card-space {

@@ -1,21 +1,35 @@
-import { AlignCenterOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  DeleteOutlined,
+  SettingOutlined,
+  UserOutlined,
+  VerticalAlignTopOutlined,
+} from "@ant-design/icons";
 import { Card, Space, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import "./Card.css";
 
 const { Paragraph, Text } = Typography;
 
-const LyricsCard = (props) => {
-  const { t } = useTranslation("search");
+const EntryCard = (props) => {
+  const { t } = useTranslation("playlist");
 
-  const { id, title, artist, style, onClick } = props;
+  const { sequence, title, artist, status, onTopmost, onRemove } = props;
 
   return (
     <Card
-      className="clickable-card"
-      onClick={() => {
-        onClick(id);
-      }}
+      className="card"
+      actions={[
+        <VerticalAlignTopOutlined
+          onClick={() => {
+            onTopmost(sequence);
+          }}
+        />,
+        <DeleteOutlined
+          onClick={() => {
+            onRemove(sequence);
+          }}
+        />,
+      ]}
       size="small"
     >
       <Space className="card-space" direction="vertical">
@@ -28,8 +42,8 @@ const LyricsCard = (props) => {
             <Text ellipsis>{artist}</Text>
           </Space>
           <Space className="card-space card-space-inner">
-            <AlignCenterOutlined />
-            <Text ellipsis>{t(style)}</Text>
+            <SettingOutlined />
+            <Text ellipsis>{t(status)}</Text>
           </Space>
         </Space>
       </Space>
@@ -37,4 +51,4 @@ const LyricsCard = (props) => {
   );
 };
 
-export default LyricsCard;
+export default EntryCard;

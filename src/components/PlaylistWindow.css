@@ -1,0 +1,7 @@
+.playlist-window-button-wrapper {
+  width: 100%;
+}
+
+.playlist-window-button-wrapper > .ant-space-item {
+  flex: 1;
+}

@@ -6,14 +6,3 @@
 .search-window-space > .ant-space-item:nth-child(3)::-webkit-scrollbar {
   display: none;
 }
-
-.search-window-spin-wrapper {
-  display: flex;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-}
-
-.search-window-list {
-  width: 100%;
-}

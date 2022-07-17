@@ -1,0 +1,10 @@
+.window-spin-wrapper {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.window-list {
+  width: 100%;
+}

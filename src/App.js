@@ -12,6 +12,7 @@ import "antd/dist/antd.dark.min.css";
 import icon from "./assets/Icon.png";
 import FixedWidget from "./components/FixedWidget";
 import SearchWindow from "./components/SearchWindow";
+import PlaylistWindow from "./components/PlaylistWindow";
 
 const App = () => {
   const { t } = useTranslation(["player"]);
@@ -24,6 +25,8 @@ const App = () => {
   const [lyrics, setLyrics] = useState("");
   const [offset, setOffset] = useState(0);
   const [audioMode, setAudioMode] = useState("original");
+
+  const [showPlaylist, setPlaylist] = useState(false);
 
   const videoRef = useRef();
   const subtitleRef = useRef();
@@ -212,9 +215,18 @@ const App = () => {
       <div className="fixed-widget-wrapper">
         <Space direction="vertical">
           <FixedWidget icon={<SearchOutlined />}>
-            <SearchWindow className="search-window" addr={`${ip}:${port}`} />
+            <SearchWindow className="fixed-window" addr={`${ip}:${port}`} />
           </FixedWidget>
-          <FixedWidget icon={<UnorderedListOutlined />} />
+          <FixedWidget
+            icon={<UnorderedListOutlined />}
+            onVisibleChange={setPlaylist}
+          >
+            <PlaylistWindow
+              className="fixed-window"
+              addr={`${ip}:${port}`}
+              visibility={showPlaylist}
+            />
+          </FixedWidget>
           <FixedWidget icon={<PlaySquareOutlined />} />
         </Space>
       </div>

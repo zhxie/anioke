@@ -3,6 +3,7 @@ import { Button, Input, Segmented, Space, Spin } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./SearchWindow.css";
+import "./Window.css";
 import LyricsCard from "./LyricsCard";
 import MVCard from "./MVCard";
 
@@ -38,7 +39,7 @@ const SearchWindow = (props) => {
       }
     };
     fetchProviders();
-  }, [addr, setLoading]);
+  }, [addr]);
 
   const onInputChange = useCallback((e) => {
     setSelectedMV("");
@@ -160,39 +161,37 @@ const SearchWindow = (props) => {
         />
       )}
       {isLoading ? (
-        <div className="search-window-spin-wrapper">
+        <div className="window-spin-wrapper">
           <Spin indicator={<LoadingOutlined spin />} />
         </div>
-      ) : !selectedMV ? (
-        <Space className="search-window-list" direction="vertical">
-          {mvList.map((value, index) => {
-            return (
-              <MVCard
-                key={index}
-                id={value.id}
-                title={value.title}
-                subtitle={value.subtitle}
-                uploader={value.uploader}
-                url={value.url}
-                onClick={onMVCardClick}
-              />
-            );
-          })}
-        </Space>
       ) : (
-        <Space className="search-window-list" direction="vertical">
-          {lyricsList.map((value, index) => {
-            return (
-              <LyricsCard
-                key={index}
-                id={value.id}
-                title={value.title}
-                artist={value.artist}
-                style={value.style}
-                onClick={onLyricsCardClick}
-              />
-            );
-          })}
+        <Space className="window-list" direction="vertical">
+          {!selectedMV
+            ? mvList.map((value, index) => {
+                return (
+                  <MVCard
+                    key={index}
+                    id={value.id}
+                    title={value.title}
+                    subtitle={value.subtitle}
+                    uploader={value.uploader}
+                    url={value.url}
+                    onClick={onMVCardClick}
+                  />
+                );
+              })
+            : lyricsList.map((value, index) => {
+                return (
+                  <LyricsCard
+                    key={index}
+                    id={value.id}
+                    title={value.title}
+                    artist={value.artist}
+                    style={value.style}
+                    onClick={onLyricsCardClick}
+                  />
+                );
+              })}
         </Space>
       )}
     </Space>

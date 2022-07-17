@@ -2,10 +2,15 @@ import { Avatar, Popover } from "antd";
 import "./FixedWidget.css";
 
 const FixedWidget = (props) => {
-  const { icon, children } = props;
+  const { icon, children, onVisibleChange } = props;
 
   return (
-    <Popover placement="leftTop" trigger="click" content={children}>
+    <Popover
+      placement="leftTop"
+      trigger="click"
+      onVisibleChange={onVisibleChange}
+      content={children}
+    >
       <Avatar className="fixed-widget-avatar" icon={icon} />
     </Popover>
   );

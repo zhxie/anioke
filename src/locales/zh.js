@@ -16,6 +16,15 @@ const zh = {
     traditional: "经典",
     karaoke: "卡拉OK",
   },
+  playlist: {
+    shuffle: "打乱",
+    download_queue: "等待下载",
+    download: "下载中",
+    encode_queue: "等待编码",
+    encode: "编码中",
+    play: "正在播放",
+    fail: "失败",
+  },
 };
 
 export default zh;

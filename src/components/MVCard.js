@@ -12,7 +12,7 @@ const MVCard = (props) => {
 
   return (
     <Card
-      className="card"
+      className="clickable-card"
       onClick={() => {
         onClick(id);
       }}
@@ -44,7 +44,7 @@ const MVCard = (props) => {
                   console.error(e);
                 }
               }}
-              className="mv-card-text-ellipse-begin"
+              className="card-text-ellipse-begin"
               ellipsis
             >
               {url}
