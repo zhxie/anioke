@@ -6,7 +6,7 @@ module.exports = function override(config, env) {
   config.entry = {
     // Using "main" as key instead of "player" is restricted by react-scripts
     main: "./src/player/index.js",
-    order: "./src/order/index.js",
+    webui: "./src/webui/index.js",
   };
 
   if (!isEnvProduction) {
@@ -17,12 +17,12 @@ module.exports = function override(config, env) {
     return p.constructor.name === "HtmlWebpackPlugin";
   }).userOptions;
   mainHtmlOptions.chunks = ["main"];
-  const orderHtmlPlugin = new HtmlWebpackPlugin({
+  const webuiHtmlPlugin = new HtmlWebpackPlugin({
     ...mainHtmlOptions,
-    template: "public/order.html",
-    chunks: ["order"],
-    filename: "order.html",
+    template: "public/webui.html",
+    chunks: ["webui"],
+    filename: "webui.html",
   });
-  config.plugins.push(orderHtmlPlugin);
+  config.plugins.push(webuiHtmlPlugin);
   return config;
 };
