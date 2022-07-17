@@ -18,16 +18,7 @@
   justify-content: center;
 }
 
-.window {
-  width: 240px;
-}
-
-.fixed-window {
-  width: 240px;
-  height: 360px;
-}
-
-.fixed-widget-wrapper {
+.fixed-widgets-wrapper {
   display: flex;
   position: fixed;
   right: 16px;
@@ -35,4 +26,13 @@
   z-index: 2147483640;
   flex-direction: column;
   cursor: pointer;
+}
+
+.window {
+  width: 240px;
+}
+
+.fixed-window {
+  width: 240px;
+  height: 360px;
 }

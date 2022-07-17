@@ -213,7 +213,7 @@ const App = () => {
           />
         </div>
       )}
-      <div className="fixed-widget-wrapper">
+      <div className="fixed-widgets-wrapper">
         <Space direction="vertical">
           <FixedWidget icon={<SearchOutlined />}>
             <SearchWindow
