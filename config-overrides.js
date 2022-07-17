@@ -6,7 +6,7 @@ module.exports = function override(config) {
   config.entry = {
     // Using "main" as key instead of "player" is restricted by react-scripts
     main: "./src/player/index.js",
-    webUI: "./src/web-ui/index.js",
+    "web-ui": "./src/web-ui/index.js",
   };
 
   if (!isEnvProduction) {
@@ -19,9 +19,9 @@ module.exports = function override(config) {
   mainHtmlOptions.chunks = ["main"];
   const webUIHtmlPlugin = new HtmlWebpackPlugin({
     ...mainHtmlOptions,
-    template: "public/web-ui/index.html",
-    chunks: ["webUI"],
-    filename: "web-ui/index.html",
+    template: "public/web-ui.html",
+    chunks: ["web-ui"],
+    filename: "web-ui.html",
   });
   config.plugins.push(webUIHtmlPlugin);
   return config;
