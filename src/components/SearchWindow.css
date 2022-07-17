@@ -1,19 +1,19 @@
-.search-space > .ant-space-item:nth-child(3) {
+.search-window-space > .ant-space-item:nth-child(3) {
   flex: 1;
   overflow-y: auto;
 }
 
-.search-space > .ant-space-item:nth-child(3)::-webkit-scrollbar {
+.search-window-space > .ant-space-item:nth-child(3)::-webkit-scrollbar {
   display: none;
 }
 
-.spin-wrapper {
+.search-window-spin-wrapper {
   display: flex;
   height: 100%;
   align-items: center;
   justify-content: center;
 }
 
-.mv-list {
+.search-window-list {
   width: 100%;
 }

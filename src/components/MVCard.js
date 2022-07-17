@@ -1,31 +1,30 @@
 import { LinkOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
 import { Card, Space, Typography } from "antd";
+import "./MVCard.css";
 
-const { Link, Text } = Typography;
+const { Link, Paragraph, Text } = Typography;
 
 const MVCard = (props) => {
   const { id, title, subtitle, uploader, url, onClick } = props;
 
   return (
     <Card onClick={onClick.bind(id)} size="small">
-      <Space direction="vertical">
-        <Space>
-          <Text strong level={5} ellipsis={{ rows: 2 }}>
-            {title}
-          </Text>
-        </Space>
-        <Space direction="vertical" size={0}>
+      <Space className="mv-card-space" direction="vertical">
+        <Paragraph className="mv-card-paragraph" strong ellipsis={{ rows: 2 }}>
+          {title}
+        </Paragraph>
+        <Space className="mv-card-space" direction="vertical" size={0}>
           {subtitle && (
-            <Space>
+            <Space className="mv-card-space">
               <NumberOutlined />
               <Text ellipsis>{subtitle}</Text>
             </Space>
           )}
-          <Space>
+          <Space className="mv-card-space">
             <UserOutlined />
             <Text ellipsis>{uploader}</Text>
           </Space>
-          <Space>
+          <Space className="mv-card-space">
             <LinkOutlined />
             <Link ellipsis>{url}</Link>
           </Space>

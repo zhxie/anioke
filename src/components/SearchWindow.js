@@ -79,7 +79,7 @@ const SearchWindow = (props) => {
   );
 
   return (
-    <Space className={`search-space ${className}`} direction="vertical">
+    <Space className={`search-window-space ${className}`} direction="vertical">
       <Space>
         <Input
           placeholder={t("title")}
@@ -104,11 +104,11 @@ const SearchWindow = (props) => {
         value={selectedMVProvider}
       />
       {isLoading ? (
-        <div className="spin-wrapper">
+        <div className="search-window-spin-wrapper">
           <Spin indicator={<LoadingOutlined spin />} />
         </div>
       ) : (
-        <Space className="mv-list" direction="vertical">
+        <Space className="search-window-list" direction="vertical">
           {mvList.map((value, index) => {
             return (
               <MVCard
