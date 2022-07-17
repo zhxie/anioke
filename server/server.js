@@ -233,6 +233,9 @@ class Server {
         res.status(400).send({ error: e.message });
       }
     });
+    this.server.get("/web-ui", (_req, res) => {
+      res.redirect("/web-ui.html");
+    });
     this.server.use("/", webUI);
     this.listener = this.server.listen(serverConfig["port"] || 0, "0.0.0.0");
   }
