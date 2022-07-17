@@ -122,7 +122,7 @@ const SearchWindow = (props) => {
 
   return (
     <Space className={`search-window-space ${className}`} direction="vertical">
-      <Space>
+      <Space className="search-window-input-wrapper">
         <Input
           placeholder={t("title")}
           disabled={isLoading}

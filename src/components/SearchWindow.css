@@ -6,3 +6,11 @@
 .search-window-space > .ant-space-item:nth-child(3)::-webkit-scrollbar {
   display: none;
 }
+
+.search-window-input-wrapper {
+  width: 100%;
+}
+
+.search-window-input-wrapper > .ant-space-item:nth-child(1) {
+  flex: 1;
+}
