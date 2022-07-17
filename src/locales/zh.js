@@ -22,6 +22,7 @@ const zh = {
     download: "下载中",
     encode_queue: "等待编码",
     encode: "编码中",
+    play_queue: "等待播放",
     play: "正在播放",
     fail: "失败",
   },
