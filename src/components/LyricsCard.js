@@ -6,7 +6,7 @@ import "./Card.css";
 const { Paragraph, Text } = Typography;
 
 const LyricsCard = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("search");
 
   const { id, title, artist, style, onClick } = props;
 

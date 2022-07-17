@@ -9,9 +9,7 @@ import zh from "./locales/zh";
 i18n.use(initReactI18next).init({
   resources: {
     zh: {
-      translation: {
-        ...zh,
-      },
+      ...zh,
     },
   },
   lng: "zh",

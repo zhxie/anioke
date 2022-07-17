@@ -6,7 +6,7 @@ import "./Card.css";
 const { Link, Paragraph, Text } = Typography;
 
 const MVCard = (props) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation("search");
 
   const { id, title, subtitle, uploader, url, onClick } = props;
 

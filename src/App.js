@@ -14,7 +14,7 @@ import FixedWidget from "./components/FixedWidget";
 import SearchWindow from "./components/SearchWindow";
 
 const App = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["player"]);
 
   const [ip, setIp] = useState("");
   const [port, setPort] = useState(0);

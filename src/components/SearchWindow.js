@@ -9,7 +9,7 @@ import MVCard from "./MVCard";
 const SearchWindow = (props) => {
   const { className, addr } = props;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation("search");
 
   const [isLoading, setLoading] = useState(true);
   const [mvProviders, setMVProviders] = useState([]);
