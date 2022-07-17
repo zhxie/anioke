@@ -10,7 +10,7 @@ import { useTranslation } from "react-i18next";
 import "./App.css";
 import "antd/dist/antd.dark.min.css";
 import icon from "../assets/Icon.png";
-import FixedWidget from "../components/FixedWidget";
+import PopoverWidget from "../components/PopoverWidget";
 import SearchWindow from "../components/SearchWindow";
 import PlayControlWindow from "../components/PlayControlWindow";
 import PlaylistWindow from "../components/PlaylistWindow";
@@ -213,15 +213,15 @@ const App = () => {
           />
         </div>
       )}
-      <div className="fixed-widgets-wrapper">
+      <div className="popover-widgets-wrapper">
         <Space direction="vertical">
-          <FixedWidget icon={<SearchOutlined />}>
+          <PopoverWidget icon={<SearchOutlined />}>
             <SearchWindow
               className="fixed-window"
               addr={`http://${ip}:${port}`}
             />
-          </FixedWidget>
-          <FixedWidget
+          </PopoverWidget>
+          <PopoverWidget
             icon={<UnorderedListOutlined />}
             onVisibleChange={setPlaylist}
           >
@@ -230,13 +230,13 @@ const App = () => {
               addr={`http://${ip}:${port}`}
               visibility={showPlaylist}
             />
-          </FixedWidget>
-          <FixedWidget icon={<PlaySquareOutlined />}>
+          </PopoverWidget>
+          <PopoverWidget icon={<PlaySquareOutlined />}>
             <PlayControlWindow
               className="window"
               addr={`http://${ip}:${port}`}
             />
-          </FixedWidget>
+          </PopoverWidget>
         </Space>
       </div>
     </div>

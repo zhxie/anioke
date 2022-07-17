@@ -18,7 +18,7 @@
   justify-content: center;
 }
 
-.fixed-widgets-wrapper {
+.popover-widgets-wrapper {
   display: flex;
   position: fixed;
   right: 16px;

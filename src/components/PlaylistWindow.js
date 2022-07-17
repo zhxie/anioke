@@ -51,10 +51,10 @@ const PlaylistWindow = (props) => {
   );
 
   useEffect(() => {
-    if (addr && visibility) {
+    if (visibility) {
       onRefresh();
     }
-  }, [addr, visibility, onRefresh]);
+  }, [visibility, onRefresh]);
 
   return (
     <Space

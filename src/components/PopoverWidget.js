@@ -1,8 +1,8 @@
 import { Avatar, Popover } from "antd";
-import "./FixedWidget.css";
+import "./Widget.css";
 
-const FixedWidget = (props) => {
-  const { icon, children, onVisibleChange } = props;
+const PopoverWidget = (props) => {
+  const { icon, onVisibleChange, children } = props;
 
   return (
     <Popover
@@ -11,9 +11,9 @@ const FixedWidget = (props) => {
       onVisibleChange={onVisibleChange}
       content={children}
     >
-      <Avatar className="fixed-widget-avatar" icon={icon} />
+      <Avatar className="widget-avatar" icon={icon} />
     </Popover>
   );
 };
 
-export default FixedWidget;
+export default PopoverWidget;
