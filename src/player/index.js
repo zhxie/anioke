@@ -4,7 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { initReactI18next } from "react-i18next";
 import App from "./App";
-import zh from "./locales/zh";
+import zh from "../locales/zh";
 
 i18n.use(initReactI18next).init({
   resources: {
