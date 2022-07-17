@@ -1,0 +1,18 @@
+.window-spin-wrapper {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.window-list {
+  width: 100%;
+}
+
+.window-buttons-wrapper {
+  width: 100%;
+}
+
+.window-buttons-wrapper > .ant-space-item {
+  flex: 1;
+}

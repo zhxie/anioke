@@ -1,0 +1,24 @@
+.clickable-card {
+  cursor: pointer;
+}
+
+.card > .ant-card-actions > li {
+  margin: 4px 0;
+}
+
+.card-space {
+  width: 100%;
+}
+
+.card-paragraph {
+  margin-bottom: 0 !important;
+}
+
+.card-space-inner > .ant-space-item:nth-child(2) {
+  overflow: hidden;
+}
+
+/* TODO: We want to ellipse text from the beginning and the method should be optimized. */
+.card-text-ellipse-begin {
+  direction: rtl;
+}

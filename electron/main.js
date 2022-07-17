@@ -14,6 +14,22 @@ function createWindow() {
     },
   });
 
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+    (details, callback) => {
+      callback({ requestHeaders: { Origin: "*", ...details.requestHeaders } });
+    }
+  );
+  mainWindow.webContents.session.webRequest.onHeadersReceived(
+    (details, callback) => {
+      callback({
+        responseHeaders: {
+          "Access-Control-Allow-Origin": ["*"],
+          ...details.responseHeaders,
+        },
+      });
+    }
+  );
+
   const appURL = app.isPackaged
     ? url.format({
         pathname: path.join(__dirname, "index.html"),

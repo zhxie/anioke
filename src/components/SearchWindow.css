@@ -1,0 +1,8 @@
+.search-window-space > .ant-space-item:nth-child(3) {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.search-window-space > .ant-space-item:nth-child(3)::-webkit-scrollbar {
+  display: none;
+}

@@ -26,6 +26,10 @@ class Provider {
       const data = json2["data"];
       const pages = data["pages"];
       for (const page of pages) {
+        let part = page["part"];
+        if (pages.length == 1) {
+          part = "";
+        }
         result.push(
           new Entry(
             ele["author"],
@@ -34,7 +38,7 @@ class Provider {
             "http:" + ele["pic"],
             ele["upic"],
             page["page"],
-            page["part"]
+            part
           )
         );
       }
@@ -53,6 +57,11 @@ class Provider {
 
     const data = json["data"];
     const owner = data["owner"];
+    const pages = data["pages"];
+    let part = pages[page - 1]["part"];
+    if (pages.length == 1) {
+      part = "";
+    }
     return new Entry(
       owner["name"],
       bvid,
@@ -60,7 +69,7 @@ class Provider {
       data["pic"],
       owner["face"],
       page,
-      data["pages"][page - 1]["part"]
+      part
     );
   };
 }
