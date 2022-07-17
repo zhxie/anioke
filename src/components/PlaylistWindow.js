@@ -61,7 +61,7 @@ const PlaylistWindow = (props) => {
       className={`playlist-window-space ${className}`}
       direction="vertical"
     >
-      <Space className="playlist-window-button-wrapper">
+      <Space className="window-buttons-wrapper">
         <Button block disabled={isLoading} onClick={onShuffle}>
           {t("shuffle")}
         </Button>

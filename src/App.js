@@ -12,6 +12,7 @@ import "antd/dist/antd.dark.min.css";
 import icon from "./assets/Icon.png";
 import FixedWidget from "./components/FixedWidget";
 import SearchWindow from "./components/SearchWindow";
+import PlayControlWindow from "./components/PlayControlWindow";
 import PlaylistWindow from "./components/PlaylistWindow";
 
 const App = () => {
@@ -129,8 +130,8 @@ const App = () => {
       message.open({
         content:
           delta > 0
-            ? t("subtitles_advance", { val: delta })
-            : t("subtitles_delay", { val: -delta }),
+            ? t("lyrics_advance", { val: delta })
+            : t("lyrics_delay", { val: -delta }),
       });
     },
     [offset, t]
@@ -227,7 +228,9 @@ const App = () => {
               visibility={showPlaylist}
             />
           </FixedWidget>
-          <FixedWidget icon={<PlaySquareOutlined />} />
+          <FixedWidget icon={<PlaySquareOutlined />}>
+            <PlayControlWindow className="window" addr={`${ip}:${port}`} />
+          </FixedWidget>
         </Space>
       </div>
     </div>

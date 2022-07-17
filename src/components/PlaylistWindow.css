@@ -1,7 +1,8 @@
-.playlist-window-button-wrapper {
-  width: 100%;
+.playlist-window-space > .ant-space-item:nth-child(2) {
+  flex: 1;
+  overflow-y: auto;
 }
 
-.playlist-window-button-wrapper > .ant-space-item {
-  flex: 1;
+.playlist-window-space > .ant-space-item:nth-child(2)::-webkit-scrollbar {
+  display: none;
 }

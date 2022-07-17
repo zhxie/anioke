@@ -18,6 +18,10 @@
   justify-content: center;
 }
 
+.window {
+  width: 240px;
+}
+
 .fixed-window {
   width: 240px;
   height: 360px;
