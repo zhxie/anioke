@@ -29,6 +29,7 @@
     }
   },
   "dependencies": {
+    "@ant-design/icons": "^4.7.0",
     "@jellyfin/libass-wasm": "^4.1.1",
     "antd": "^4.21.5",
     "appdata-path": "^1.0.0",

@@ -1,22 +1,33 @@
+import {
+  PlaySquareOutlined,
+  SearchOutlined,
+  UnorderedListOutlined,
+} from "@ant-design/icons";
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
-import { Result, message } from "antd";
+import { Result, Space, message } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import "antd/dist/antd.dark.min.css";
 import "./App.css";
-import icon from "./assets/Icon.png";
+import "antd/dist/antd.dark.min.css";
+import icon from "../assets/Icon.png";
+import FixedWidget from "../components/FixedWidget";
+import SearchWindow from "../components/SearchWindow";
+import PlayControlWindow from "../components/PlayControlWindow";
+import PlaylistWindow from "../components/PlaylistWindow";
 
 const App = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(["player"]);
 
   const [ip, setIp] = useState("");
   const [port, setPort] = useState(0);
   const [sequence, setSequence] = useState(0);
-  const [mv, setMv] = useState("");
-  const [mvLoaded, setMvLoaded] = useState(false);
+  const [mv, setMV] = useState("");
+  const [mvLoaded, setMVLoaded] = useState(false);
   const [lyrics, setLyrics] = useState("");
   const [offset, setOffset] = useState(0);
   const [audioMode, setAudioMode] = useState("original");
+
+  const [showPlaylist, setPlaylist] = useState(false);
 
   const videoRef = useRef();
   const subtitleRef = useRef();
@@ -63,8 +74,8 @@ const App = () => {
   const handlePlay = useCallback(
     (_event, sequence, title, artist, mv, lyrics, offset) => {
       setSequence(sequence);
-      setMv(mv);
-      setMvLoaded(false);
+      setMV(mv);
+      setMVLoaded(false);
       setLyrics(lyrics);
       setOffset(offset);
       message.open({ content: `${artist} - ${title}` });
@@ -75,8 +86,8 @@ const App = () => {
   const handleStop = useCallback(
     (_event) => {
       setSequence(0);
-      setMv("");
-      setMvLoaded(false);
+      setMV("");
+      setMVLoaded(false);
       setLyrics("");
       setOffset(0);
       destroySubtitle();
@@ -115,20 +126,19 @@ const App = () => {
   const handleOffset = useCallback(
     (_event, newOffset) => {
       const delta = newOffset - offset;
-      console.log(newOffset, offset, delta);
       setOffset(newOffset);
       message.open({
         content:
           delta > 0
-            ? t("subtitles_advance", { val: delta })
-            : t("subtitles_delay", { val: -delta }),
+            ? t("lyrics_advance", { val: delta })
+            : t("lyrics_delay", { val: -delta }),
       });
     },
-    [t, offset]
+    [offset, t]
   );
 
   const onVideoLoad = useCallback(() => {
-    setMvLoaded(true);
+    setMVLoaded(true);
   }, []);
 
   useEffect(() => {
@@ -168,7 +178,7 @@ const App = () => {
       track.enabled = index === targetTrack;
     });
     refreshVideo();
-  }, [audioMode, refreshVideo, mvLoaded]);
+  }, [mvLoaded, audioMode, refreshVideo]);
 
   return (
     <div className="wrapper">
@@ -203,6 +213,26 @@ const App = () => {
           />
         </div>
       )}
+      <div className="fixed-widget-wrapper">
+        <Space direction="vertical">
+          <FixedWidget icon={<SearchOutlined />}>
+            <SearchWindow className="fixed-window" addr={`${ip}:${port}`} />
+          </FixedWidget>
+          <FixedWidget
+            icon={<UnorderedListOutlined />}
+            onVisibleChange={setPlaylist}
+          >
+            <PlaylistWindow
+              className="fixed-window"
+              addr={`${ip}:${port}`}
+              visibility={showPlaylist}
+            />
+          </FixedWidget>
+          <FixedWidget icon={<PlaySquareOutlined />}>
+            <PlayControlWindow className="window" addr={`${ip}:${port}`} />
+          </FixedWidget>
+        </Space>
+      </div>
     </div>
   );
 };
