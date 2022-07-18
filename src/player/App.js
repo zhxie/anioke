@@ -9,7 +9,6 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./App.css";
 import "antd/dist/antd.dark.min.css";
-import "../antd-overrides.css";
 import icon from "../assets/Icon.png";
 import PopoverWidget from "../components/PopoverWidget";
 import SearchWindow from "../components/SearchWindow";

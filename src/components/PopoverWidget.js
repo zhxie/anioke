@@ -8,6 +8,7 @@ const PopoverWidget = (props) => {
     <Popover
       placement="leftTop"
       trigger="click"
+      zIndex={1000}
       onVisibleChange={onVisibleChange}
       content={children}
     >
