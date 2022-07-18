@@ -1,5 +1,6 @@
 import getAppDataPath from "appdata-path";
 import express from "express";
+import proxy from "express-http-proxy";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
 import PetitLyricsLyricsProvider from "./models/lyrics/petit-lyrics/provider";
@@ -21,7 +22,7 @@ class Server {
   server = express();
   listener;
 
-  constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
+  constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset, webUI) {
     // Create app data directory.
     const appDataPath = getAppDataPath("Anioke");
     fs.mkdirSync(appDataPath, { recursive: true });
@@ -232,6 +233,10 @@ class Server {
         res.status(400).send({ error: e.message });
       }
     });
+    this.server.get("/web-ui", (_req, res) => {
+      res.redirect("/web-ui.html");
+    });
+    this.server.use("/", webUI);
     this.listener = this.server.listen(serverConfig["port"] || 0, "0.0.0.0");
   }
 

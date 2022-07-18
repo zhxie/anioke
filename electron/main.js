@@ -1,4 +1,6 @@
 import { app, BrowserWindow, ipcMain, protocol } from "electron";
+import express from "express";
+import proxy from "express-http-proxy";
 import path from "path";
 import url from "url";
 import Server from "../server/server";
@@ -83,7 +85,10 @@ app.whenReady().then(() => {
   const offset = (offset) => {
     mainWindow.webContents.send("offset", offset);
   };
-  let server = new Server(play, stop, seek, switchTrack, offset);
+  const webUI = app.isPackaged
+    ? express.static(__dirname)
+    : proxy("http://localhost:3000");
+  let server = new Server(play, stop, seek, switchTrack, offset, webUI);
 
   // Register renderer-to-main IPC.
   ipcMain.handle("ready", server.handleReady);

@@ -4,16 +4,19 @@ import {
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
-import { Result, Space, message } from "antd";
+import { Result, Space, Typography, message } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./App.css";
 import "antd/dist/antd.dark.min.css";
-import icon from "./assets/Icon.png";
-import FixedWidget from "./components/FixedWidget";
-import SearchWindow from "./components/SearchWindow";
-import PlayControlWindow from "./components/PlayControlWindow";
-import PlaylistWindow from "./components/PlaylistWindow";
+import "../antd-overrides.css";
+import icon from "../assets/Icon.png";
+import PopoverWidget from "../components/PopoverWidget";
+import SearchWindow from "../components/SearchWindow";
+import PlayControlWindow from "../components/PlayControlWindow";
+import PlaylistWindow from "../components/PlaylistWindow";
+
+const { Text, Link } = Typography;
 
 const App = () => {
   const { t } = useTranslation(["player"]);
@@ -200,7 +203,24 @@ const App = () => {
         <div className="result-wrapper">
           <Result
             title="Anioke"
-            subTitle={`${ip}:${port}`}
+            subTitle={
+              <Space>
+                <Text>{t("order_songs_from_1")}</Text>
+                <Link
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(
+                        `http://${ip}:${port}/web-ui`
+                      );
+                      message.open({ content: t("copied_to_clipboard") });
+                    } catch (e) {
+                      console.error(e);
+                    }
+                  }}
+                >{`http://${ip}:${port}/web-ui`}</Link>
+                <Text>{t("order_songs_from_2")}</Text>
+              </Space>
+            }
             icon={
               <img
                 className="anticon"
@@ -213,24 +233,30 @@ const App = () => {
           />
         </div>
       )}
-      <div className="fixed-widget-wrapper">
+      <div className="popover-widgets-wrapper">
         <Space direction="vertical">
-          <FixedWidget icon={<SearchOutlined />}>
-            <SearchWindow className="fixed-window" addr={`${ip}:${port}`} />
-          </FixedWidget>
-          <FixedWidget
+          <PopoverWidget icon={<SearchOutlined />}>
+            <SearchWindow
+              className="fixed-window"
+              addr={`http://${ip}:${port}`}
+            />
+          </PopoverWidget>
+          <PopoverWidget
             icon={<UnorderedListOutlined />}
             onVisibleChange={setPlaylist}
           >
             <PlaylistWindow
               className="fixed-window"
-              addr={`${ip}:${port}`}
+              addr={`http://${ip}:${port}`}
               visibility={showPlaylist}
             />
-          </FixedWidget>
-          <FixedWidget icon={<PlaySquareOutlined />}>
-            <PlayControlWindow className="window" addr={`${ip}:${port}`} />
-          </FixedWidget>
+          </PopoverWidget>
+          <PopoverWidget icon={<PlaySquareOutlined />}>
+            <PlayControlWindow
+              className="window"
+              addr={`http://${ip}:${port}`}
+            />
+          </PopoverWidget>
         </Space>
       </div>
     </div>

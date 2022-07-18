@@ -18,6 +18,16 @@
   justify-content: center;
 }
 
+.popover-widgets-wrapper {
+  display: flex;
+  position: fixed;
+  right: 16px;
+  top: 16px;
+  z-index: 2147483640;
+  flex-direction: column;
+  cursor: pointer;
+}
+
 .window {
   width: 240px;
 }
