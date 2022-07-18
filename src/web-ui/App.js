@@ -2,6 +2,7 @@ import { PlaySquareOutlined, UnorderedListOutlined } from "@ant-design/icons";
 import { Space } from "antd";
 import React, { useState } from "react";
 import "./App.css";
+import "../common.css";
 import "antd/dist/antd.dark.min.css";
 import SearchWindow from "../components/SearchWindow";
 import DrawerWidget from "../components/DrawerWidget";

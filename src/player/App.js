@@ -8,6 +8,7 @@ import { Result, Space, Typography, message } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./App.css";
+import "../common.css";
 import "antd/dist/antd.dark.min.css";
 import icon from "../assets/Icon.png";
 import PopoverWidget from "../components/PopoverWidget";

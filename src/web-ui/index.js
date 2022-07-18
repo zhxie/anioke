@@ -1,11 +1,10 @@
 import { ConfigProvider } from "antd";
 import i18n from "i18next";
 import React from "react";
-import ReactDOM from "react-dom";
+import ReactDOM from "react-dom/client";
 import { initReactI18next } from "react-i18next";
 import App from "./App";
 import zh from "../locales/zh";
-import "../base.css";
 
 i18n.use(initReactI18next).init({
   resources: {
