@@ -132,6 +132,10 @@ class Player {
     }
 
     const entry = this.list_[i];
+    if (entry.isPlaying()) {
+      return;
+    }
+
     this.list_.splice(i, 1);
     this.list_.splice(1, 0, entry);
   };
