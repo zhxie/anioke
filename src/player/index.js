@@ -1,4 +1,4 @@
-import { createApp } from "../utils/create-app";
+import { createApp } from "../utils";
 import App from "./App";
 
 createApp(<App />);
