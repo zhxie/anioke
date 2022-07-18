@@ -3,6 +3,7 @@ import { Space } from "antd";
 import React, { useState } from "react";
 import "./App.css";
 import "antd/dist/antd.dark.min.css";
+import "../antd-overrides.css";
 import SearchWindow from "../components/SearchWindow";
 import DrawerWidget from "../components/DrawerWidget";
 import PlayControlWindow from "../components/PlayControlWindow";
