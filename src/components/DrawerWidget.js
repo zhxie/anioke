@@ -22,6 +22,7 @@ const DrawerWidget = (props) => {
         height={height}
         placement="bottom"
         visible={visible}
+        forceRender={true}
         onClose={() => {
           setVisible(false);
         }}
