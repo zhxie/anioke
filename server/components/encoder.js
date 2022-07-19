@@ -1,5 +1,5 @@
 import fs from "fs";
-import Utils from "./utils";
+import { exec } from "../utils";
 
 const Encoding = {
   FFmpeg: "ffmpeg",
@@ -59,7 +59,7 @@ class Encoder {
     // Check count of audio tracks in advance.
     let tracks = 2;
     try {
-      await Utils.exec(`"${this.ffmpegLocation}" -i "${mvPath}"`);
+      await exec(`"${this.ffmpegLocation}" -i "${mvPath}"`);
     } catch (e) {
       tracks = e.stderr
         .split(/[\r\n]+/)
@@ -73,18 +73,18 @@ class Encoder {
       const genMVPath = `${mvPath}.gen.mp4`;
       try {
         // Extract audio to WAV.
-        await Utils.exec(
+        await exec(
           `"${this.ffmpegLocation}" -i "${mvPath}" -map 0:a:0 -y "${audioPath}"`
         );
         // Make karaoke.
         switch (this.method) {
           case Encoding.FFmpeg:
-            await Utils.exec(
+            await exec(
               `"${this.ffmpegLocation}" -i "${audioPath}" -af pan="stereo|c0=c0|c1=-1*c1" -ac 1 -y "${karaokePath}"`
             );
             break;
           case Encoding.Custom:
-            await Utils.exec(
+            await exec(
               this.custom
                 .replaceAll("${input}", audioPath)
                 .replaceAll("${output}", karaokePath)
@@ -97,7 +97,7 @@ class Encoder {
           fs.rmSync(audioPath);
         }
         // Encode to MV.
-        await Utils.exec(
+        await exec(
           `"${this.ffmpegLocation}" -i "${mvPath}" -i "${karaokePath}" -map 0:v -map 0:a:0 -map 1 -y "${genMVPath}"`
         );
         if (fs.existsSync(karaokePath)) {

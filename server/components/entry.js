@@ -1,5 +1,3 @@
-import Utils from "./utils";
-
 const Status = {
   DownloadQueue: "download_queue",
   Download: "download",
@@ -8,6 +6,12 @@ const Status = {
   PlayQueue: "play_queue",
   Play: "play",
   Fail: "fail",
+};
+
+let sequence = 0;
+const generateSequence = () => {
+  // Sequence starts from 1;
+  return ++sequence;
 };
 
 class Entry {
@@ -21,7 +25,7 @@ class Entry {
   lyricsPath_;
 
   constructor(mv, mvPath, lyrics, lyricsPath) {
-    this.sequence_ = Utils.generateSequence();
+    this.sequence_ = generateSequence();
     this.mv_ = mv;
     this.lyrics_ = lyrics;
     this.mvPath_ = mvPath;

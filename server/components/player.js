@@ -1,4 +1,4 @@
-import Utils from "./utils";
+import { shuffle } from "../utils";
 
 class Player {
   playCallback;
@@ -115,7 +115,7 @@ class Player {
       this.list_.splice(i, 1);
     }
 
-    Utils.shuffle(this.list_);
+    shuffle(this.list_);
     if (entry) {
       this.list_.unshift(entry);
     }

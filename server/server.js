@@ -7,7 +7,8 @@ import {
   PetitLyricsLyricsProvider,
   YoutubeMVProvider,
 } from "./models";
-import { Database, Downloader, Encoder, Player, Utils } from "./utils";
+import { Database, Downloader, Encoder, Player } from "./components";
+import { binary } from "./utils";
 
 class Server {
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
@@ -58,7 +59,7 @@ class Server {
     const downloadConfig = config["download"] ?? {};
     this.downloader = new Downloader(
       downloadConfig["location"] || `${appDataPath}/Media`,
-      downloadConfig["yt-dlp"] || Utils.binary("yt-dlp"),
+      downloadConfig["yt-dlp"] || binary("yt-dlp"),
       this.handleDownloadComplete
     );
 
@@ -66,7 +67,7 @@ class Server {
     const encodeConfig = config["encode"] ?? {};
     this.encoder = new Encoder(
       encodeConfig["method"] || "ffmpeg",
-      encodeConfig["ffmpeg"] || Utils.binary(ffmpeg),
+      encodeConfig["ffmpeg"] || binary(ffmpeg),
       encodeConfig["custom"],
       this.handleEncodeComplete
     );
