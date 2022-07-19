@@ -1,5 +1,5 @@
 import fs from "fs";
-import Utils from "../common/utils";
+import Utils from "./utils";
 
 const Encoding = {
   FFmpeg: "ffmpeg",

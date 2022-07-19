@@ -1,4 +1,4 @@
-import Utils from "../common/utils";
+import Utils from "./utils";
 
 class Player {
   playCallback;

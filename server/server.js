@@ -1,16 +1,13 @@
 import getAppDataPath from "appdata-path";
 import express from "express";
-import proxy from "express-http-proxy";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
-import PetitLyricsLyricsProvider from "./models/lyrics/petit-lyrics/provider";
-import BilibiliMVProvider from "./models/mv/bilibili/provider";
-import YoutubeMVProvider from "./models/mv/youtube/provider";
-import Utils from "./utils/common/utils";
-import Database from "./utils/database/database";
-import Downloader from "./utils/download/downloader";
-import Encoder from "./utils/encode/encoder";
-import Player from "./utils/play/player";
+import {
+  BilibiliMVProvider,
+  PetitLyricsLyricsProvider,
+  YoutubeMVProvider,
+} from "./models";
+import { Database, Downloader, Encoder, Player, Utils } from "./utils";
 
 class Server {
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
