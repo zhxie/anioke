@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import "./App.css";
 import "antd/dist/antd.dark.min.css";
 import "../antd-overrides.css";
-import SearchWindow from "../components/SearchWindow";
-import DrawerWidget from "../components/DrawerWidget";
-import PlayControlWindow from "../components/PlayControlWindow";
-import PlaylistWindow from "../components/PlaylistWindow";
+import {
+  DrawerWidget,
+  PlayControlWindow,
+  PlaylistWindow,
+  SearchWindow,
+} from "../components";
 
 const App = () => {
   const [showPlaylist, setPlaylist] = useState(false);

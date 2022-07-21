@@ -1,6 +1,6 @@
 import fs from "fs";
 import YTDlpWrap from "yt-dlp-wrap";
-import Entry from "../common/entry";
+import Entry from "./entry";
 
 class Downloader {
   location;

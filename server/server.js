@@ -1,16 +1,14 @@
 import getAppDataPath from "appdata-path";
 import express from "express";
-import proxy from "express-http-proxy";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
-import PetitLyricsLyricsProvider from "./models/lyrics/petit-lyrics/provider";
-import BilibiliMVProvider from "./models/mv/bilibili/provider";
-import YoutubeMVProvider from "./models/mv/youtube/provider";
-import Utils from "./utils/common/utils";
-import Database from "./utils/database/database";
-import Downloader from "./utils/download/downloader";
-import Encoder from "./utils/encode/encoder";
-import Player from "./utils/play/player";
+import {
+  BilibiliMVProvider,
+  PetitLyricsLyricsProvider,
+  YoutubeMVProvider,
+} from "./models";
+import { Database, Downloader, Encoder, Player } from "./components";
+import { binary } from "./utils";
 
 class Server {
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
@@ -61,7 +59,7 @@ class Server {
     const downloadConfig = config["download"] ?? {};
     this.downloader = new Downloader(
       downloadConfig["location"] || `${appDataPath}/Media`,
-      downloadConfig["yt-dlp"] || Utils.binary("yt-dlp"),
+      downloadConfig["yt-dlp"] || binary("yt-dlp"),
       this.handleDownloadComplete
     );
 
@@ -69,7 +67,7 @@ class Server {
     const encodeConfig = config["encode"] ?? {};
     this.encoder = new Encoder(
       encodeConfig["method"] || "ffmpeg",
-      encodeConfig["ffmpeg"] || Utils.binary(ffmpeg),
+      encodeConfig["ffmpeg"] || binary(ffmpeg),
       encodeConfig["custom"],
       this.handleEncodeComplete
     );

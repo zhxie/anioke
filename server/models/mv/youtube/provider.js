@@ -1,17 +1,15 @@
 import fetch from "node-fetch";
 import Entry, { NAME } from "./entry";
 
-class Utils {
-  static best = (thumbnails) => {
-    const priorities = ["maxres", "standard", "high", "medium", "default"];
-    for (let key of priorities) {
-      if (thumbnails[key]) {
-        return thumbnails[key].url;
-      }
+const best = (thumbnails) => {
+  const priorities = ["maxres", "standard", "high", "medium", "default"];
+  for (let key of priorities) {
+    if (thumbnails[key]) {
+      return thumbnails[key].url;
     }
-    throw new Error(`unexpected thumbnails`);
-  };
-}
+  }
+  throw new Error(`unexpected thumbnails`);
+};
 
 class Provider {
   key;
@@ -40,7 +38,7 @@ class Provider {
       result.push({
         videoId: item["id"]["videoId"],
         title: snippet["title"],
-        thumbnail: Utils.best(snippet["thumbnails"]),
+        thumbnail: best(snippet["thumbnails"]),
         channelTitle: snippet["channelTitle"],
         channelId: channelId,
       });
@@ -55,10 +53,7 @@ class Provider {
 
     let channelThumbnails = new Map();
     json2["items"].forEach((value) => {
-      channelThumbnails.set(
-        value["id"],
-        Utils.best(value["snippet"]["thumbnails"])
-      );
+      channelThumbnails.set(value["id"], best(value["snippet"]["thumbnails"]));
     });
     return result.map((value) => {
       return new Entry(
@@ -87,9 +82,9 @@ class Provider {
     return new Entry(
       videoId,
       snippet["title"],
-      Utils.best(snippet["thumbnails"]),
+      best(snippet["thumbnails"]),
       snippet["channelTitle"],
-      Utils.best(json2["items"][0]["snippet"]["thumbnails"])
+      best(json2["items"][0]["snippet"]["thumbnails"])
     );
   };
 }

@@ -11,10 +11,12 @@ import "./App.css";
 import "antd/dist/antd.dark.min.css";
 import "../antd-overrides.css";
 import icon from "../assets/Icon.png";
-import PopoverWidget from "../components/PopoverWidget";
-import SearchWindow from "../components/SearchWindow";
-import PlayControlWindow from "../components/PlayControlWindow";
-import PlaylistWindow from "../components/PlaylistWindow";
+import {
+  PlayControlWindow,
+  PlaylistWindow,
+  PopoverWidget,
+  SearchWindow,
+} from "../components";
 
 const { Text, Link } = Typography;
 
