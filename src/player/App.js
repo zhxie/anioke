@@ -4,9 +4,10 @@ import {
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
-import { Result, Space, Typography, message } from "antd";
+import { Result, Space, Tooltip, Typography, message } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
+import QRCode from "react-qr-code";
 import "./App.css";
 import "antd/dist/antd.dark.min.css";
 import "../antd-overrides.css";
@@ -208,18 +209,31 @@ const App = () => {
             subTitle={
               <Space>
                 <Text>{t("order_songs_from_1")}</Text>
-                <Link
-                  onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(
-                        `http://${ip}:${port}/web-ui`
-                      );
-                      message.open({ content: t("copied_to_clipboard") });
-                    } catch (e) {
-                      console.error(e);
-                    }
-                  }}
-                >{`http://${ip}:${port}/web-ui`}</Link>
+                <Tooltip
+                  overlayInnerStyle={{ lineHeight: 1, padding: "8px" }}
+                  placement="bottom"
+                  title={
+                    <QRCode
+                      bgColor="transparent"
+                      fgColor="white"
+                      size={128}
+                      value={`http://${ip}:${port}/web-ui`}
+                    />
+                  }
+                >
+                  <Link
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(
+                          `http://${ip}:${port}/web-ui`
+                        );
+                        message.open({ content: t("copied_to_clipboard") });
+                      } catch (e) {
+                        console.error(e);
+                      }
+                    }}
+                  >{`http://${ip}:${port}/web-ui`}</Link>
+                </Tooltip>
                 <Text>{t("order_songs_from_2")}</Text>
               </Space>
             }
