@@ -4,7 +4,7 @@ import {
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
-import { Result, Space, Tooltip, Typography, message } from "antd";
+import { message, Result, Space, Tooltip, Typography } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
@@ -24,8 +24,7 @@ const { Text, Link } = Typography;
 const App = () => {
   const { t } = useTranslation(["player"]);
 
-  const [ip, setIp] = useState("");
-  const [port, setPort] = useState(0);
+  const [addr, setAddr] = useState("");
   const [sequence, setSequence] = useState(0);
   const [mv, setMV] = useState("");
   const [mvLoaded, setMVLoaded] = useState(false);
@@ -40,8 +39,7 @@ const App = () => {
 
   const ready = useCallback(async () => {
     const addr = await window.server.ready();
-    setIp(addr.ip);
-    setPort(addr.port);
+    setAddr(addr);
   }, []);
 
   const refreshVideo = useCallback(() => {
@@ -217,7 +215,7 @@ const App = () => {
                       bgColor="transparent"
                       fgColor="white"
                       size={128}
-                      value={`http://${ip}:${port}/web-ui`}
+                      value={`http://${addr}/web-ui`}
                     />
                   }
                 >
@@ -225,14 +223,14 @@ const App = () => {
                     onClick={async () => {
                       try {
                         await navigator.clipboard.writeText(
-                          `http://${ip}:${port}/web-ui`
+                          `http://${addr}/web-ui`
                         );
                         message.open({ content: t("copied_to_clipboard") });
                       } catch (e) {
                         console.error(e);
                       }
                     }}
-                  >{`http://${ip}:${port}/web-ui`}</Link>
+                  >{`http://${addr}/web-ui`}</Link>
                 </Tooltip>
                 <Text>{t("order_songs_from_2")}</Text>
               </Space>
@@ -252,10 +250,7 @@ const App = () => {
       <div className="popover-widgets-wrapper">
         <Space direction="vertical">
           <PopoverWidget icon={<SearchOutlined />}>
-            <SearchWindow
-              className="fixed-window"
-              addr={`http://${ip}:${port}`}
-            />
+            <SearchWindow className="fixed-window" addr={`${addr}`} />
           </PopoverWidget>
           <PopoverWidget
             icon={<UnorderedListOutlined />}
@@ -263,15 +258,12 @@ const App = () => {
           >
             <PlaylistWindow
               className="fixed-window"
-              addr={`http://${ip}:${port}`}
+              addr={`${addr}`}
               visibility={showPlaylist}
             />
           </PopoverWidget>
           <PopoverWidget icon={<PlaySquareOutlined />}>
-            <PlayControlWindow
-              className="window"
-              addr={`http://${ip}:${port}`}
-            />
+            <PlayControlWindow className="window" addr={`${addr}`} />
           </PopoverWidget>
         </Space>
       </div>
