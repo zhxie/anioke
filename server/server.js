@@ -1,5 +1,6 @@
 import getAppDataPath from "appdata-path";
 import express from "express";
+import pathToFfmpeg from "ffmpeg-static";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
 import {
@@ -67,7 +68,8 @@ class Server {
     const encodeConfig = config["encode"] ?? {};
     this.encoder = new Encoder(
       encodeConfig["method"] || "ffmpeg",
-      encodeConfig["ffmpeg"] || binary("ffmpeg"),
+      encodeConfig["ffmpeg"] ||
+        pathToFfmpeg.replace("app.asar", "app.asar.unpacked"),
       encodeConfig["custom"],
       this.handleEncodeComplete
     );

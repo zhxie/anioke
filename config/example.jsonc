@@ -34,9 +34,9 @@
     // or `custom`. If it is unspecified, `ffmpeg` will be used by default.
     "method": "ffmpeg",
     // The location of FFmpeg. You may acquire an executable binary in
-    // https://ffmpeg.org/download.html. If it is unspecified, `ffmpeg.exe`
-    // will be used by default on Windows and `ffmpeg` on others.
-    "ffmpeg": "ffmpeg",
+    // https://ffmpeg.org/download.html. If it is unspecified, the internal
+    // FFmpeg binary will be used by default.
+    "ffmpeg": "",
     // Custom encoding scripts. Use `${input}` for input and `${output}` for
     // output. E.g., ffmpeg -i "${input}" -af pan="stereo|c0=c0|c1=-1*c1" -ac 1
     // -y "${output}".
