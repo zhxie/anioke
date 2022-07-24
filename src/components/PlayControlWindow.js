@@ -4,6 +4,7 @@ import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import "./Window.css";
 import "./PlayControlWindow.css";
+import QRLink from "./QRLink";
 
 const PlayControlWindow = (props) => {
   const { className, addr } = props;
@@ -34,6 +35,11 @@ const PlayControlWindow = (props) => {
       className={`play-control-window-space ${className}`}
       direction="vertical"
     >
+      {addr && (
+        <div className="play-control-link-wrapper">
+          <QRLink value={`${addr}/web-ui`} />
+        </div>
+      )}
       <Space className="window-buttons-wrapper">
         <Button block onClick={onSkip}>
           {t("skip")}

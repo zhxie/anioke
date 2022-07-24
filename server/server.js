@@ -263,10 +263,7 @@ class Server {
   };
 
   handleReady = () => {
-    return {
-      ip: internalIpV4Sync(),
-      port: this.listener.address().port,
-    };
+    return `http://${internalIpV4Sync()}:${this.listener.address().port}`;
   };
 
   handlePlayerEnded = () => {
