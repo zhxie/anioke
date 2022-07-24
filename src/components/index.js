@@ -1,3 +1,5 @@
+export { default as QRLink } from "./QRLink";
+
 export { default as DrawerWidget } from "./DrawerWidget";
 export { default as PopoverWidget } from "./PopoverWidget";
 

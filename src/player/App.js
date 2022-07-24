@@ -4,10 +4,9 @@ import {
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
-import { message, Result, Space, Tooltip, Typography } from "antd";
+import { message, Result, Space, Typography } from "antd";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import QRCode from "react-qr-code";
 import "./App.css";
 import "antd/dist/antd.dark.min.css";
 import "../antd-overrides.css";
@@ -16,10 +15,11 @@ import {
   PlayControlWindow,
   PlaylistWindow,
   PopoverWidget,
+  QRLink,
   SearchWindow,
 } from "../components";
 
-const { Text, Link } = Typography;
+const { Text } = Typography;
 
 const App = () => {
   const { t } = useTranslation(["player"]);
@@ -207,31 +207,7 @@ const App = () => {
             subTitle={
               <Space>
                 <Text>{t("order_songs_from_1")}</Text>
-                <Tooltip
-                  overlayInnerStyle={{ lineHeight: 1, padding: "8px" }}
-                  placement="bottom"
-                  title={
-                    <QRCode
-                      bgColor="transparent"
-                      fgColor="white"
-                      size={128}
-                      value={`http://${addr}/web-ui`}
-                    />
-                  }
-                >
-                  <Link
-                    onClick={async () => {
-                      try {
-                        await navigator.clipboard.writeText(
-                          `http://${addr}/web-ui`
-                        );
-                        message.open({ content: t("copied_to_clipboard") });
-                      } catch (e) {
-                        console.error(e);
-                      }
-                    }}
-                  >{`http://${addr}/web-ui`}</Link>
-                </Tooltip>
+                <QRLink placement="bottom" value={`${addr}/web-ui`} />
                 <Text>{t("order_songs_from_2")}</Text>
               </Space>
             }

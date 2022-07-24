@@ -1,11 +1,10 @@
 import { DownOutlined } from "@ant-design/icons";
-import { Button, Dropdown, Menu, message, Space, Typography } from "antd";
+import { Button, Dropdown, Menu, Space } from "antd";
 import React, { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import "./Window.css";
 import "./PlayControlWindow.css";
-
-const { Link } = Typography;
+import QRLink from "./QRLink";
 
 const PlayControlWindow = (props) => {
   const { className, addr } = props;
@@ -36,20 +35,11 @@ const PlayControlWindow = (props) => {
       className={`play-control-window-space ${className}`}
       direction="vertical"
     >
-      <div className="play-control-link-wrapper">
-        <Link
-          onClick={async () => {
-            try {
-              await navigator.clipboard.writeText(`${addr}/web-ui`);
-              message.open({
-                content: t("copied_to_clipboard", { ns: "player" }),
-              });
-            } catch (e) {
-              console.error(e);
-            }
-          }}
-        >{`${addr}/web-ui`}</Link>
-      </div>
+      {addr && (
+        <div className="play-control-link-wrapper">
+          <QRLink value={`${addr}/web-ui`} />
+        </div>
+      )}
       <Space className="window-buttons-wrapper">
         <Button block onClick={onSkip}>
           {t("skip")}
