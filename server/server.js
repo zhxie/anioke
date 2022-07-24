@@ -67,7 +67,7 @@ class Server {
     const encodeConfig = config["encode"] ?? {};
     this.encoder = new Encoder(
       encodeConfig["method"] || "ffmpeg",
-      encodeConfig["ffmpeg"] || binary(ffmpeg),
+      encodeConfig["ffmpeg"] || binary("ffmpeg"),
       encodeConfig["custom"],
       this.handleEncodeComplete
     );
