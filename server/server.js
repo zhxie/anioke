@@ -41,12 +41,24 @@ class Server {
     // Configure providers.
     const providersConfig = config["providers"] ?? {};
     const mvConfig = providersConfig["mv"] ?? {};
-    for (let provider of this.mvProviders) {
-      provider.configure(mvConfig[provider.name()] ?? {});
+    for (let i = this.mvProviders.length - 1; i >= 0; i--) {
+      let provider = this.mvProviders[i];
+      let config = mvConfig[provider.name()] ?? {};
+      if (config["hidden"]) {
+        this.mvProviders.splice(i, 1);
+      }
+
+      provider.configure(config);
     }
     const lyricsConfig = providersConfig["lyrics"] ?? {};
-    for (let provider of this.lyricsProviders) {
-      provider.configure(lyricsConfig[provider.name()] ?? {});
+    for (let i = this.lyricsProviders.length - 1; i >= 0; i--) {
+      let provider = this.lyricsProviders[i];
+      let config = lyricsConfig[provider.name()] ?? {};
+      if (config["hidden"]) {
+        this.lyricsProviders.splice(i, 1);
+      }
+
+      provider.configure(config);
     }
 
     // Setup database.

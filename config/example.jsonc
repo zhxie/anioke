@@ -44,15 +44,26 @@
   },
   "providers": {
     "mv": {
-      "bilibili": {},
+      "bilibili": {
+        // Hide Bilibili provider. If it is unspecified, `false` will be used
+        // by default.
+        "hidden": false
+      },
       "youtube": {
+        // Hide YouTube provider. If it is unspecified, `false` will be used by
+        // default.
+        "hidden": false,
         // The YouTube API key. You may acquire your own key in
         // https://developers.google.com/youtube/registering_an_application.
         "key": ""
       }
     },
     "lyrics": {
-      "petit_lyrics": {}
+      "petit_lyrics": {
+        // Hide Petit Lyrics provider. If it is unspecified, `false` will be
+        // used by default.
+        "hidden": false
+      }
     }
   }
 }
