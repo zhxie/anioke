@@ -126,6 +126,7 @@ const SearchWindow = (props) => {
           disabled={isLoading}
           value={title}
           onChange={onInputChange}
+          onPressEnter={onSearch}
         />
         <Button disabled={isLoading} onClick={onSearch}>
           {t("search")}
