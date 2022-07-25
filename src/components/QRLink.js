@@ -19,7 +19,7 @@ const QRLink = (props) => {
       title={
         <QRCode
           bgColor="transparent"
-          fgColor="black"
+          fgColor="white"
           size={128}
           value={value}
         />
