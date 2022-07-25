@@ -38,14 +38,11 @@ jobs:
 
       - name: Cache dependencies
         uses: actions/cache@v3
-        env:
-          cache-name: cache-node-modules
         with:
           path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
+            ${{ runner.os }}-npm-
             ${{ runner.os }}-
 
       - name: Install dependencies
