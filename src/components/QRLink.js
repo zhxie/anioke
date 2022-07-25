@@ -12,6 +12,7 @@ const QRLink = (props) => {
   return (
     <Tooltip
       overlayInnerStyle={{
+        display: "flex",
         padding: "8px",
         lineHeight: 1,
       }}
