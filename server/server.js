@@ -1,5 +1,6 @@
 import getAppDataPath from "appdata-path";
 import express from "express";
+import pathToFfmpeg from "ffmpeg-static";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
 import {
@@ -8,7 +9,6 @@ import {
   YoutubeMVProvider,
 } from "./models";
 import { Database, Downloader, Encoder, Player } from "./components";
-import { binary } from "./utils";
 
 class Server {
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
@@ -71,7 +71,12 @@ class Server {
     const downloadConfig = config["download"] ?? {};
     this.downloader = new Downloader(
       downloadConfig["location"] || `${appDataPath}/Media`,
-      downloadConfig["yt-dlp"] || binary("yt-dlp"),
+      downloadConfig["yt-dlp"] ||
+        pathToFfmpeg
+          // HACK: Reinterpret yt-dlp binary path from ffmpeg-static.
+          .replace("ffmpeg-static", "@alpacamybags118/yt-dlp-exec/bin")
+          .replace("ffmpeg", "yt-dlp")
+          .replace("app.asar", "app.asar.unpacked"),
       this.handleDownloadComplete
     );
 
@@ -79,7 +84,8 @@ class Server {
     const encodeConfig = config["encode"] ?? {};
     this.encoder = new Encoder(
       encodeConfig["method"] || "ffmpeg",
-      encodeConfig["ffmpeg"] || binary("ffmpeg"),
+      encodeConfig["ffmpeg"] ||
+        pathToFfmpeg.replace("app.asar", "app.asar.unpacked"),
       encodeConfig["custom"],
       this.handleEncodeComplete
     );
