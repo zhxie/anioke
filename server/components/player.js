@@ -62,10 +62,11 @@ class Player {
 
   remove = (sequence) => {
     const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
-    if (this.list_[i].isPlaying()) {
-      this.stopCallback();
-    }
-    if (i >= 0 && this.list_[i].isRemovable()) {
+    const entry = this.list_[i];
+    if (i >= 0 && entry.isRemovable()) {
+      if (entry.isPlaying()) {
+        this.stopCallback();
+      }
       this.list_.splice(i, 1);
     }
 
