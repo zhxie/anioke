@@ -3,6 +3,7 @@ module.exports = {
   preloadEntry: "electron/preload.js",
   outDir: "public",
   externals: {
+    "@alpacamybags118/yt-dlp-exec": "commonjs @alpacamybags118/yt-dlp-exec",
     "better-sqlite3": "commonjs better-sqlite3",
     "ffmpeg-static": "commonjs ffmpeg-static",
   },

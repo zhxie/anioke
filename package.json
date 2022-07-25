@@ -21,7 +21,8 @@
       "build/**/*"
     ],
     "asarUnpack": [
-      "node_modules/ffmpeg-static/bin/${os}/${arch}/ffmpeg"
+      "node_modules/@alpacamybags118/yt-dlp-exec/**/*",
+      "node_modules/ffmpeg-static/**/*"
     ],
     "mac": {
       "category": "entertainment",
@@ -32,6 +33,7 @@
     }
   },
   "dependencies": {
+    "@alpacamybags118/yt-dlp-exec": "^0.1.1",
     "@ant-design/icons": "^4.7.0",
     "@jellyfin/libass-wasm": "^4.1.1",
     "antd": "^4.21.5",
