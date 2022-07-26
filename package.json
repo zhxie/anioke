@@ -86,5 +86,12 @@
     "react-app-rewired": "^2.2.1",
     "react-scripts": "5.0.1",
     "wait-on": "^6.0.1"
-  }
+  },
+  "contributors": [
+    {
+      "name": "maoqxm",
+      "email": "maoqxm@gmail.com",
+      "url": "https://github.com/maoqxxmm"
+    }
+  ]
 }
