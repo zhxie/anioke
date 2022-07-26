@@ -12,6 +12,7 @@ const QRLink = (props) => {
   return (
     <Tooltip
       overlayInnerStyle={{
+        display: "flex",
         padding: "8px",
         lineHeight: 1,
       }}
@@ -19,7 +20,7 @@ const QRLink = (props) => {
       title={
         <QRCode
           bgColor="transparent"
-          fgColor="black"
+          fgColor="white"
           size={128}
           value={value}
         />
