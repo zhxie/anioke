@@ -117,6 +117,8 @@ class Server {
     const serverConfig = config["server"] ?? {};
     this.server.use(express.json());
     this.server.options("*", (_req, res) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Method", "*");
       res.setHeader("Access-Control-Allow-Headers", "*");
       res.send();
     });
