@@ -31,18 +31,14 @@ jobs:
           node-version: "18"
           cache: "npm"
 
-      - name: Get npm cache directory
-        id: npm-cache-dir
-        run: |
-          echo "::set-output name=dir::$(npm config get cache)"
-
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
-          path: ${{ steps.npm-cache-dir.outputs.dir }}
-          key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
+          path: node_modules
+          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-
+            ${{ runner.os }}-build-node-modules-
+            ${{ runner.os }}-build-
             ${{ runner.os }}-
 
       - name: Install dependencies
