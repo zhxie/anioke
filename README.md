@@ -2,11 +2,6 @@
 
 Karaoki your anime songs.
 
-## Requirements
-
-- [FFmpeg](https://ffmpeg.org/)
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp)
-
 ## Usage
 
 ```sh
