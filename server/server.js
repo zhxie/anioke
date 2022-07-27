@@ -13,6 +13,7 @@ import { Database, Downloader, Encoder, Player } from "./components";
 class Server {
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
   lyricsProviders = [new PetitLyricsLyricsProvider()];
+  configPath;
   config;
   database;
   downloader;
@@ -29,15 +30,15 @@ class Server {
     // Read config from config.json.
     const localConfigPath = "config.json";
     const defaultConfigPath = `${appDataPath}/config.json`;
-    let configPath = defaultConfigPath;
+    this.configPath = defaultConfigPath;
     if (fs.existsSync(localConfigPath)) {
-      configPath = localConfigPath;
+      this.configPath = localConfigPath;
     }
-    if (!fs.existsSync(configPath)) {
-      fs.writeFileSync(configPath, "");
+    if (!fs.existsSync(this.configPath)) {
+      fs.writeFileSync(this.configPath, "");
     }
-    const rawConfig = fs.readFileSync(configPath);
-    config = JSON.parse(rawConfig);
+    const rawConfig = fs.readFileSync(this.configPath);
+    this.config = JSON.parse(rawConfig);
 
     // Configure providers.
     const providersConfig = this.config["providers"] ?? {};
