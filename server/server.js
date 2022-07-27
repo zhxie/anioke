@@ -20,7 +20,7 @@ class Server {
   server = express();
   listener;
 
-  constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset, webUI) {
+  constructor(host, onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
     // Create app data directory.
     const appDataPath = getAppDataPath("Anioke");
     fs.mkdirSync(appDataPath, { recursive: true });
@@ -253,7 +253,7 @@ class Server {
     this.server.get("/web-ui", (_req, res) => {
       res.redirect("/web-ui.html");
     });
-    this.server.use("/", webUI);
+    this.server.use("/", host);
     this.listener = this.server.listen(serverConfig["port"] || 0, "0.0.0.0");
   }
 
