@@ -5,6 +5,8 @@ import path from "path";
 import url from "url";
 import Server from "../server/server";
 
+const PROTOCOL = "anifile";
+
 function createWindow() {
   const mainWindow = new BrowserWindow({
     width: 1280,
@@ -48,15 +50,23 @@ function createWindow() {
   return mainWindow;
 }
 
+function fileURLToPath(u) {
+  return url.fileURLToPath(u.replace(PROTOCOL, "file"));
+}
+
+function pathToFileURL(path) {
+  return url.pathToFileURL(path).toString().replace("file", PROTOCOL);
+}
+
 function handleFile(req, callback) {
   callback({
-    path: url.fileURLToPath(req.url.replace("anifile", "file")),
+    path: fileURLToPath(req.url),
   });
 }
 
 app.whenReady().then(() => {
   // Register protocols.
-  protocol.registerFileProtocol("anifile", handleFile);
+  protocol.registerFileProtocol(PROTOCOL, handleFile);
 
   // Setup window.
   const mainWindow = createWindow();
@@ -68,8 +78,8 @@ app.whenReady().then(() => {
       sequence,
       title,
       artist,
-      url.pathToFileURL(mv).toString().replace("file", "anifile"),
-      url.pathToFileURL(lyrics).toString().replace("file", "anifile"),
+      pathToFileURL(mv),
+      pathToFileURL(lyrics),
       offset
     );
   };
@@ -96,6 +106,6 @@ app.whenReady().then(() => {
 });
 
 app.on("window-all-closed", () => {
-  protocol.unregisterProtocol("anifile");
+  protocol.unregisterProtocol(PROTOCOL);
   app.quit();
 });
