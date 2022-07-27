@@ -72,16 +72,10 @@ app.whenReady().then(() => {
   const mainWindow = createWindow();
 
   // Setup server.
-  const play = (sequence, title, artist, mv, lyrics, offset) => {
-    mainWindow.webContents.send(
-      "play",
-      sequence,
-      title,
-      artist,
-      pathToFileURL(mv),
-      pathToFileURL(lyrics),
-      offset
-    );
+  const play = (entry) => {
+    entry["mv"] = pathToFileURL(entry["mv"]);
+    entry["lyrics"] = pathToFileURL(entry["lyrics"]);
+    mainWindow.webContents.send("play", entry);
   };
   const stop = () => {
     mainWindow.webContents.send("stop");
