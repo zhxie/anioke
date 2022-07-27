@@ -45,12 +45,12 @@
   "providers": {
     "mv": {
       "bilibili": {
-        // Hide Bilibili provider. If it is unspecified, `false` will be used
+        // Hides Bilibili provider. If it is unspecified, `false` will be used
         // by default.
         "hidden": false
       },
       "youtube": {
-        // Hide YouTube provider. If it is unspecified, `false` will be used by
+        // Hides YouTube provider. If it is unspecified, `false` will be used by
         // default.
         "hidden": false,
         // The YouTube API key. You may acquire your own key in
@@ -60,7 +60,7 @@
     },
     "lyrics": {
       "petit_lyrics": {
-        // Hide Petit Lyrics provider. If it is unspecified, `false` will be
+        // Hides Petit Lyrics provider. If it is unspecified, `false` will be
         // used by default.
         "hidden": false
       }
