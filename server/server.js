@@ -283,7 +283,18 @@ class Server {
   };
 
   handleReady = () => {
-    return `http://${internalIpV4Sync()}:${this.listener.address().port}`;
+    return {
+      addr: `http://${internalIpV4Sync()}:${this.listener.address().port}`,
+      config: this.config,
+    };
+  };
+
+  handleConfig = (config) => {
+    this.config = config;
+    fs.writeFileSync(
+      this.configPath,
+      JSON.stringify(this.config, undefined, 2)
+    );
   };
 
   handlePlayerEnded = () => {
