@@ -192,12 +192,13 @@ class Server {
     });
     this.server.post("/order", async (req, res) => {
       try {
-        const mvId = req.body["mv"];
+        const body = req.body;
+        const mvId = body["mv"];
         const mvSource = mvId.split(".")[0];
         const mv = await this.mvProviders
           .find((provider) => provider.name() == mvSource)
           .get(mvId);
-        const lyricsId = req.body["lyrics"];
+        const lyricsId = body["lyrics"];
         const lyricsSource = lyricsId.split(".")[0];
         const lyrics = await this.lyricsProviders
           .find((provider) => provider.name() == lyricsSource)
