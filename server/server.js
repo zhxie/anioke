@@ -13,6 +13,7 @@ import { Database, Downloader, Encoder, Player } from "./components";
 class Server {
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
   lyricsProviders = [new PetitLyricsLyricsProvider()];
+  config;
   database;
   downloader;
   encoder;
@@ -28,18 +29,18 @@ class Server {
     // Read config from config.json.
     const localConfigPath = "config.json";
     const defaultConfigPath = `${appDataPath}/config.json`;
-    let rawConfig;
+    let configPath = defaultConfigPath;
     if (fs.existsSync(localConfigPath)) {
-      rawConfig = fs.readFileSync(localConfigPath);
-    } else if (fs.existsSync(defaultConfigPath)) {
-      rawConfig = fs.readFileSync(defaultConfigPath);
-    } else {
-      rawConfig = "{}";
+      configPath = localConfigPath;
     }
-    const config = JSON.parse(rawConfig);
+    if (!fs.existsSync(configPath)) {
+      fs.writeFileSync(configPath, "");
+    }
+    const rawConfig = fs.readFileSync(configPath);
+    config = JSON.parse(rawConfig);
 
     // Configure providers.
-    const providersConfig = config["providers"] ?? {};
+    const providersConfig = this.config["providers"] ?? {};
     const mvConfig = providersConfig["mv"] ?? {};
     for (let i = this.mvProviders.length - 1; i >= 0; i--) {
       let provider = this.mvProviders[i];
@@ -62,13 +63,13 @@ class Server {
     }
 
     // Setup database.
-    const databaseConfig = config["database"] ?? {};
+    const databaseConfig = this.config["database"] ?? {};
     this.database = new Database(
       databaseConfig["location"] || `${appDataPath}/Anioke.db`
     );
 
     // Setup downloader.
-    const downloadConfig = config["download"] ?? {};
+    const downloadConfig = this.config["download"] ?? {};
     this.downloader = new Downloader(
       downloadConfig["location"] || `${appDataPath}/Media`,
       downloadConfig["yt-dlp"] ||
@@ -81,7 +82,7 @@ class Server {
     );
 
     // Setup encoder.
-    const encodeConfig = config["encode"] ?? {};
+    const encodeConfig = this.config["encode"] ?? {};
     this.encoder = new Encoder(
       encodeConfig["method"] || "ffmpeg",
       encodeConfig["ffmpeg"] ||
@@ -114,7 +115,7 @@ class Server {
     );
 
     // Setup server.
-    const serverConfig = config["server"] ?? {};
+    const serverConfig = this.config["server"] ?? {};
     this.server.get("/connect", (_req, res) => {
       res.send({
         mv: this.mvProviders.map((provider) => provider.name()),
