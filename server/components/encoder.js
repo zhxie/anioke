@@ -10,7 +10,7 @@ class Encoder {
   method;
   ffmpegLocation;
   custom;
-  completeCallback;
+  onComplete;
 
   encoding = false;
   list_ = [];
@@ -19,7 +19,7 @@ class Encoder {
     this.method = method;
     this.ffmpegLocation = ffmpegLocation;
     this.custom = custom;
-    this.completeCallback = onComplete;
+    this.onComplete = onComplete;
   }
 
   list = () => {
@@ -126,7 +126,7 @@ class Encoder {
       }
     }
 
-    this.completeCallback(entry);
+    this.onComplete(entry);
     this.list_.splice(i, 1);
     this.encoding = false;
     this.encode();

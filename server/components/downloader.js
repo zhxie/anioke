@@ -5,7 +5,7 @@ import Entry from "./entry";
 class Downloader {
   location;
   ytDlp;
-  completeCallback;
+  onComplete;
 
   downloading = false;
   list_ = [];
@@ -17,7 +17,7 @@ class Downloader {
       recursive: true,
     });
     this.ytDlp = new YTDlpWrap(ytDlpLocation);
-    this.completeCallback = onComplete;
+    this.onComplete = onComplete;
   }
 
   list = () => {
@@ -97,7 +97,7 @@ class Downloader {
       }
     }
 
-    this.completeCallback(entry);
+    this.onComplete(entry);
     this.list_.splice(i, 1);
     this.downloading = false;
     this.download();

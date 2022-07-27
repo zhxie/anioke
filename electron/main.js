@@ -62,7 +62,7 @@ app.whenReady().then(() => {
   const mainWindow = createWindow();
 
   // Setup server.
-  const play = (sequence, title, artist, mv, lyrics, offset) => {
+  const onPlay = (sequence, title, artist, mv, lyrics, offset) => {
     mainWindow.webContents.send(
       "play",
       sequence,
@@ -73,22 +73,29 @@ app.whenReady().then(() => {
       offset
     );
   };
-  const stop = () => {
+  const onStop = () => {
     mainWindow.webContents.send("stop");
   };
-  const seek = (time) => {
+  const onSeek = (time) => {
     mainWindow.webContents.send("seek", time);
   };
-  const switchTrack = () => {
+  const onSwitchTrack = () => {
     mainWindow.webContents.send("switch-track");
   };
-  const offset = (offset) => {
+  const onOffset = (offset) => {
     mainWindow.webContents.send("offset", offset);
   };
-  const webUI = app.isPackaged
+  const host = app.isPackaged
     ? express.static(__dirname)
     : proxy("http://localhost:3000");
-  let server = new Server(play, stop, seek, switchTrack, offset, webUI);
+  let server = new Server(
+    host,
+    onPlay,
+    onStop,
+    onSeek,
+    onSwitchTrack,
+    onOffset
+  );
 
   // Register renderer-to-main IPC.
   ipcMain.handle("ready", server.handleReady);

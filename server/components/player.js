@@ -1,20 +1,20 @@
 import { shuffle } from "../utils";
 
 class Player {
-  playCallback;
-  stopCallback;
-  seekCallback;
-  switchTrackCallback;
-  offsetCallback;
+  onPlay;
+  onStop;
+  onSeek;
+  onSwitchTrack;
+  onOffset;
 
   list_ = [];
 
   constructor(onPlay, onStop, onSeek, onSwitchTrack, onOffset) {
-    this.playCallback = onPlay;
-    this.stopCallback = onStop;
-    this.seekCallback = onSeek;
-    this.switchTrackCallback = onSwitchTrack;
-    this.offsetCallback = onOffset;
+    this.onPlay = onPlay;
+    this.onStop = onStop;
+    this.onSeek = onSeek;
+    this.onSwitchTrack = onSwitchTrack;
+    this.onOffset = onOffset;
   }
 
   list = () => {
@@ -43,12 +43,12 @@ class Player {
 
     const entry = this.list_.find((entry) => entry.isPlayQueued());
     if (!entry) {
-      this.stopCallback();
+      this.onStop();
       return;
     }
 
     entry.onPlay();
-    this.playCallback(entry);
+    this.onPlay(entry);
   };
 
   next = () => {
@@ -65,7 +65,7 @@ class Player {
     const entry = this.list_[i];
     if (i >= 0 && entry.isRemovable()) {
       if (entry.isPlaying()) {
-        this.stopCallback();
+        this.onStop();
       }
       this.list_.splice(i, 1);
     }
@@ -87,7 +87,7 @@ class Player {
       return;
     }
 
-    this.seekCallback(0);
+    this.onSeek(0);
   };
 
   switchTrack = () => {
@@ -96,7 +96,7 @@ class Player {
       return;
     }
 
-    this.switchTrackCallback();
+    this.onSwitchTrack();
   };
 
   offset = (offset) => {
@@ -105,7 +105,7 @@ class Player {
       return;
     }
 
-    this.offsetCallback(entry.mv().id(), offset);
+    this.onOffset(entry.mv().id(), offset);
   };
 
   shuffle = () => {
