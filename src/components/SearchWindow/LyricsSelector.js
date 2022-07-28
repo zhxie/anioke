@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Space, Segmented, Button } from "antd";
 import { LeftOutlined } from "@ant-design/icons";
 import { useLoading } from "./hooks";
-import LyricsCard from "../LyricsCard";
+import LyricsCard from "./LyricsCard";
 import SearchInput from "./SearchInput";
 
 const LyricsSelector = (props) => {

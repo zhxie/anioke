@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Segmented, Space } from "antd";
-import MVCard from "../MVCard";
+import MVCard from "./MVCard";
 import { useLoading } from "./hooks";
 import SearchInput from "./SearchInput";
 

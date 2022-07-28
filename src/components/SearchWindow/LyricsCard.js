@@ -1,7 +1,7 @@
 import { AlignCenterOutlined, UserOutlined } from "@ant-design/icons";
 import { Card, Space, Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import "./Card.css";
+import "../Card.css";
 
 const { Paragraph, Text } = Typography;
 
