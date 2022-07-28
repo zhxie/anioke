@@ -86,9 +86,16 @@ const SearchWindow = (props) => {
     async (id, forceMV) => {
       // Order.
       setLoading(true);
-      const res = await fetch(
-        `${addr}/order?mv=${forceMV ?? selectedMV}&lyrics=${id}`
-      );
+      const res = await fetch(`${addr}/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mv: forceMV ?? selectedMV,
+          lyrics: id,
+        }),
+      });
       const json = await res.json();
 
       if ("error" in json) {

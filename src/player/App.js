@@ -77,17 +77,14 @@ const App = () => {
     refreshVideo();
   }, [destroySubtitle, lyrics, mvLoaded, offset, refreshVideo]);
 
-  const handlePlay = useCallback(
-    (_event, sequence, title, artist, mv, lyrics, offset) => {
-      setSequence(sequence);
-      setMV(mv);
-      setMVLoaded(false);
-      setLyrics(lyrics);
-      setOffset(offset);
-      message.open({ content: `${artist} - ${title}` });
-    },
-    []
-  );
+  const handlePlay = useCallback((_event, entry) => {
+    setSequence(entry["sequence"]);
+    setMV(entry["mv"]);
+    setMVLoaded(false);
+    setLyrics(entry["lyrics"]);
+    setOffset(entry["offset"]);
+    message.open({ content: `${entry["artist"]} - ${entry["title"]}` });
+  }, []);
 
   const handleStop = useCallback(
     (_event) => {

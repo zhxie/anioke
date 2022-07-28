@@ -27,8 +27,8 @@ class Entry {
   constructor(mv, mvPath, lyrics, lyricsPath) {
     this.sequence_ = generateSequence();
     this.mv_ = mv;
-    this.lyrics_ = lyrics;
     this.mvPath_ = mvPath;
+    this.lyrics_ = lyrics;
     this.lyricsPath_ = lyricsPath;
   }
 
@@ -68,6 +68,17 @@ class Entry {
       error: this.error_,
       mv: this.mv_.format(lyrics),
       lyrics: lyrics,
+    };
+  };
+
+  formatToPlayerEntry = (offset) => {
+    return {
+      sequence: this.sequence_,
+      title: this.lyrics_.title(),
+      artist: this.lyrics_.artist(),
+      mv: this.mvPath_,
+      lyrics: this.lyricsPath_,
+      offset: offset,
     };
   };
 
