@@ -64,7 +64,16 @@ const SearchWindow = (props) => {
         return;
       }
       setLoading(true);
-      const res = await fetch(`${addr}/order?mv=${mvId}&lyrics=${lyricsId}`);
+      const res = await fetch(`${addr}/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mv: mvId,
+          lyrics: lyricsId,
+        }),
+      });
       const json = await res.json();
 
       if ("error" in json) {
