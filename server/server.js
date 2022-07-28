@@ -94,14 +94,7 @@ class Server {
     this.player = new Player(
       (entry) => {
         const offset = this.database.select(entry.mv().id()).offset ?? 0;
-        onPlay(
-          entry.sequence(),
-          entry.lyrics().title(),
-          entry.lyrics().artist(),
-          entry.mvPath(),
-          entry.lyricsPath(),
-          offset
-        );
+        onPlay(entry.formatToPlayerEntry(offset));
       },
       onStop,
       onSeek,
