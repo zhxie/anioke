@@ -17,6 +17,7 @@ const zh = {
     petit_lyrics: "プチリリ",
     traditional: "经典",
     karaoke: "卡拉OK",
+    order_success: "点歌成功",
   },
   playlist: {
     shuffle: "打乱",
