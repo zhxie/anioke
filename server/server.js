@@ -108,6 +108,13 @@ class Server {
 
     // Setup server.
     const serverConfig = config["server"] ?? {};
+    this.server.use(express.json());
+    this.server.options("*", (_req, res) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Access-Control-Allow-Method", "*");
+      res.setHeader("Access-Control-Allow-Headers", "*");
+      res.send();
+    });
     this.server.get("/connect", (_req, res) => {
       res.send({
         mv: this.mvProviders.map((provider) => provider.name()),
@@ -176,14 +183,15 @@ class Server {
         res.status(400).send({ error: e.message });
       }
     });
-    this.server.get("/order", async (req, res) => {
+    this.server.post("/order", async (req, res) => {
       try {
-        const mvId = req.query["mv"];
+        const body = req.body;
+        const mvId = body["mv"];
         const mvSource = mvId.split(".")[0];
         const mv = await this.mvProviders
           .find((provider) => provider.name() == mvSource)
           .get(mvId);
-        const lyricsId = req.query["lyrics"];
+        const lyricsId = body["lyrics"];
         const lyricsSource = lyricsId.split(".")[0];
         const lyrics = await this.lyricsProviders
           .find((provider) => provider.name() == lyricsSource)
@@ -197,35 +205,35 @@ class Server {
         res.status(400).send({ error: e.message });
       }
     });
-    this.server.get("/remove", (req, res) => {
-      const sequence = Number(req.query["sequence"]);
+    this.server.post("/remove", (req, res) => {
+      const sequence = Number(req.body["sequence"]);
       this.downloader.remove(sequence);
       this.encoder.remove(sequence);
       this.player.remove(sequence);
       res.send({});
     });
-    this.server.get("/skip", (_req, res) => {
+    this.server.post("/skip", (_req, res) => {
       this.player.skip();
       res.send({});
     });
-    this.server.get("/replay", (_req, res) => {
+    this.server.post("/replay", (_req, res) => {
       this.player.replay();
       res.send({});
     });
-    this.server.get("/switch", async (_req, res) => {
+    this.server.post("/switch", async (_req, res) => {
       this.player.switchTrack();
       res.send({});
     });
-    this.server.get("/offset", (req, res) => {
-      this.player.offset(Number(req.query["time"]));
+    this.server.post("/offset", (req, res) => {
+      this.player.offset(Number(req.body["time"]));
       res.send({});
     });
-    this.server.get("/shuffle", (_req, res) => {
+    this.server.post("/shuffle", (_req, res) => {
       this.player.shuffle();
       res.send({});
     });
-    this.server.get("/topmost", (req, res) => {
-      this.player.topmost(Number(req.query["sequence"]));
+    this.server.post("/topmost", (req, res) => {
+      this.player.topmost(Number(req.body["sequence"]));
       res.send({});
     });
     this.server.get("/playlist", async (_req, res) => {

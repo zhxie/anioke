@@ -25,7 +25,7 @@ const PlaylistWindow = (props) => {
 
   const onShuffle = useCallback(async () => {
     setLoading(true);
-    await fetch(`${addr}/shuffle`);
+    await fetch(`${addr}/shuffle`, { method: "POST" });
 
     await onRefresh();
   }, [addr, onRefresh]);
@@ -33,7 +33,13 @@ const PlaylistWindow = (props) => {
   const onTopmost = useCallback(
     async (sequence) => {
       setLoading(true);
-      await fetch(`${addr}/topmost?sequence=${sequence}`);
+      await fetch(`${addr}/topmost`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sequence: sequence }),
+      });
 
       await onRefresh();
     },
@@ -43,7 +49,13 @@ const PlaylistWindow = (props) => {
   const onRemove = useCallback(
     async (sequence) => {
       setLoading(true);
-      await fetch(`${addr}/remove?sequence=${sequence}`);
+      await fetch(`${addr}/remove`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sequence: sequence }),
+      });
 
       await onRefresh();
     },
