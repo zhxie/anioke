@@ -62,6 +62,31 @@ const PlaylistWindow = (props) => {
     [addr, onRefresh]
   );
 
+  const onRetry = useCallback(
+    async (entry) => {
+      setLoading(true);
+      await fetch(`${addr}/remove`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sequence: entry.sequence }),
+      });
+      await fetch(`${addr}/order`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          mv: entry.mv.id,
+          lyrics: entry.lyrics.id,
+        }),
+      });
+      onRefresh();
+    },
+    [addr, onRefresh]
+  );
+
   useEffect(() => {
     if (visibility) {
       onRefresh();
@@ -94,6 +119,7 @@ const PlaylistWindow = (props) => {
                 status={value.status}
                 onTopmost={onTopmost}
                 onRemove={onRemove}
+                onRetry={() => onRetry(value)}
               />
             );
           })}
