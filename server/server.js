@@ -3,6 +3,7 @@ import express from "express";
 import pathToFfmpeg from "ffmpeg-static";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
+import { toCamel } from "snake-camel";
 import {
   BilibiliMVProvider,
   PetitLyricsLyricsProvider,
@@ -45,7 +46,7 @@ class Server {
     const mvConfig = providersConfig["mv"] ?? {};
     for (let i = this.mvProviders.length - 1; i >= 0; i--) {
       let provider = this.mvProviders[i];
-      let config = mvConfig[provider.name()] ?? {};
+      let config = mvConfig[toCamel(provider.name())] ?? {};
       if (config["hidden"]) {
         this.mvProviders.splice(i, 1);
       }
@@ -55,7 +56,7 @@ class Server {
     const lyricsConfig = providersConfig["lyrics"] ?? {};
     for (let i = this.lyricsProviders.length - 1; i >= 0; i--) {
       let provider = this.lyricsProviders[i];
-      let config = lyricsConfig[provider.name()] ?? {};
+      let config = lyricsConfig[toCamel(provider.name())] ?? {};
       if (config["hidden"]) {
         this.lyricsProviders.splice(i, 1);
       }
@@ -72,23 +73,23 @@ class Server {
     // Setup downloader.
     const downloadConfig = this.config["download"] ?? {};
     this.downloader = new Downloader(
-      downloadConfig["location"] || `${appDataPath}/Media`,
-      downloadConfig["yt-dlp"] ||
+      downloadConfig["ytDlp"] ||
         pathToFfmpeg
           // HACK: Reinterpret yt-dlp binary path from ffmpeg-static.
           .replace("ffmpeg-static", "@alpacamybags118/yt-dlp-exec/bin")
           .replace("ffmpeg", "yt-dlp")
           .replace("app.asar", "app.asar.unpacked"),
+      downloadConfig["location"] || `${appDataPath}/Media`,
       this.handleDownloadComplete
     );
 
     // Setup encoder.
     const encodeConfig = this.config["encode"] ?? {};
     this.encoder = new Encoder(
-      encodeConfig["method"] || "ffmpeg",
       encodeConfig["ffmpeg"] ||
         pathToFfmpeg.replace("app.asar", "app.asar.unpacked"),
-      encodeConfig["custom"],
+      encodeConfig["method"] || "remove_center_channel",
+      encodeConfig["script"],
       this.handleEncodeComplete
     );
 
