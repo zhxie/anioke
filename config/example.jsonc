@@ -20,27 +20,33 @@
     "location": ""
   },
   "download": {
-    // The download location for MVs and lyrics. If it is unspecified,
-    // `Media` in the app data directory will be used by default.
-    "location": "",
-    // The location of yt-dlp. You may acquire an executable binary in
+    // The path of yt-dlp. You may acquire an executable binary in
     // https://github.com/yt-dlp/yt-dlp/releases. If it is unspecified,
     // the internal yt-dlp binary will be used by default.
-    "yt-dlp": ""
+    "ytDlp": "",
+    // The download location for MVs and lyrics. If it is unspecified,
+    // `Media` in the app data directory will be used by default.
+    "location": ""
   },
   "encode": {
-    // The encoding method. Anioke will encode the MV and add an audio track
-    // without human voice for karaoke automatically. It can be one of `ffmpeg`
-    // or `custom`. If it is unspecified, `ffmpeg` will be used by default.
-    "method": "ffmpeg",
-    // The location of FFmpeg. You may acquire an executable binary in
+    // The path of FFmpeg. You may acquire an executable binary in
     // https://ffmpeg.org/download.html. If it is unspecified, the internal
     // FFmpeg binary will be used by default.
     "ffmpeg": "",
-    // Custom encoding scripts. Use `${input}` for input and `${output}` for
-    // output. E.g., ffmpeg -i "${input}" -af pan="stereo|c0=c0|c1=-1*c1" -ac 1
-    // -y "${output}".
-    "custom": ""
+    // The vocal removal method. Anioke will encode the MV and add an audio
+    // track without voice for karaoke automatically. It can be one of
+    // the `remove_center_channel` or `custom`.
+    //
+    // * `remove_center_channel`: separate voice and instruments by center
+    //   channel removal, which may cause heavy loss of details.
+    // * `custom`: use custom script for karaoke track generation.
+    //
+    // If it is unspecified, `remove_center_channel` will be used by default.
+    "method": "remove_center_channel",
+    // Custom vocal removal script. Use `${input}` for input and `${output}`
+    // for output. E.g., `ffmpeg -i "${input}" -af pan="stereo|c0=c0|c1=-1*c1"
+    // -ac 1 -y "${output}"`.
+    "script": ""
   },
   "providers": {
     "mv": {
@@ -59,8 +65,8 @@
       }
     },
     "lyrics": {
-      "petit_lyrics": {
-        // Hides Petit Lyrics provider. If it is unspecified, `false` will be
+      "petitLyrics": {
+        // Hides PetitLyrics provider. If it is unspecified, `false` will be
         // used by default.
         "hidden": false
       }

@@ -1,24 +1,24 @@
 import fs from "fs";
 import { exec } from "../utils";
 
-const Encoding = {
-  FFmpeg: "ffmpeg",
+const Method = {
+  RemoveCenterChannel: "remove_center_channel",
   Custom: "custom",
 };
 
 class Encoder {
+  ffmpegPath;
   method;
-  ffmpegLocation;
-  custom;
+  script;
   onComplete;
 
   encoding = false;
   list_ = [];
 
-  constructor(method, ffmpegLocation, custom, onComplete) {
+  constructor(ffmpegPath, method, script, onComplete) {
+    this.ffmpegPath = ffmpegPath;
     this.method = method;
-    this.ffmpegLocation = ffmpegLocation;
-    this.custom = custom;
+    this.script = script;
     this.onComplete = onComplete;
   }
 
@@ -59,7 +59,7 @@ class Encoder {
     // Check count of audio tracks in advance.
     let tracks = 2;
     try {
-      await exec(`"${this.ffmpegLocation}" -i "${mvPath}"`);
+      await exec(`"${this.ffmpegPath}" -i "${mvPath}"`);
     } catch (e) {
       tracks = e.stderr
         .split(/[\r\n]+/)
@@ -74,18 +74,18 @@ class Encoder {
       try {
         // Extract audio to WAV.
         await exec(
-          `"${this.ffmpegLocation}" -i "${mvPath}" -map 0:a:0 -y "${audioPath}"`
+          `"${this.ffmpegPath}" -i "${mvPath}" -map 0:a:0 -y "${audioPath}"`
         );
         // Make karaoke.
         switch (this.method) {
-          case Encoding.FFmpeg:
+          case Method.RemoveCenterChannel:
             await exec(
-              `"${this.ffmpegLocation}" -i "${audioPath}" -af pan="stereo|c0=c0|c1=-1*c1" -ac 1 -y "${karaokePath}"`
+              `"${this.ffmpegPath}" -i "${audioPath}" -af pan="stereo|c0=c0|c1=-1*c1" -ac 1 -y "${karaokePath}"`
             );
             break;
-          case Encoding.Custom:
+          case Method.Custom:
             await exec(
-              this.custom
+              this.script
                 .replaceAll("${input}", audioPath)
                 .replaceAll("${output}", karaokePath)
             );
@@ -98,7 +98,7 @@ class Encoder {
         }
         // Encode to MV.
         await exec(
-          `"${this.ffmpegLocation}" -i "${mvPath}" -i "${karaokePath}" -map 0:v -map 0:a:0 -map 1 -y "${genMVPath}"`
+          `"${this.ffmpegPath}" -i "${mvPath}" -i "${karaokePath}" -map 0:v -map 0:a:0 -map 1 -y "${genMVPath}"`
         );
         if (fs.existsSync(karaokePath)) {
           fs.rmSync(karaokePath);
