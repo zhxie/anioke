@@ -292,7 +292,6 @@ class Server {
   };
 
   handleConfig = (config) => {
-    this.config = config;
     fs.writeFileSync(
       this.configPath,
       JSON.stringify(this.config, undefined, 2)
