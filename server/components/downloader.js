@@ -3,21 +3,21 @@ import YTDlpWrap from "yt-dlp-wrap";
 import Entry from "./entry";
 
 class Downloader {
-  location;
   ytDlp;
-  completeCallback;
+  location;
+  onComplete;
 
   downloading = false;
   list_ = [];
 
-  constructor(location, ytDlpLocation, onComplete) {
+  constructor(ytDlpPath, location, onComplete) {
+    this.ytDlp = new YTDlpWrap(ytDlpPath);
     this.location = location;
     // Creates a directory if it does not exist in advance.
     fs.mkdirSync(location, {
       recursive: true,
     });
-    this.ytDlp = new YTDlpWrap(ytDlpLocation);
-    this.completeCallback = onComplete;
+    this.onComplete = onComplete;
   }
 
   list = () => {
@@ -97,7 +97,7 @@ class Downloader {
       }
     }
 
-    this.completeCallback(entry);
+    this.onComplete(entry);
     this.list_.splice(i, 1);
     this.downloading = false;
     this.download();
