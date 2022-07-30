@@ -6,3 +6,4 @@ export { default as PopoverWidget } from "./PopoverWidget";
 export { default as PlayControlWindow } from "./PlayControlWindow";
 export { default as PlaylistWindow } from "./PlaylistWindow";
 export { default as SearchWindow } from "./SearchWindow";
+export { default as SettingsWindow } from "./SettingsWindow";

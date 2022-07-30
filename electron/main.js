@@ -103,6 +103,9 @@ app.whenReady().then(() => {
 
   // Register renderer-to-main IPC.
   ipcMain.handle("ready", server.handleReady);
+  ipcMain.on("config", (_event, config) => {
+    server.handleConfig(config);
+  });
   ipcMain.handle("end", server.handlePlayerEnded);
 });
 
