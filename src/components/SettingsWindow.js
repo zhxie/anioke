@@ -30,9 +30,12 @@ const SettingsWindow = (props) => {
     setLoading(false);
   }, [config]);
 
-  const onFinish = useCallback((values) => {
-    onSave(values);
-  }, []);
+  const onFinish = useCallback(
+    (values) => {
+      onSave(values);
+    },
+    [onSave]
+  );
 
   const onClick = useCallback(() => {
     form.submit();
