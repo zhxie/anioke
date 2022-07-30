@@ -1,6 +1,7 @@
 import {
   PlaySquareOutlined,
   SearchOutlined,
+  SettingOutlined,
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
@@ -17,6 +18,7 @@ import {
   PopoverWidget,
   QRLink,
   SearchWindow,
+  SettingsWindow,
 } from "../components";
 
 const { Text } = Typography;
@@ -144,6 +146,16 @@ const App = () => {
     setMVLoaded(true);
   }, []);
 
+  const onConfigSave = useCallback(
+    (config) => {
+      window.server.config(config);
+      message.open({
+        content: t("saved_config"),
+      });
+    },
+    [t]
+  );
+
   useEffect(() => {
     window.player.onPlay(handlePlay);
     window.player.onStop(handleStop);
@@ -239,6 +251,13 @@ const App = () => {
           </PopoverWidget>
           <PopoverWidget icon={<PlaySquareOutlined />}>
             <PlayControlWindow className="window" addr={`${addr}`} />
+          </PopoverWidget>
+          <PopoverWidget icon={<SettingOutlined />}>
+            <SettingsWindow
+              className="fixed-window"
+              config={config}
+              onSave={onConfigSave}
+            />
           </PopoverWidget>
         </Space>
       </div>
