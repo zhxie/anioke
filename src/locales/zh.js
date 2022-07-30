@@ -14,6 +14,7 @@ const zh = {
     search: "搜索",
     youtube: "YouTube",
     bilibili: "哔哩哔哩",
+    in_library: "曲库中",
     petit_lyrics: "プチリリ",
     traditional: "经典",
     karaoke: "卡拉OK",

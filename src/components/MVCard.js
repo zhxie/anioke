@@ -1,5 +1,5 @@
 import { LinkOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
-import { Card, Space, Typography, message } from "antd";
+import { Card, message, Space, Tag, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import "./Card.css";
 
@@ -8,7 +8,7 @@ const { Link, Paragraph, Text } = Typography;
 const MVCard = (props) => {
   const { t } = useTranslation("search");
 
-  const { id, title, subtitle, uploader, url, onClick } = props;
+  const { id, title, subtitle, uploader, url, lyrics, onClick } = props;
 
   return (
     <Card
@@ -20,6 +20,7 @@ const MVCard = (props) => {
     >
       <Space className="card-space" direction="vertical">
         <Paragraph className="card-paragraph" strong ellipsis={{ rows: 2 }}>
+          {lyrics && <Tag>{t("in_library")}</Tag>}
           {title}
         </Paragraph>
         <Space className="card-space" direction="vertical" size={0}>

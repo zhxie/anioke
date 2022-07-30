@@ -178,6 +178,7 @@ const SearchWindow = (props) => {
                     subtitle={value.subtitle}
                     uploader={value.uploader}
                     url={value.url}
+                    lyrics={value.lyrics}
                     onClick={onMVCardClick}
                   />
                 );
