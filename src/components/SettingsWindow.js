@@ -98,6 +98,7 @@ const SettingsWindow = (props) => {
             <Form.Item
               label={t("hidden")}
               name={["providers", "mv", "bilibili", "hidden"]}
+              valuePropName="checked"
             >
               <Switch />
             </Form.Item>
@@ -107,6 +108,7 @@ const SettingsWindow = (props) => {
             <Form.Item
               label={t("hidden")}
               name={["providers", "mv", "youtube", "hidden"]}
+              valuePropName="checked"
             >
               <Switch />
             </Form.Item>
@@ -122,6 +124,7 @@ const SettingsWindow = (props) => {
             <Form.Item
               label={t("hidden")}
               name={["providers", "lyrics", "petitLyrics", "hidden"]}
+              valuePropName="checked"
             >
               <Switch />
             </Form.Item>
