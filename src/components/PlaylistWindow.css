@@ -1,8 +1,8 @@
-.playlist-window-space > .ant-space-item:nth-child(2) {
+.playlist-window-space > .ant-space-item:nth-child(3) {
   flex: 1;
   overflow-y: auto;
 }
 
-.playlist-window-space > .ant-space-item:nth-child(2)::-webkit-scrollbar {
+.playlist-window-space > .ant-space-item:nth-child(3)::-webkit-scrollbar {
   display: none;
 }

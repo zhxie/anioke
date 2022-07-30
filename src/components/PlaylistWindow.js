@@ -1,10 +1,16 @@
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Space, Spin } from "antd";
+import { Button, Segmented, Space, Spin } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./PlaylistWindow.css";
 import "./Window.css";
 import EntryCard from "./EntryCard";
+import { options } from "../utils";
+
+const Filter = {
+  WaitToPlay: "wait_to_play",
+  Failed: "failed",
+};
 
 const PlaylistWindow = (props) => {
   const { className, addr, visibility } = props;
@@ -12,6 +18,7 @@ const PlaylistWindow = (props) => {
   const { t } = useTranslation("playlist");
 
   const [isLoading, setLoading] = useState(true);
+  const [filter, setFilter] = useState(Filter.WaitToPlay);
   const [playlist, setPlaylist] = useState([]);
 
   const onRefresh = useCallback(async () => {
@@ -103,26 +110,43 @@ const PlaylistWindow = (props) => {
           {t("shuffle")}
         </Button>
       </Space>
+      <Segmented
+        block
+        onChange={setFilter}
+        options={options([Filter.WaitToPlay, Filter.Failed], t)}
+        value={filter}
+      />
       {isLoading ? (
         <div className="window-spin-wrapper">
           <Spin indicator={<LoadingOutlined spin />} />
         </div>
       ) : (
         <Space className="window-list" direction="vertical">
-          {playlist.map((value, index) => {
-            return (
-              <EntryCard
-                key={index}
-                sequence={value.sequence}
-                title={value.lyrics.title}
-                artist={value.lyrics.artist}
-                status={value.status}
-                onTopmost={onTopmost}
-                onRemove={onRemove}
-                onRetry={() => onRetry(value)}
-              />
-            );
-          })}
+          {playlist
+            .filter((value) => {
+              switch (filter) {
+                case Filter.WaitToPlay:
+                  return value.status !== "fail";
+                case Filter.Failed:
+                  return value.status === "fail";
+                default:
+                  throw new Error(`unexpected filter "${value}"`);
+              }
+            })
+            .map((value, index) => {
+              return (
+                <EntryCard
+                  key={index}
+                  sequence={value.sequence}
+                  title={value.lyrics.title}
+                  artist={value.lyrics.artist}
+                  status={value.status}
+                  onTopmost={onTopmost}
+                  onRemove={onRemove}
+                  onRetry={() => onRetry(value)}
+                />
+              );
+            })}
         </Space>
       )}
     </Space>

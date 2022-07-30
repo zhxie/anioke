@@ -6,6 +6,7 @@ import "./SearchWindow.css";
 import "./Window.css";
 import LyricsCard from "./LyricsCard";
 import MVCard from "./MVCard";
+import { options } from "../utils";
 
 const SearchWindow = (props) => {
   const { className, addr } = props;
@@ -157,12 +158,7 @@ const SearchWindow = (props) => {
           block
           disabled={isLoading}
           onChange={setSelectedLyricsProvider}
-          options={lyricsProviders.map((value) => {
-            return {
-              label: t(value),
-              value: value,
-            };
-          })}
+          options={options(lyricsProviders, t)}
           value={selectedLyricsProvider}
         />
       )}

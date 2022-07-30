@@ -20,6 +20,8 @@ const zh = {
   },
   playlist: {
     shuffle: "打乱",
+    wait_to_play: "等待播放",
+    failed: "已失败",
     download_queue: "等待下载",
     download: "下载中",
     encode_queue: "等待编码",
