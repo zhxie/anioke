@@ -3,8 +3,9 @@ import {
   SettingOutlined,
   UserOutlined,
   VerticalAlignTopOutlined,
+  RedoOutlined,
 } from "@ant-design/icons";
-import { Card, Space, Typography } from "antd";
+import { Card, Space, Typography, Button } from "antd";
 import { useTranslation } from "react-i18next";
 import "./Card.css";
 
@@ -13,7 +14,21 @@ const { Paragraph, Text } = Typography;
 const EntryCard = (props) => {
   const { t } = useTranslation("playlist");
 
-  const { sequence, title, artist, status, onTopmost, onRemove } = props;
+  const { sequence, title, artist, status, onTopmost, onRemove, onRetry } =
+    props;
+
+  const renderRetryBtn = () => {
+    // TODO: Put constants of status together (server/components/entry)
+    if (status !== "fail") {
+      return;
+    }
+    return (
+      <Button className="card-action-btn" onClick={() => onRetry(sequence)}>
+        <RedoOutlined />
+        {t("retry")}
+      </Button>
+    );
+  };
 
   return (
     <Card
@@ -44,6 +59,7 @@ const EntryCard = (props) => {
           <Space className="card-space card-space-inner">
             <SettingOutlined />
             <Text ellipsis>{t(status)}</Text>
+            {renderRetryBtn()}
           </Space>
         </Space>
       </Space>
