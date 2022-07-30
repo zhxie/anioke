@@ -142,6 +142,10 @@ class Entry {
   isPlaying = () => {
     return this.status_ == Status.Play;
   };
+
+  isFailed = () => {
+    return this.status_ == Status.Fail;
+  };
 }
 
 export default Entry;

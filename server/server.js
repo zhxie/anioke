@@ -237,6 +237,12 @@ class Server {
       this.player.topmost(Number(req.body["sequence"]));
       res.send({});
     });
+    this.server.post("/retry", (req, res) => {
+      const sequence = Number(req.body["sequence"]);
+      this.downloader.retry(sequence);
+      this.encoder.retry(sequence);
+      res.send({});
+    });
     this.server.get("/playlist", async (_req, res) => {
       try {
         const list = this.player
