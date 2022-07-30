@@ -39,20 +39,10 @@ class Record {
 
   format() {
     return {
-      id: this.id,
+      mv: this.id,
+      lyrics: this.lyrics_,
       title: this.title_,
-      subtitle: "",
-      uploader: this.artist_,
-      thumbnail: "",
-      uploaderIcon: "",
-      url: "",
-      lyrics: {
-        id: this.lyrics_,
-        title: this.title_,
-        artist: this.artist_,
-        style: "",
-        lyrics: "",
-      },
+      artist: this.artist_,
     };
   }
 }
