@@ -53,10 +53,10 @@ const PlaylistWindow = (props) => {
     [addr, onRefresh]
   );
 
-  const onRemove = useCallback(
+  const onRetry = useCallback(
     async (sequence) => {
       setLoading(true);
-      await fetch(`${addr}/remove`, {
+      await fetch(`${addr}/retry`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,27 +69,18 @@ const PlaylistWindow = (props) => {
     [addr, onRefresh]
   );
 
-  const onRetry = useCallback(
-    async (entry) => {
+  const onRemove = useCallback(
+    async (sequence) => {
       setLoading(true);
       await fetch(`${addr}/remove`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ sequence: entry.sequence }),
+        body: JSON.stringify({ sequence: sequence }),
       });
-      await fetch(`${addr}/order`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mv: entry.mv.id,
-          lyrics: entry.lyrics.id,
-        }),
-      });
-      onRefresh();
+
+      await onRefresh();
     },
     [addr, onRefresh]
   );
@@ -142,8 +133,8 @@ const PlaylistWindow = (props) => {
                   artist={value.lyrics.artist}
                   status={value.status}
                   onTopmost={onTopmost}
+                  onRetry={onRetry}
                   onRemove={onRemove}
-                  onRetry={() => onRetry(value)}
                 />
               );
             })}

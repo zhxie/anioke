@@ -29,7 +29,6 @@ const zh = {
     play_queue: "等待播放",
     play: "正在播放",
     fail: "失败",
-    retry: "重试",
   },
   playControl: {
     skip: "跳过",

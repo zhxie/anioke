@@ -22,12 +22,3 @@
 .card-text-ellipse-begin {
   direction: rtl;
 }
-
-.card-action-btn {
-  display: flex;
-  height: 22px;
-  box-sizing: border-box;
-  align-items: center;
-  padding: 4px 4px;
-  font-size: 12px;
-}
