@@ -27,7 +27,11 @@ class Downloader {
   add = (mv, lyrics) => {
     const mvPath = `${this.location}/${mv.id()}.mp4`;
     const lyricsPath = `${this.location}/${lyrics.id()}.ass`;
-    let entry = new Entry(mv, mvPath, lyrics, lyricsPath);
+    const entry = new Entry(mv, mvPath, lyrics, lyricsPath);
+    this.addEntry(entry);
+  };
+
+  addEntry = (entry) => {
     entry.onDownloadQueue();
     this.list_.push(entry);
     this.download();
@@ -37,6 +41,19 @@ class Downloader {
     const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
     if (i >= 0 && this.list_[i].isRemovable()) {
       this.list_.splice(i, 1);
+    }
+
+    this.download();
+  };
+
+  retry = (sequence) => {
+    const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
+    if (i >= 0) {
+      let entry = this.list_[i];
+      if (entry.isFailed()) {
+        this.list_.splice(i, 1);
+        this.addEntry(entry);
+      }
     }
 
     this.download();

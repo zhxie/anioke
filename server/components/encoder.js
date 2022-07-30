@@ -41,6 +41,19 @@ class Encoder {
     this.encode();
   };
 
+  retry = (sequence) => {
+    const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
+    if (i >= 0) {
+      let entry = this.list_[i];
+      if (entry.isFailed()) {
+        this.list_.splice(i, 1);
+        this.add(entry);
+      }
+    }
+
+    this.encode();
+  };
+
   encode = async () => {
     if (this.encoding) {
       return;

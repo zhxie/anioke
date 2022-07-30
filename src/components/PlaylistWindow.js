@@ -53,6 +53,22 @@ const PlaylistWindow = (props) => {
     [addr, onRefresh]
   );
 
+  const onRetry = useCallback(
+    async (sequence) => {
+      setLoading(true);
+      await fetch(`${addr}/retry`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ sequence: sequence }),
+      });
+
+      await onRefresh();
+    },
+    [addr, onRefresh]
+  );
+
   const onRemove = useCallback(
     async (sequence) => {
       setLoading(true);
@@ -116,7 +132,10 @@ const PlaylistWindow = (props) => {
                   title={value.lyrics.title}
                   artist={value.lyrics.artist}
                   status={value.status}
-                  onTopmost={onTopmost}
+                  onTopmost={
+                    value.status === "play_queue" ? onTopmost : undefined
+                  }
+                  onRetry={value.status === "fail" ? onRetry : undefined}
                   onRemove={onRemove}
                 />
               );

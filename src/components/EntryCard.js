@@ -3,8 +3,10 @@ import {
   SettingOutlined,
   UserOutlined,
   VerticalAlignTopOutlined,
+  RedoOutlined,
 } from "@ant-design/icons";
 import { Card, Space, Typography } from "antd";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import "./Card.css";
 
@@ -13,25 +15,42 @@ const { Paragraph, Text } = Typography;
 const EntryCard = (props) => {
   const { t } = useTranslation("playlist");
 
-  const { sequence, title, artist, status, onTopmost, onRemove } = props;
+  const { sequence, title, artist, status, onTopmost, onRetry, onRemove } =
+    props;
 
-  return (
-    <Card
-      className="card"
-      actions={[
+  const actions = useCallback(() => {
+    let result = [];
+    if (onTopmost) {
+      result.push(
         <VerticalAlignTopOutlined
           onClick={() => {
             onTopmost(sequence);
           }}
-        />,
-        <DeleteOutlined
+        />
+      );
+    }
+    if (onRetry) {
+      result.push(
+        <RedoOutlined
           onClick={() => {
-            onRemove(sequence);
+            onRetry(sequence);
           }}
-        />,
-      ]}
-      size="small"
-    >
+        />
+      );
+    }
+    result.push(
+      <DeleteOutlined
+        onClick={() => {
+          onRemove(sequence);
+        }}
+      />
+    );
+
+    return result;
+  }, [sequence, onTopmost, onRetry, onRemove]);
+
+  return (
+    <Card className="card" actions={actions()} size="small">
       <Space className="card-space" direction="vertical">
         <Paragraph className="card-paragraph" strong ellipsis={{ rows: 2 }}>
           {title}
