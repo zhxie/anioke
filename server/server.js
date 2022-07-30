@@ -292,10 +292,7 @@ class Server {
   };
 
   handleConfig = (config) => {
-    fs.writeFileSync(
-      this.configPath,
-      JSON.stringify(this.config, undefined, 2)
-    );
+    fs.writeFileSync(this.configPath, JSON.stringify(config, undefined, 2));
   };
 
   handlePlayerEnded = () => {
