@@ -96,7 +96,7 @@ class Server {
     // Setup player.
     this.player = new Player(
       (entry) => {
-        const offset = this.database.select(entry.mv().id())["offset"] ?? 0;
+        const offset = this.database.select(entry.mv().id()).offset() ?? 0;
         onPlay(entry.formatToPlayerEntry(offset));
       },
       onStop,
@@ -135,7 +135,7 @@ class Server {
               .find((provider) => provider.name() == mvProvider)
               .search(title)
           ).map(async (entry) => {
-            const lyricsId = this.database.select(entry.id())["lyrics"];
+            const lyricsId = this.database.select(entry.id()).lyrics();
             let lyrics;
             if (lyricsId) {
               lyrics = await (
@@ -166,7 +166,7 @@ class Server {
       try {
         const id = req.query["id"];
         const mv = await this.getMVWithId(id);
-        const lyricsId = this.database.select(id)["lyrics"];
+        const lyricsId = this.database.select(id).lyrics();
         let lyrics;
         if (lyricsId) {
           lyrics = await (await this.getLyricsWithId(lyricsId)).format(false);
@@ -252,6 +252,11 @@ class Server {
         console.error(e);
         res.status(400).send({ error: e.message });
       }
+    });
+    this.server.get("/library", (_req, res) => {
+      const records = this.database.selectAll();
+      const result = records.map((value) => value.format());
+      res.send(result);
     });
     this.server.get("/web-ui", (_req, res) => {
       res.redirect("/web-ui.html");
