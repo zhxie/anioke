@@ -1,7 +1,7 @@
 import { LinkOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
 import { Card, Space, Typography, message } from "antd";
 import { useTranslation } from "react-i18next";
-import "./Card.css";
+import "../Card.css";
 
 const { Link, Paragraph, Text } = Typography;
 

@@ -1,0 +1,22 @@
+.search-window-space {
+  & > .ant-space {
+    width: 100%;
+    height: 100%;
+
+    & > .ant-space-item:last-child {
+      overflow-y: auto;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+}
+
+.search-window-input-wrapper {
+  width: 100%;
+}
+
+.search-window-input-wrapper > .ant-space-item:nth-child(1) {
+  flex: 1;
+}
