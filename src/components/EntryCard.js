@@ -6,6 +6,7 @@ import {
   RedoOutlined,
 } from "@ant-design/icons";
 import { Card, Space, Typography } from "antd";
+import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import "./Card.css";
 
@@ -17,28 +18,39 @@ const EntryCard = (props) => {
   const { sequence, title, artist, status, onTopmost, onRetry, onRemove } =
     props;
 
-  return (
-    <Card
-      className="card"
-      actions={[
+  const actions = useCallback(() => {
+    let result = [];
+    if (onTopmost) {
+      result.push(
         <VerticalAlignTopOutlined
           onClick={() => {
             onTopmost(sequence);
           }}
-        />,
+        />
+      );
+    }
+    if (onRetry) {
+      result.push(
         <RedoOutlined
           onClick={() => {
             onRetry(sequence);
           }}
-        />,
-        <DeleteOutlined
-          onClick={() => {
-            onRemove(sequence);
-          }}
-        />,
-      ]}
-      size="small"
-    >
+        />
+      );
+    }
+    result.push(
+      <DeleteOutlined
+        onClick={() => {
+          onRemove(sequence);
+        }}
+      />
+    );
+
+    return result;
+  }, [sequence, onTopmost, onRetry, onRemove]);
+
+  return (
+    <Card className="card" actions={actions()} size="small">
       <Space className="card-space" direction="vertical">
         <Paragraph className="card-paragraph" strong ellipsis={{ rows: 2 }}>
           {title}

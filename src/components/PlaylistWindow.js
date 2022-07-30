@@ -132,8 +132,10 @@ const PlaylistWindow = (props) => {
                   title={value.lyrics.title}
                   artist={value.lyrics.artist}
                   status={value.status}
-                  onTopmost={onTopmost}
-                  onRetry={onRetry}
+                  onTopmost={
+                    value.status === "play_queue" ? onTopmost : undefined
+                  }
+                  onRetry={value.status === "fail" ? onRetry : undefined}
                   onRemove={onRemove}
                 />
               );
