@@ -52,7 +52,7 @@ class Downloader {
       let entry = this.list_[i];
       if (entry.isFailed()) {
         this.list_.splice(i, 1);
-        this.add(entry);
+        this.addEntry(entry);
       }
     }
 
