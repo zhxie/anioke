@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import "./PlaylistWindow.css";
 import "./Window.css";
 import EntryCard from "./EntryCard";
+import { options } from "../utils";
 
 const Filter = {
   WaitToPlay: "wait_to_play",
@@ -87,12 +88,7 @@ const PlaylistWindow = (props) => {
       <Segmented
         block
         onChange={setFilter}
-        options={[Filter.WaitToPlay, Filter.Failed].map((value) => {
-          return {
-            label: t(value),
-            value: value,
-          };
-        })}
+        options={options([Filter.WaitToPlay, Filter.Failed], t)}
         value={filter}
       />
       {isLoading ? (
