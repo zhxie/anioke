@@ -3,7 +3,7 @@ import express from "express";
 import pathToFfmpeg from "ffmpeg-static";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
-import { toCamel } from "snake-camel";
+import { camel } from "snake-camel";
 import {
   BilibiliMVProvider,
   PetitLyricsLyricsProvider,
@@ -44,7 +44,7 @@ class Server {
     const mvConfig = providersConfig["mv"] ?? {};
     for (let i = this.mvProviders.length - 1; i >= 0; i--) {
       let provider = this.mvProviders[i];
-      let config = mvConfig[toCamel(provider.name())] ?? {};
+      let config = mvConfig[camel(provider.name())] ?? {};
       if (config["hidden"]) {
         this.mvProviders.splice(i, 1);
       }
@@ -54,7 +54,7 @@ class Server {
     const lyricsConfig = providersConfig["lyrics"] ?? {};
     for (let i = this.lyricsProviders.length - 1; i >= 0; i--) {
       let provider = this.lyricsProviders[i];
-      let config = lyricsConfig[toCamel(provider.name())] ?? {};
+      let config = lyricsConfig[camel(provider.name())] ?? {};
       if (config["hidden"]) {
         this.lyricsProviders.splice(i, 1);
       }
