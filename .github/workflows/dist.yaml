@@ -1,7 +1,7 @@
-name: Build
+name: Dist
 
 on:
-  pull_request:
+  push:
     branches:
       - master
 
@@ -45,4 +45,12 @@ jobs:
         run: npm run build
 
       - name: Distribution
-        run: npm exec electron-builder -- -p never --dir
+        run: npm exec electron-builder -- -p never
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: anioke-latest-${{ runner.os }}-amd64
+          path: |
+            dist/Anioke-*.dmg
+            dist/Anioke Setup *.exe
