@@ -4,14 +4,16 @@ import Entry from "./entry";
 
 class Downloader {
   ytDlp;
+  ffmpegPath;
   location;
   onComplete;
 
   downloading = false;
   list_ = [];
 
-  constructor(ytDlpPath, location, onComplete) {
+  constructor(ytDlpPath, ffmpegPath, location, onComplete) {
     this.ytDlp = new YTDlpWrap(ytDlpPath);
+    this.ffmpegPath = ffmpegPath;
     this.location = location;
     // Creates a directory if it does not exist in advance.
     fs.mkdirSync(location, {
@@ -98,7 +100,9 @@ class Downloader {
     if (!fs.existsSync(mvPath)) {
       try {
         await this.ytDlp.execPromise(
-          [mv.url(), "-o", mvPath].concat(mv.downloadOptions())
+          [mv.url(), "--ffmpeg-location", this.ffmpegPath, "-o", mvPath].concat(
+            mv.downloadOptions()
+          )
         );
       } catch (e) {
         console.error(e);
