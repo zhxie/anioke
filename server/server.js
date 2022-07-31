@@ -1,4 +1,5 @@
 import getAppDataPath from "appdata-path";
+import deepExtend from "deep-extend";
 import express from "express";
 import pathToFfmpeg from "ffmpeg-static";
 import fs from "fs";
@@ -11,9 +12,45 @@ import {
 } from "./models";
 import { Database, Downloader, Encoder, Player } from "./components";
 
+const defaultConfig = {
+  server: {
+    port: 0,
+  },
+  database: {
+    location: "",
+  },
+  download: {
+    ytDlp: "",
+    location: "",
+  },
+  encode: {
+    ffmpeg: "",
+    method: "remove_center_channel",
+    script: "",
+  },
+  providers: {
+    mv: {
+      bilibili: {
+        hidden: false,
+      },
+      youtube: {
+        hidden: false,
+        key: "",
+      },
+    },
+    lyrics: {
+      petitLyrics: {
+        hidden: false,
+      },
+    },
+  },
+};
+
 class Server {
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
   lyricsProviders = [new PetitLyricsLyricsProvider()];
+  configPath;
+  config = defaultConfig;
   database;
   downloader;
   encoder;
@@ -29,32 +66,33 @@ class Server {
     // Read config from config.json.
     const localConfigPath = "config.json";
     const defaultConfigPath = `${appDataPath}/config.json`;
-    let rawConfig;
+    this.configPath = defaultConfigPath;
     if (fs.existsSync(localConfigPath)) {
-      rawConfig = fs.readFileSync(localConfigPath);
-    } else if (fs.existsSync(defaultConfigPath)) {
-      rawConfig = fs.readFileSync(defaultConfigPath);
-    } else {
-      rawConfig = "{}";
+      this.configPath = localConfigPath;
     }
+    if (!fs.existsSync(this.configPath)) {
+      fs.writeFileSync(this.configPath, "");
+    }
+    const rawConfig = fs.readFileSync(this.configPath);
     const config = JSON.parse(rawConfig);
+    deepExtend(this.config, config);
 
     // Configure providers.
-    const providersConfig = config["providers"] ?? {};
-    const mvConfig = providersConfig["mv"] ?? {};
+    const providersConfig = this.config["providers"];
+    const mvConfig = providersConfig["mv"];
     for (let i = this.mvProviders.length - 1; i >= 0; i--) {
       let provider = this.mvProviders[i];
-      let config = mvConfig[camel(provider.name())] ?? {};
+      let config = mvConfig[camel(provider.name())];
       if (config["hidden"]) {
         this.mvProviders.splice(i, 1);
       }
 
       provider.configure(config);
     }
-    const lyricsConfig = providersConfig["lyrics"] ?? {};
+    const lyricsConfig = providersConfig["lyrics"];
     for (let i = this.lyricsProviders.length - 1; i >= 0; i--) {
       let provider = this.lyricsProviders[i];
-      let config = lyricsConfig[camel(provider.name())] ?? {};
+      let config = lyricsConfig[camel(provider.name())];
       if (config["hidden"]) {
         this.lyricsProviders.splice(i, 1);
       }
@@ -63,7 +101,7 @@ class Server {
     }
 
     // Setup database.
-    const databaseConfig = config["database"] ?? {};
+    const databaseConfig = this.config["database"];
     this.database = new Database(
       databaseConfig["location"] || `${appDataPath}/Anioke.db`
     );
@@ -71,7 +109,7 @@ class Server {
     this.database.upgrade(this.getLyricsWithId);
 
     // Setup downloader.
-    const downloadConfig = config["download"] ?? {};
+    const downloadConfig = this.config["download"];
     this.downloader = new Downloader(
       downloadConfig["ytDlp"] ||
         pathToFfmpeg
@@ -84,7 +122,7 @@ class Server {
     );
 
     // Setup encoder.
-    const encodeConfig = config["encode"] ?? {};
+    const encodeConfig = this.config["encode"];
     this.encoder = new Encoder(
       encodeConfig["ffmpeg"] ||
         pathToFfmpeg.replace("app.asar", "app.asar.unpacked"),
@@ -110,7 +148,7 @@ class Server {
     );
 
     // Setup server.
-    const serverConfig = config["server"] ?? {};
+    const serverConfig = this.config["server"];
     this.server.use(express.json());
     this.server.options("*", (_req, res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
@@ -290,7 +328,14 @@ class Server {
   };
 
   handleReady = () => {
-    return `http://${internalIpV4Sync()}:${this.listener.address().port}`;
+    return {
+      addr: `http://${internalIpV4Sync()}:${this.listener.address().port}`,
+      config: this.config,
+    };
+  };
+
+  handleConfig = (config) => {
+    fs.writeFileSync(this.configPath, JSON.stringify(config, undefined, 2));
   };
 
   handlePlayerEnded = () => {

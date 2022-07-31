@@ -7,3 +7,4 @@ export { default as LibraryWindow } from "./LibraryWindow";
 export { default as PlayControlWindow } from "./PlayControlWindow";
 export { default as PlaylistWindow } from "./PlaylistWindow";
 export { default as SearchWindow } from "./SearchWindow";
+export { default as SettingsWindow } from "./SettingsWindow";

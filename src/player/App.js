@@ -2,6 +2,7 @@ import {
   AppstoreOutlined,
   PlaySquareOutlined,
   SearchOutlined,
+  SettingOutlined,
   UnorderedListOutlined,
 } from "@ant-design/icons";
 import SubtitlesOctopus from "@jellyfin/libass-wasm";
@@ -19,6 +20,7 @@ import {
   PopoverWidget,
   QRLink,
   SearchWindow,
+  SettingsWindow,
 } from "../components";
 
 const { Text } = Typography;
@@ -27,6 +29,7 @@ const App = () => {
   const { t } = useTranslation(["player"]);
 
   const [addr, setAddr] = useState("");
+  const [config, setConfig] = useState({});
   const [sequence, setSequence] = useState(0);
   const [mv, setMV] = useState("");
   const [mvLoaded, setMVLoaded] = useState(false);
@@ -39,9 +42,10 @@ const App = () => {
   const videoRef = useRef();
   const subtitleRef = useRef();
 
-  const ready = useCallback(async () => {
-    const addr = await window.server.ready();
-    setAddr(addr);
+  const onReady = useCallback(async () => {
+    const ready = await window.server.ready();
+    setAddr(ready["addr"]);
+    setConfig(ready["config"]);
   }, []);
 
   const refreshVideo = useCallback(() => {
@@ -144,13 +148,23 @@ const App = () => {
     setMVLoaded(true);
   }, []);
 
+  const onConfigSave = useCallback(
+    (config) => {
+      window.server.config(config);
+      message.open({
+        content: t("saved_config"),
+      });
+    },
+    [t]
+  );
+
   useEffect(() => {
     window.player.onPlay(handlePlay);
     window.player.onStop(handleStop);
     window.player.onSeek(handleSeek);
     window.player.onSwitchTrack(handleSwitchTrack);
     window.player.onOffset(handleOffset);
-    ready();
+    onReady();
     return () => {
       window.player.removeAllControllerBinds();
     };
@@ -160,7 +174,7 @@ const App = () => {
     handleSeek,
     handleStop,
     handleSwitchTrack,
-    ready,
+    onReady,
   ]);
 
   useEffect(() => {
@@ -242,6 +256,13 @@ const App = () => {
           </PopoverWidget>
           <PopoverWidget icon={<PlaySquareOutlined />}>
             <PlayControlWindow className="window" addr={`${addr}`} />
+          </PopoverWidget>
+          <PopoverWidget icon={<SettingOutlined />}>
+            <SettingsWindow
+              className="fixed-window"
+              config={config}
+              onSave={onConfigSave}
+            />
           </PopoverWidget>
         </Space>
       </div>
