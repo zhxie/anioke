@@ -71,7 +71,7 @@ class Server {
       this.configPath = localConfigPath;
     }
     if (!fs.existsSync(this.configPath)) {
-      fs.writeFileSync(this.configPath, "");
+      fs.writeFileSync(this.configPath, "{}");
     }
     const rawConfig = fs.readFileSync(this.configPath);
     const config = JSON.parse(rawConfig);
