@@ -67,7 +67,9 @@ const LibraryWindow = (props) => {
       ) : (
         <Space className="window-list" direction="vertical">
           {list
-            .filter((value) => value["title"].includes(title))
+            .filter((value) =>
+              value["title"].toUpperCase().includes(title.toUpperCase())
+            )
             .map((value, index) => {
               return (
                 <MVCard
