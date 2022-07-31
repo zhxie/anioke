@@ -4,7 +4,7 @@ const isEnvProduction = process.env.NODE_ENV === "production";
 
 module.exports = function override(config) {
   config.entry = {
-    // Using "main" as key instead of "player" is restricted by react-scripts
+    // Using "main" as key instead of "player" is restricted by react-scripts.
     main: "./src/player/index.js",
     "web-ui": "./src/web-ui/index.js",
   };
