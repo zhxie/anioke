@@ -1,4 +1,4 @@
-import { LoadingOutlined } from "@ant-design/icons";
+import { LeftOutlined, LoadingOutlined } from "@ant-design/icons";
 import { Button, Input, Segmented, Space, Spin } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,33 +40,26 @@ const SearchWindow = (props) => {
     fetchProviders();
   }, [addr]);
 
-  const onInputChange = useCallback((e) => {
-    setSelectedMV("");
-    setMVList([]);
-    setLyricsList([]);
-    setTitle(e.target.value);
-  }, []);
+  const searchMV = useCallback(
+    async (title) => {
+      setLoading(true);
+      const res = await fetch(
+        `${addr}/search?mv=${selectedMVProvider}&title=${title}`
+      );
+      const json = await res.json();
 
-  const onSearch = useCallback(
-    async (_e, forceLyrics) => {
-      if (!selectedMV && !forceLyrics) {
-        // Search MV.
-        setLoading(true);
-        const res = await fetch(
-          `${addr}/search?mv=${selectedMVProvider}&title=${title}`
-        );
-        const json = await res.json();
-
-        if ("error" in json) {
-          console.error(json["error"]);
-        } else {
-          setMVList(json["mv"]);
-        }
-        setLoading(false);
-        return;
+      if ("error" in json) {
+        console.error(json["error"]);
+      } else {
+        setMVList(json["mv"]);
       }
+      setLoading(false);
+    },
+    [addr, selectedMVProvider]
+  );
 
-      // Search lyrics.
+  const searchLyrics = useCallback(
+    async (title) => {
       setLoading(true);
       const res = await fetch(
         `${addr}/search?lyrics=${selectedLyricsProvider}&title=${title}`
@@ -80,12 +73,11 @@ const SearchWindow = (props) => {
       }
       setLoading(false);
     },
-    [selectedMV, addr, selectedMVProvider, title, selectedLyricsProvider]
+    [addr, selectedLyricsProvider]
   );
 
-  const onLyricsCardClick = useCallback(
-    async (id, forceMV) => {
-      // Order.
+  const order = useCallback(
+    async (mv, lyrics) => {
       setLoading(true);
       const res = await fetch(`${addr}/order`, {
         method: "POST",
@@ -93,8 +85,8 @@ const SearchWindow = (props) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          mv: forceMV ?? selectedMV,
-          lyrics: id,
+          mv: mv,
+          lyrics: lyrics,
         }),
       });
       const json = await res.json();
@@ -104,10 +96,32 @@ const SearchWindow = (props) => {
       }
 
       // Clean up.
-      onInputChange({ target: { value: "" } });
+      setSelectedMV("");
+      setMVList([]);
+      setLyricsList([]);
       setLoading(false);
     },
-    [addr, selectedMV, onInputChange]
+    [addr]
+  );
+
+  const onBack = useCallback(async (_e) => {
+    setSelectedMV("");
+  }, []);
+
+  const onInputChange = useCallback((e) => {
+    setTitle(e.target.value);
+  }, []);
+
+  const onSearch = useCallback(
+    async (_e) => {
+      if (!selectedMV) {
+        searchMV(title);
+        return;
+      }
+
+      searchLyrics(title);
+    },
+    [selectedMV, searchMV, title, searchLyrics]
   );
 
   const onMVCardClick = useCallback(
@@ -116,22 +130,31 @@ const SearchWindow = (props) => {
       const mv = mvList.find((value) => value["id"] === id);
       if ("lyrics" in mv) {
         // Order MV with lyrics.
-        await onLyricsCardClick(mv["lyrics"]["id"], id);
+        await order(id, mv["lyrics"]["id"]);
         return;
       }
 
       // Search lyrics.
-      await onSearch(undefined, true);
+      await searchLyrics(title);
     },
-    [mvList, onLyricsCardClick, onSearch]
+    [mvList, order, searchLyrics, title]
+  );
+
+  const onLyricsCardClick = useCallback(
+    async (id) => {
+      order(selectedMV, id);
+    },
+    [order, selectedMV]
   );
 
   return (
     <Space className={`search-window-space ${className}`} direction="vertical">
       <Space className="search-window-input-wrapper">
+        {selectedMV && (
+          <Button type="text" icon={<LeftOutlined />} onClick={onBack} />
+        )}
         <Input
           placeholder={t("title")}
-          disabled={isLoading}
           value={title}
           onChange={onInputChange}
           onPressEnter={onSearch}
