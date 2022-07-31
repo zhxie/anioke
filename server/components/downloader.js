@@ -38,7 +38,7 @@ class Downloader {
   };
 
   remove = (sequence) => {
-    const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
+    const i = this.list_.findIndex((entry) => entry.sequence() === sequence);
     if (i >= 0 && this.list_[i].isRemovable()) {
       this.list_.splice(i, 1);
     }
@@ -47,7 +47,7 @@ class Downloader {
   };
 
   retry = (sequence) => {
-    const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
+    const i = this.list_.findIndex((entry) => entry.sequence() === sequence);
     if (i >= 0) {
       let entry = this.list_[i];
       if (entry.isFailed()) {

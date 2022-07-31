@@ -111,7 +111,7 @@ class Database {
 
   bind = (mvId, lyrics) => {
     const prev = this.select(mvId);
-    if (prev.lyrics() == lyrics.id()) {
+    if (prev.lyrics() === lyrics.id()) {
       return;
     }
 

@@ -33,7 +33,7 @@ const LibraryWindow = (props) => {
 
   const onCardClick = useCallback(
     async (id) => {
-      const record = list.find((value) => value.mv === id);
+      const record = list.find((value) => value["mv"] === id);
       // Order.
       setLoading(true);
       const res = await fetch(`${addr}/order`, {
@@ -42,8 +42,8 @@ const LibraryWindow = (props) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          mv: record.mv,
-          lyrics: record.lyrics,
+          mv: record["mv"],
+          lyrics: record["lyrics"],
         }),
       });
       const json = await res.json();
@@ -67,14 +67,14 @@ const LibraryWindow = (props) => {
       ) : (
         <Space className="window-list" direction="vertical">
           {list
-            .filter((value) => value.title.includes(title))
+            .filter((value) => value["title"].includes(title))
             .map((value, index) => {
               return (
                 <MVCard
                   key={index}
-                  id={value.mv}
-                  title={value.title}
-                  uploader={value.artist}
+                  id={value["mv"]}
+                  title={value["title"]}
+                  uploader={value["artist"]}
                   onClick={onCardClick}
                 />
               );

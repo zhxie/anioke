@@ -117,9 +117,9 @@ const PlaylistWindow = (props) => {
             .filter((value) => {
               switch (filter) {
                 case Filter.WaitToPlay:
-                  return value.status !== "fail";
+                  return value["status"] !== "fail";
                 case Filter.Failed:
-                  return value.status === "fail";
+                  return value["status"] === "fail";
                 default:
                   throw new Error(`unexpected filter "${value}"`);
               }
@@ -128,14 +128,14 @@ const PlaylistWindow = (props) => {
               return (
                 <EntryCard
                   key={index}
-                  sequence={value.sequence}
-                  title={value.lyrics.title}
-                  artist={value.lyrics.artist}
-                  status={value.status}
+                  sequence={value["sequence"]}
+                  title={value["lyrics"]["title"]}
+                  artist={value["lyrics"]["artist"]}
+                  status={value["status"]}
                   onTopmost={
-                    value.status === "play_queue" ? onTopmost : undefined
+                    value["status"] === "play_queue" ? onTopmost : undefined
                   }
-                  onRetry={value.status === "fail" ? onRetry : undefined}
+                  onRetry={value["status"] === "fail" ? onRetry : undefined}
                   onRemove={onRemove}
                 />
               );

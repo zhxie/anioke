@@ -61,7 +61,7 @@ class Player {
   };
 
   remove = (sequence) => {
-    const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
+    const i = this.list_.findIndex((entry) => entry.sequence() === sequence);
     const entry = this.list_[i];
     if (i >= 0 && entry.isRemovable()) {
       if (entry.isPlaying()) {
@@ -127,7 +127,7 @@ class Player {
       return;
     }
 
-    const i = this.list_.findIndex((entry) => entry.sequence() == sequence);
+    const i = this.list_.findIndex((entry) => entry.sequence() === sequence);
     if (i < 0) {
       return;
     }

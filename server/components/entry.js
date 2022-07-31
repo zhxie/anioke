@@ -128,23 +128,23 @@ class Entry {
   };
 
   isDownloadQueued = () => {
-    return this.status_ == Status.DownloadQueue;
+    return this.status_ === Status.DownloadQueue;
   };
 
   isEncodeQueued = () => {
-    return this.status_ == Status.EncodeQueue;
+    return this.status_ === Status.EncodeQueue;
   };
 
   isPlayQueued = () => {
-    return this.status_ == Status.PlayQueue;
+    return this.status_ === Status.PlayQueue;
   };
 
   isPlaying = () => {
-    return this.status_ == Status.Play;
+    return this.status_ === Status.Play;
   };
 
   isFailed = () => {
-    return this.status_ == Status.Fail;
+    return this.status_ === Status.Fail;
   };
 }
 

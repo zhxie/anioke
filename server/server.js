@@ -170,7 +170,7 @@ class Server {
         if (mvProvider) {
           const mv = (
             await this.mvProviders
-              .find((provider) => provider.name() == mvProvider)
+              .find((provider) => provider.name() === mvProvider)
               .search(title)
           ).map(async (entry) => {
             const lyricsId = this.database.select(entry.id()).lyrics();
@@ -189,7 +189,7 @@ class Server {
         if (lyricsProvider) {
           const lyrics = (
             await this.lyricsProviders
-              .find((provider) => provider.name() == lyricsProvider)
+              .find((provider) => provider.name() === lyricsProvider)
               .searchByTitleAndArtist(title, artist)
           ).map((entry) => entry.format(false));
           result["lyrics"] = await Promise.all(lyrics);
@@ -306,7 +306,7 @@ class Server {
   getMVWithId = async (id) => {
     const source = id.split(".")[0];
     const mv = await this.mvProviders
-      .find((provider) => provider.name() == source)
+      .find((provider) => provider.name() === source)
       .get(id);
     return mv;
   };
@@ -314,7 +314,7 @@ class Server {
   getLyricsWithId = async (id) => {
     const source = id.split(".")[0];
     const lyrics = await this.lyricsProviders
-      .find((provider) => provider.name() == source)
+      .find((provider) => provider.name() === source)
       .get(id);
     return lyrics;
   };

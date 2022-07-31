@@ -27,7 +27,7 @@ class Provider {
       const pages = data["pages"];
       for (const page of pages) {
         let part = page["part"];
-        if (pages.length == 1) {
+        if (pages.length === 1) {
           part = "";
         }
         result.push(
@@ -59,7 +59,7 @@ class Provider {
     const owner = data["owner"];
     const pages = data["pages"];
     let part = pages[page - 1]["part"];
-    if (pages.length == 1) {
+    if (pages.length === 1) {
       part = "";
     }
     return new Entry(

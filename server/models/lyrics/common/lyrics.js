@@ -48,7 +48,7 @@ class Line {
   }
 
   isEmpty = () => {
-    return this.line.trim().length == 0;
+    return this.line.trim().length === 0;
   };
 
   compile = (style, assStyle, advance, delay) => {
