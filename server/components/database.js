@@ -120,7 +120,7 @@ class Database {
 
   updateLyrics = (mvId, lyrics) => {
     this.db
-      .prepare("INSERT OR REPLACE INTO mv VALUES (?, ?, ?, ?, 0)")
+      .prepare("INSERT OR REPLACE INTO mv VALUES (?, ?, 0, ?, ?)")
       .run(mvId, lyrics.id(), lyrics.title(), lyrics.artist());
   };
 
