@@ -34,26 +34,28 @@ const MVCard = (props) => {
             <UserOutlined />
             <Text ellipsis>{uploader}</Text>
           </Space>
-          <Space className="card-space card-space-inner">
-            <LinkOutlined />
-            <Link
-              onClick={async (e) => {
-                try {
-                  e.stopPropagation();
-                  await navigator.clipboard.writeText(url);
-                  message.open({
-                    content: t("copied_to_clipboard", { ns: "player" }),
-                  });
-                } catch (e) {
-                  console.error(e);
-                }
-              }}
-              className="card-text-ellipse-begin"
-              ellipsis
-            >
-              {url}
-            </Link>
-          </Space>
+          {url && (
+            <Space className="card-space card-space-inner">
+              <LinkOutlined />
+              <Link
+                onClick={async (e) => {
+                  try {
+                    e.stopPropagation();
+                    await navigator.clipboard.writeText(url);
+                    message.open({
+                      content: t("copied_to_clipboard", { ns: "player" }),
+                    });
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }}
+                className="card-text-ellipse-begin"
+                ellipsis
+              >
+                {url}
+              </Link>
+            </Space>
+          )}
         </Space>
       </Space>
     </Card>

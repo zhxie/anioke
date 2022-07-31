@@ -9,6 +9,13 @@ const zh = {
     order_songs_from_2: "开始点歌",
     copied_to_clipboard: "已复制到剪贴板",
   },
+  webUI: {
+    library: "曲库",
+    search: "搜索",
+  },
+  library: {
+    title: "标题",
+  },
   search: {
     title: "标题",
     search: "搜索",
