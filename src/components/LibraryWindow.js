@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import "./LibraryWindow.css";
 import MVCard from "./MVCard";
 import "./Window.css";
+import { alphabetic } from "../utils";
 
 const LibraryWindow = (props) => {
   const { className, addr } = props;
@@ -70,6 +71,7 @@ const LibraryWindow = (props) => {
             .filter((value) =>
               value["title"].toUpperCase().includes(title.toUpperCase())
             )
+            .sort((a, b) => alphabetic(a, b, "title"))
             .map((value, index) => {
               return (
                 <MVCard
