@@ -141,7 +141,7 @@ class Server {
       onSeek,
       onSwitchTrack,
       (mvId, offset) => {
-        const prev = this.database.select(mvId)["offset"] ?? 0;
+        const prev = this.database.select(mvId).offset() ?? 0;
         this.database.updateOffset(mvId, prev + offset);
         onOffset(prev + offset);
       }
