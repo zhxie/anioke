@@ -110,6 +110,10 @@ class Server {
 
     // Setup downloader.
     const downloadConfig = this.config["download"];
+    const encodeConfig = this.config["encode"];
+    const ffmpegPath =
+      encodeConfig["ffmpeg"] ||
+      pathToFfmpeg.replace("app.asar", "app.asar.unpacked");
     this.downloader = new Downloader(
       downloadConfig["ytDlp"] ||
         pathToFfmpeg
@@ -117,15 +121,14 @@ class Server {
           .replace("ffmpeg-static", "@alpacamybags118/yt-dlp-exec/bin")
           .replace("ffmpeg", "yt-dlp")
           .replace("app.asar", "app.asar.unpacked"),
+      ffmpegPath,
       downloadConfig["location"] || `${appDataPath}/Media`,
       this.handleDownloadComplete
     );
 
     // Setup encoder.
-    const encodeConfig = this.config["encode"];
     this.encoder = new Encoder(
-      encodeConfig["ffmpeg"] ||
-        pathToFfmpeg.replace("app.asar", "app.asar.unpacked"),
+      ffmpegPath,
       encodeConfig["method"] || "remove_center_channel",
       encodeConfig["script"],
       this.handleEncodeComplete
