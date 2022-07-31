@@ -113,7 +113,7 @@ const SearchWindow = (props) => {
   const onMVCardClick = useCallback(
     async (id) => {
       setSelectedMV(id);
-      const mv = mvList.find((value) => value.id === id);
+      const mv = mvList.find((value) => value["id"] === id);
       if ("lyrics" in mv) {
         // Order MV with lyrics.
         await onLyricsCardClick(mv["lyrics"]["id"], id);
@@ -173,12 +173,12 @@ const SearchWindow = (props) => {
                 return (
                   <MVCard
                     key={index}
-                    id={value.id}
-                    title={value.title}
-                    subtitle={value.subtitle}
-                    uploader={value.uploader}
-                    url={value.url}
-                    lyrics={value.lyrics}
+                    id={value["id"]}
+                    title={value["title"]}
+                    subtitle={value["subtitle"]}
+                    uploader={value["uploader"]}
+                    url={value["url"]}
+                    lyrics={value["lyrics"]}
                     onClick={onMVCardClick}
                   />
                 );
@@ -187,10 +187,10 @@ const SearchWindow = (props) => {
                 return (
                   <LyricsCard
                     key={index}
-                    id={value.id}
-                    title={value.title}
-                    artist={value.artist}
-                    style={value.style}
+                    id={value["id"]}
+                    title={value["title"]}
+                    artist={value["artist"]}
+                    style={value["style"]}
                     onClick={onLyricsCardClick}
                   />
                 );
