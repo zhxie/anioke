@@ -51,6 +51,10 @@ class Entry {
     return ["-f", "mp4"];
   };
 
+  encodeOptions = () => {
+    return "-vcodec copy";
+  };
+
   format = (lyrics) => {
     return {
       id: this.id(),

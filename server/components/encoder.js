@@ -111,7 +111,11 @@ class Encoder {
         }
         // Encode to MV.
         await exec(
-          `"${this.ffmpegPath}" -i "${mvPath}" -i "${karaokePath}" -map 0:v -map 0:a:0 -map 1 -y "${genMVPath}"`
+          `"${
+            this.ffmpegPath
+          }" -i "${mvPath}" -i "${karaokePath}" -map 0:v -map 0:a:0 -map 1 ${entry
+            .mv()
+            .encodeOptions()} -y "${genMVPath}"`
         );
         if (fs.existsSync(karaokePath)) {
           fs.rmSync(karaokePath);

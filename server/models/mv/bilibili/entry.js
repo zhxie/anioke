@@ -55,6 +55,10 @@ class Entry {
     return [];
   };
 
+  encodeOptions = () => {
+    return "";
+  };
+
   format = (lyrics) => {
     return {
       id: this.id(),
