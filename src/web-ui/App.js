@@ -1,22 +1,42 @@
 import { PlaySquareOutlined, UnorderedListOutlined } from "@ant-design/icons";
-import { Space } from "antd";
+import { Segmented, Space } from "antd";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./App.css";
 import "antd/dist/antd.dark.min.css";
 import "../antd-overrides.css";
 import {
   DrawerWidget,
+  LibraryWindow,
   PlayControlWindow,
   PlaylistWindow,
   SearchWindow,
 } from "../components";
+import { options } from "../utils";
+
+const Tab = {
+  Library: "library",
+  Search: "search",
+};
 
 const App = () => {
+  const { t } = useTranslation(["webUI"]);
+
+  const [tab, setTab] = useState(Tab.Library);
   const [showPlaylist, setPlaylist] = useState(false);
 
   return (
     <div className="wrapper">
-      <SearchWindow className="fixed-window" addr="" />
+      <Segmented
+        block
+        onChange={setTab}
+        options={options([Tab.Library, Tab.Search], t)}
+        value={tab}
+      />
+      {tab === Tab.Library && (
+        <LibraryWindow className="fixed-window" addr="" />
+      )}
+      {tab === Tab.Search && <SearchWindow className="fixed-window" addr="" />}
       <div className="drawer-widgets-wrapper">
         <Space direction="vertical">
           <DrawerWidget

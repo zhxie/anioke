@@ -67,6 +67,8 @@ class Server {
     this.database = new Database(
       databaseConfig["location"] || `${appDataPath}/Anioke.db`
     );
+    // TODO: Upgrade database should be sync, but it includes async methods.
+    this.database.upgrade(this.getLyricsWithId);
 
     // Setup downloader.
     const downloadConfig = config["download"] ?? {};
@@ -94,14 +96,14 @@ class Server {
     // Setup player.
     this.player = new Player(
       (entry) => {
-        const offset = this.database.select(entry.mv().id()).offset ?? 0;
+        const offset = this.database.select(entry.mv().id()).offset() ?? 0;
         onPlay(entry.formatToPlayerEntry(offset));
       },
       onStop,
       onSeek,
       onSwitchTrack,
       (mvId, offset) => {
-        const prev = this.database.select(mvId).offset ?? 0;
+        const prev = this.database.select(mvId)["offset"] ?? 0;
         this.database.updateOffset(mvId, prev + offset);
         onOffset(prev + offset);
       }
@@ -133,7 +135,7 @@ class Server {
               .find((provider) => provider.name() == mvProvider)
               .search(title)
           ).map(async (entry) => {
-            const lyricsId = this.database.select(entry.id()).lyrics;
+            const lyricsId = this.database.select(entry.id()).lyrics();
             let lyrics;
             if (lyricsId) {
               lyrics = await (
@@ -164,7 +166,7 @@ class Server {
       try {
         const id = req.query["id"];
         const mv = await this.getMVWithId(id);
-        const lyricsId = this.database.select(id).lyrics;
+        const lyricsId = this.database.select(id).lyrics();
         let lyrics;
         if (lyricsId) {
           lyrics = await (await this.getLyricsWithId(lyricsId)).format(false);
@@ -188,17 +190,11 @@ class Server {
       try {
         const body = req.body;
         const mvId = body["mv"];
-        const mvSource = mvId.split(".")[0];
-        const mv = await this.mvProviders
-          .find((provider) => provider.name() == mvSource)
-          .get(mvId);
+        const mv = await this.getMVWithId(mvId);
         const lyricsId = body["lyrics"];
-        const lyricsSource = lyricsId.split(".")[0];
-        const lyrics = await this.lyricsProviders
-          .find((provider) => provider.name() == lyricsSource)
-          .get(lyricsId);
+        const lyrics = await this.getLyricsWithId(lyricsId);
         // Bind in database.
-        this.database.bind(mvId, lyricsId);
+        this.database.bind(mvId, lyrics);
         this.downloader.add(mv, lyrics);
         res.send({});
       } catch (e) {
@@ -256,6 +252,11 @@ class Server {
         console.error(e);
         res.status(400).send({ error: e.message });
       }
+    });
+    this.server.get("/library", (_req, res) => {
+      const records = this.database.selectAll();
+      const result = records.map((value) => value.format());
+      res.send(result);
     });
     this.server.get("/web-ui", (_req, res) => {
       res.redirect("/web-ui.html");

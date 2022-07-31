@@ -1,4 +1,5 @@
 import {
+  AppstoreOutlined,
   PlaySquareOutlined,
   SearchOutlined,
   UnorderedListOutlined,
@@ -12,6 +13,7 @@ import "antd/dist/antd.dark.min.css";
 import "../antd-overrides.css";
 import icon from "../assets/Icon.png";
 import {
+  LibraryWindow,
   PlayControlWindow,
   PlaylistWindow,
   PopoverWidget,
@@ -222,6 +224,9 @@ const App = () => {
       )}
       <div className="popover-widgets-wrapper">
         <Space direction="vertical">
+          <PopoverWidget icon={<AppstoreOutlined />}>
+            <LibraryWindow className="fixed-window" addr={`${addr}`} />
+          </PopoverWidget>
           <PopoverWidget icon={<SearchOutlined />}>
             <SearchWindow className="fixed-window" addr={`${addr}`} />
           </PopoverWidget>

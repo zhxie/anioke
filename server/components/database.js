@@ -1,5 +1,52 @@
 import sqlite3 from "better-sqlite3";
 
+const USER_VERSION = 1;
+
+class Record {
+  id;
+  lyrics_;
+  offset_;
+  title_;
+  artist_;
+
+  constructor(id, lyrics, offset, title, artist) {
+    this.id = id;
+    this.lyrics_ = lyrics;
+    this.offset_ = offset;
+    this.title_ = title;
+    this.artist_ = artist;
+  }
+
+  mv() {
+    return this.id;
+  }
+
+  lyrics() {
+    return this.lyrics_;
+  }
+
+  title() {
+    return this.title_;
+  }
+
+  artist() {
+    return this.artist_;
+  }
+
+  offset() {
+    return this.offset_;
+  }
+
+  format() {
+    return {
+      mv: this.id,
+      lyrics: this.lyrics_,
+      title: this.title_,
+      artist: this.artist_,
+    };
+  }
+}
+
 class Database {
   db;
 
@@ -10,34 +57,83 @@ class Database {
     );
   }
 
+  async upgrade(getLyricsWithId) {
+    // Upgrade.
+    const record = this.db.prepare("PRAGMA user_version").get();
+    const version = record["user_version"];
+    switch (version) {
+      case 0:
+        this.db.exec(
+          'ALTER TABLE mv ADD COLUMN title TEXT NOT NULL DEFAULT ""'
+        );
+        this.db.exec(
+          'ALTER TABLE mv ADD COLUMN artist TEXT NOT NULL DEFAULT ""'
+        );
+
+        const records = this.selectAll();
+        for (const record of records) {
+          const lyrics = await getLyricsWithId(record.lyrics());
+          this.updateLyricsAndOffset(record.mv(), lyrics, record.offset());
+        }
+
+        this.db.exec("PRAGMA user_version=1");
+      case USER_VERSION:
+        break;
+      default:
+        throw new Error(`unexpected database user version "${version}"`);
+    }
+  }
+
   select = (mvId) => {
     const record =
       this.db.prepare("SELECT * FROM mv WHERE id = ?").get(mvId) ?? {};
-    return {
-      lyrics: record.lyrics,
-      offset: record.offset,
-    };
+    return new Record(
+      record["id"],
+      record["lyrics"],
+      record["offset"],
+      record["title"],
+      record["artist"]
+    );
   };
 
-  bind = (mvId, lyricsId) => {
+  selectAll = () => {
+    const records = this.db.prepare("SELECT * FROM mv").all();
+    return records.map((value) => {
+      return new Record(
+        value["id"],
+        value["lyrics"],
+        value["offset"],
+        value["title"],
+        value["artist"]
+      );
+    });
+  };
+
+  bind = (mvId, lyrics) => {
     const prev = this.select(mvId);
-    if (prev.lyrics == lyricsId) {
+    if (prev.lyrics() == lyrics.id()) {
       return;
     }
 
-    this.updateLyrics(mvId, lyricsId);
+    this.updateLyrics(mvId, lyrics);
   };
 
-  updateLyrics = (mvId, lyricsId) => {
+  updateLyrics = (mvId, lyrics) => {
     this.db
-      .prepare("INSERT OR REPLACE INTO mv VALUES (?, ?, 0)")
-      .run(mvId, lyricsId);
+      .prepare("INSERT OR REPLACE INTO mv VALUES (?, ?, ?, ?, 0)")
+      .run(mvId, lyrics.id(), lyrics.title(), lyrics.artist());
   };
 
   updateOffset = (mvId, offset) => {
     this.db
       .prepare("UPDATE mv SET `offset` = ? WHERE id = ?")
       .run(offset, mvId);
+  };
+
+  updateLyricsAndOffset = (mvId, lyrics, offset) => {
+    this.db
+      .prepare("INSERT OR REPLACE INTO mv VALUES (?, ?, ?, ?, ?)")
+      .run(mvId, lyrics.id(), offset, lyrics.title(), lyrics.artist());
   };
 }
 

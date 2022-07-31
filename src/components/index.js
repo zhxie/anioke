@@ -3,6 +3,7 @@ export { default as QRLink } from "./QRLink";
 export { default as DrawerWidget } from "./DrawerWidget";
 export { default as PopoverWidget } from "./PopoverWidget";
 
+export { default as LibraryWindow } from "./LibraryWindow";
 export { default as PlayControlWindow } from "./PlayControlWindow";
 export { default as PlaylistWindow } from "./PlaylistWindow";
 export { default as SearchWindow } from "./SearchWindow";

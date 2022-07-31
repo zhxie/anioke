@@ -1,5 +1,5 @@
 import { LinkOutlined, NumberOutlined, UserOutlined } from "@ant-design/icons";
-import { Card, Space, Typography, message } from "antd";
+import { Card, message, Space, Tag, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import "./Card.css";
 
@@ -8,7 +8,7 @@ const { Link, Paragraph, Text } = Typography;
 const MVCard = (props) => {
   const { t } = useTranslation("search");
 
-  const { id, title, subtitle, uploader, url, onClick } = props;
+  const { id, title, subtitle, uploader, url, lyrics, onClick } = props;
 
   return (
     <Card
@@ -20,6 +20,7 @@ const MVCard = (props) => {
     >
       <Space className="card-space" direction="vertical">
         <Paragraph className="card-paragraph" strong ellipsis={{ rows: 2 }}>
+          {lyrics && <Tag>{t("in_library")}</Tag>}
           {title}
         </Paragraph>
         <Space className="card-space" direction="vertical" size={0}>
@@ -33,26 +34,28 @@ const MVCard = (props) => {
             <UserOutlined />
             <Text ellipsis>{uploader}</Text>
           </Space>
-          <Space className="card-space card-space-inner">
-            <LinkOutlined />
-            <Link
-              onClick={async (e) => {
-                try {
-                  e.stopPropagation();
-                  await navigator.clipboard.writeText(url);
-                  message.open({
-                    content: t("copied_to_clipboard", { ns: "player" }),
-                  });
-                } catch (e) {
-                  console.error(e);
-                }
-              }}
-              className="card-text-ellipse-begin"
-              ellipsis
-            >
-              {url}
-            </Link>
-          </Space>
+          {url && (
+            <Space className="card-space card-space-inner">
+              <LinkOutlined />
+              <Link
+                onClick={async (e) => {
+                  try {
+                    e.stopPropagation();
+                    await navigator.clipboard.writeText(url);
+                    message.open({
+                      content: t("copied_to_clipboard", { ns: "player" }),
+                    });
+                  } catch (e) {
+                    console.error(e);
+                  }
+                }}
+                className="card-text-ellipse-begin"
+                ellipsis
+              >
+                {url}
+              </Link>
+            </Space>
+          )}
         </Space>
       </Space>
     </Card>
