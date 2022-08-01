@@ -1,5 +1,5 @@
 import { AlignCenterOutlined, UserOutlined } from "@ant-design/icons";
-import { Card, Space, Typography } from "antd";
+import { Card, Space, Tag, Typography } from "antd";
 import { useTranslation } from "react-i18next";
 import "./Card.css";
 
@@ -8,7 +8,7 @@ const { Paragraph, Text } = Typography;
 const LyricsCard = (props) => {
   const { t } = useTranslation("search");
 
-  const { id, title, artist, style, onClick } = props;
+  const { id, title, artist, style, associated, onClick } = props;
 
   return (
     <Card
@@ -20,6 +20,7 @@ const LyricsCard = (props) => {
     >
       <Space className="card-space" direction="vertical">
         <Paragraph className="card-paragraph" strong ellipsis={{ rows: 2 }}>
+          {associated && <Tag>{t("associated")}</Tag>}
           {title}
         </Paragraph>
         <Space className="card-space" direction="vertical" size={0}>

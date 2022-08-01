@@ -19,7 +19,7 @@ const SearchWindow = (props) => {
   const [title, setTitle] = useState("");
   const [selectedMVProvider, setSelectedMVProvider] = useState("");
   const [mvList, setMVList] = useState([]);
-  const [selectedMV, setSelectedMV] = useState("");
+  const [selectedMV, setSelectedMV] = useState(null);
   const [selectedLyricsProvider, setSelectedLyricsProvider] = useState("");
   const [lyricsList, setLyricsList] = useState([]);
 
@@ -96,7 +96,7 @@ const SearchWindow = (props) => {
       }
 
       // Clean up.
-      setSelectedMV("");
+      setSelectedMV(null);
       setMVList([]);
       setLyricsList([]);
       setLoading(false);
@@ -105,7 +105,7 @@ const SearchWindow = (props) => {
   );
 
   const onBack = useCallback(async (_e) => {
-    setSelectedMV("");
+    setSelectedMV(null);
   }, []);
 
   const onInputChange = useCallback((e) => {
@@ -126,23 +126,16 @@ const SearchWindow = (props) => {
 
   const onMVCardClick = useCallback(
     async (id) => {
-      setSelectedMV(id);
       const mv = mvList.find((value) => value["id"] === id);
-      if ("lyrics" in mv) {
-        // Order MV with lyrics.
-        await order(id, mv["lyrics"]["id"]);
-        return;
-      }
-
-      // Search lyrics.
+      setSelectedMV(mv);
       await searchLyrics(title);
     },
-    [mvList, order, searchLyrics, title]
+    [mvList, searchLyrics, title]
   );
 
   const onLyricsCardClick = useCallback(
     async (id) => {
-      order(selectedMV, id);
+      order(selectedMV["id"], id);
     },
     [order, selectedMV]
   );
@@ -191,6 +184,16 @@ const SearchWindow = (props) => {
         </div>
       ) : (
         <Space className="window-list" direction="vertical">
+          {selectedMV && selectedMV["lyrics"] && (
+            <LyricsCard
+              id={selectedMV["lyrics"]["id"]}
+              title={selectedMV["lyrics"]["title"]}
+              artist={selectedMV["lyrics"]["artist"]}
+              style={selectedMV["lyrics"]["style"]}
+              associated
+              onClick={onLyricsCardClick}
+            />
+          )}
           {!selectedMV
             ? mvList.map((value, index) => {
                 return (

@@ -26,6 +26,7 @@ const zh = {
     petit_lyrics: "プチリリ",
     traditional: "经典",
     karaoke: "卡拉OK",
+    associated: "已关联",
   },
   playlist: {
     shuffle: "打乱",
