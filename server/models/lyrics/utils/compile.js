@@ -12,17 +12,19 @@ const compile = (style, lines) => {
 
     // Calculate lyrics show in advance time.
     let newParagraph = false;
-    const prevTime = Math.max(...displays);
-    if (prevTime < line.startTime) {
+    const lastEndTime = Math.max(...displays);
+    if (lastEndTime < line.startTime - 5) {
+      // Assert there is a new paragraph since there are more than `ADVANCE`
+      // seconds blank.
       newParagraph = true;
     }
 
-    const lastTime = Math.min(...displays);
-    let index = displays.indexOf(lastTime);
+    const priorEndTime = Math.min(...displays);
+    let index = displays.indexOf(priorEndTime);
     if (newParagraph) {
       index = 0;
     }
-    let advance = Math.max(line.startTime - lastTime, 0);
+    let advance = Math.max(line.startTime - priorEndTime, 0);
     if (newParagraph) {
       advance = Math.min(advance, ADVANCE);
     }
