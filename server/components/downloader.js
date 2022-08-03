@@ -2,6 +2,8 @@ import fs from "fs";
 import YTDlpWrap from "yt-dlp-wrap";
 import Entry from "./entry";
 
+const compileLyrics = (lines, style) => {};
+
 class Downloader {
   ytDlp;
   ffmpegPath;
@@ -76,7 +78,7 @@ class Downloader {
     this.downloading = true;
     entry.onDownload();
     const lyrics = entry.lyrics();
-    const lyricsPath = `${this.location}/${lyrics.id()}.ass`;
+    const lyricsPath = `${this.location}/${lyrics.id()}.json`;
     if (!fs.existsSync(lyricsPath)) {
       try {
         fs.writeFileSync(lyricsPath, await lyrics.formattedLyrics());
@@ -93,6 +95,13 @@ class Downloader {
         return;
       }
     }
+
+    // Compile lyrics.
+    // TODO: Lyrics compilation should be done in lyrics-related component.
+    const compiledLyricsPath = `${this.location}/${lyrics.id()}.ass`;
+    const lyricsJSON = fs.readFileSync(lyricsPath);
+    const lines = JSON.parse(lyricsJSON);
+    fs.writeFileSync(compiledLyricsPath, compileLyrics(lines, lyrics.style()));
 
     // Download MV.
     const mv = entry.mv();
