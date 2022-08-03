@@ -74,7 +74,6 @@ class Entry {
   };
 
   formattedLyrics = async () => {
-    const h = header(this.title_);
     const rawLyrics = await this.rawLyrics();
     const text = await parseXMLString(rawLyrics);
 
@@ -96,8 +95,7 @@ class Entry {
       }
       ls.push(l);
     }
-    const result = compile(this.style(), ls);
-    return `${h}${result}`;
+    return ls.map((value) => value.format());
   };
 
   rawLyrics = async () => {
