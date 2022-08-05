@@ -94,6 +94,14 @@ const SettingsWindow = (props) => {
               <TextArea autoSize />
             </Form.Item>
           </TabPane>
+          <TabPane tab={t("subtitle")} key="subtitle" forceRender>
+            <Form.Item label={t("style")} name={["subtitle", "style"]}>
+              <Select>
+                <Option value="traditional">{t("traditional")}</Option>
+                <Option value="karaoke">{t("karaoke")}</Option>
+              </Select>
+            </Form.Item>
+          </TabPane>
           <TabPane tab={t("providers")} key="providers" forceRender>
             <Divider plain orientation="left" style={{ marginTop: 0 }}>
               {t("bilibili")}

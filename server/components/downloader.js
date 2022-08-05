@@ -76,10 +76,13 @@ class Downloader {
     this.downloading = true;
     entry.onDownload();
     const lyrics = entry.lyrics();
-    const lyricsPath = `${this.location}/${lyrics.id()}.ass`;
+    const lyricsPath = `${this.location}/${lyrics.id()}.json`;
     if (!fs.existsSync(lyricsPath)) {
       try {
-        fs.writeFileSync(lyricsPath, await lyrics.formattedLyrics());
+        fs.writeFileSync(
+          lyricsPath,
+          JSON.stringify(await lyrics.formattedLyrics())
+        );
       } catch (e) {
         console.error(e);
         // Clean up.

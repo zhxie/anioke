@@ -48,6 +48,16 @@
     // -ac 1 -y "${output}"`.
     "script": ""
   },
+  "subtitle": {
+    // The style of subtitles. It can be one of the `traditional` or `karaoke`.
+    //
+    // * `traditional`: render subtitles by lines.
+    // * `karaoke`: render subtitles by words. Certain lyrics without karaoke
+    //   format support will fallback to `traditional` rendering.
+    //
+    // If it is unspecified, `karaoke` will be used by default.
+    "style": "karaoke"
+  },
   "providers": {
     "mv": {
       "bilibili": {

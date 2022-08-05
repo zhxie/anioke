@@ -10,7 +10,7 @@ import {
   PetitLyricsLyricsProvider,
   YoutubeMVProvider,
 } from "./models";
-import { Database, Downloader, Encoder, Player } from "./components";
+import { Database, Downloader, Encoder, Player, Subtitler } from "./components";
 
 const defaultConfig = {
   server: {
@@ -27,6 +27,9 @@ const defaultConfig = {
     ffmpeg: "",
     method: "remove_center_channel",
     script: "",
+  },
+  subtitle: {
+    style: "karaoke",
   },
   providers: {
     mv: {
@@ -54,6 +57,7 @@ class Server {
   database;
   downloader;
   encoder;
+  subtitler;
   player;
   server = express();
   listener;
@@ -133,6 +137,10 @@ class Server {
       encodeConfig["script"],
       this.handleEncodeComplete
     );
+
+    // Setup subtitler.
+    const subtitleConfig = this.config["subtitle"];
+    this.subtitler = new Subtitler(subtitleConfig["style"] || "karaoke");
 
     // Setup player.
     this.player = new Player(
@@ -327,6 +335,13 @@ class Server {
   };
 
   handleEncodeComplete = (entry) => {
+    // Compile lyrics.
+    const lyricsPath = entry.lyricsPath();
+    const lyrics = fs.readFileSync(lyricsPath.replace(/.ass$/, ".json"));
+    const lines = JSON.parse(lyrics);
+    const ass = this.subtitler.compile(lines, entry.lyrics());
+    fs.writeFileSync(lyricsPath, ass);
+
     this.player.add(entry);
   };
 
