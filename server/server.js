@@ -28,6 +28,9 @@ const defaultConfig = {
     method: "remove_center_channel",
     script: "",
   },
+  subtitle: {
+    style: "karaoke",
+  },
   providers: {
     mv: {
       bilibili: {
@@ -136,7 +139,8 @@ class Server {
     );
 
     // Setup subtitler.
-    this.subtitler = new Subtitler();
+    const subtitleConfig = this.config["subtitle"];
+    this.subtitler = new Subtitler(subtitleConfig["style"] || "karaoke");
 
     // Setup player.
     this.player = new Player(

@@ -24,8 +24,8 @@ const formatColor = (color) => {
 class Subtitler {
   ASS_STYLES = ["K1", "K2"];
 
+  style = Style.Karaoke;
   // TODO: These constants should be configurable.
-  STYLE = Style.Karaoke;
   ADVANCE = 5;
   DELAY = 1;
   FONTSIZE = 24;
@@ -37,7 +37,9 @@ class Subtitler {
   OUTLINE = 2;
   SHADOW = 0;
 
-  constructor() {}
+  constructor(style) {
+    this.style = style;
+  }
 
   compile = (lines, lyrics) => {
     const style = this.bestStyle(lyrics.style());
@@ -122,21 +124,21 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   bestStyle = (style) => {
     switch (style) {
       case Style.Traditional:
-        switch (this.STYLE) {
+        switch (this.style) {
           case Style.Traditional:
           case Style.Karaoke:
             return Style.Traditional;
           default:
-            throw new Error(`unexpected style "${this.STYLE}"`);
+            throw new Error(`unexpected style "${this.style}"`);
         }
       case Style.Karaoke:
-        switch (this.STYLE) {
+        switch (this.style) {
           case Style.Traditional:
             return Style.Traditional;
           case Style.Karaoke:
             return Style.Karaoke;
           default:
-            throw new Error(`unexpected style "${this.STYLE}"`);
+            throw new Error(`unexpected style "${this.style}"`);
         }
       default:
         throw new Error(`unexpected style "${style}"`);
