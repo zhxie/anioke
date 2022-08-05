@@ -43,7 +43,7 @@ class Subtitler {
     const style = this.bestStyle(lyrics.style());
     const dialogues = this.dialogues(lines, style);
     const header = this.header(lyrics.title());
-    return `${header}${dialogues}`;
+    return `${header}\n${dialogues}`;
   };
 
   header = (title) => {
@@ -51,6 +51,7 @@ class Subtitler {
     return `[Script Info]
 Title: ${title}
 ScriptType: v4.00+
+
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: K1,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,${this.OUTLINE},${this.SHADOW},1,60,30,80,1
