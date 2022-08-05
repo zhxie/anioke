@@ -1,11 +1,6 @@
 import { Style } from "../models/lyrics/common/lyrics";
 import { padStart } from "../utils";
 
-const BorderStyle = {
-  Opaque,
-  OutlineAndDropShadow,
-};
-
 const compileWord = (word) => {
   const duration = Math.round((word["endTime"] - word["startTime"]) * 100);
   return `{\\K${duration}}${word["word"]}`;
@@ -26,17 +21,6 @@ const formatColor = (color) => {
   return color.toUpperCase().replace("#", "&H");
 };
 
-const formatBorderStyle = (borderStyle) => {
-  switch (borderStyle) {
-    case BorderStyle.Opaque:
-      return 3;
-    case BorderStyle.OutlineAndDropShadow:
-      return 1;
-    default:
-      throw new Error(`unexpected border style "${borderStyle}"`);
-  }
-};
-
 class Subtitler {
   ASS_STYLES = ["K1", "K2"];
 
@@ -50,7 +34,6 @@ class Subtitler {
   OUTLINE_COLOR = "#00000000";
   BACKGROUND_COLOR = "#00000000";
   BOLD = false;
-  BORDER_STYLE = BorderStyle.OutlineAndDropShadow;
   OUTLINE = 2;
   SHADOW = 0;
 
@@ -70,8 +53,8 @@ Title: ${title}
 ScriptType: v4.00+
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: K1,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,${formatBorderStyle(this.BORDER_STYLE)},${this.OUTLINE},${this.SHADOW},1,60,30,80,1
-Style: K2,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,${formatBorderStyle(this.BORDER_STYLE)},${this.OUTLINE},${this.SHADOW},3,30,60,40,1
+Style: K1,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,${this.OUTLINE},${this.SHADOW},1,60,30,80,1
+Style: K2,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,${this.OUTLINE},${this.SHADOW},3,30,60,40,1
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
