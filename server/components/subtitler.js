@@ -64,9 +64,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   };
 
   dialogue = (line, style, assStyle, advance) => {
-    let words = line["line"];
+    let words;
     switch (style) {
       case Style.Traditional:
+        words = `{\\K${Math.round(advance * 100)}}{\\K0}`;
+        words += line["line"];
         break;
       case Style.Karaoke:
         words = `{\\K${Math.round(advance * 100)}}`;
