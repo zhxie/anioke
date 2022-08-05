@@ -79,7 +79,10 @@ class Downloader {
     const lyricsPath = `${this.location}/${lyrics.id()}.json`;
     if (!fs.existsSync(lyricsPath)) {
       try {
-        fs.writeFileSync(lyricsPath, await lyrics.formattedLyrics());
+        fs.writeFileSync(
+          lyricsPath,
+          JSON.stringify(await lyrics.formattedLyrics())
+        );
       } catch (e) {
         console.error(e);
         // Clean up.

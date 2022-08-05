@@ -89,7 +89,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       // Identify new paragraphs.
       let newParagraph = false;
       const lastEndTime = Math.max(...displays);
-      if (lastEndTime < line["startTime"] - advance) {
+      if (lastEndTime < line["startTime"] - this.ADVANCE) {
         // Assert there is a new paragraph if there are more than `advance`
         // blank.
         newParagraph = true;
@@ -106,8 +106,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         advance = Math.min(advance, this.ADVANCE);
       }
 
-      const assStyle = assStyles[index];
-      result.push(dialogue(line, style, assStyle, advance));
+      const assStyle = this.ASS_STYLES[index];
+      result.push(this.dialogue(line, style, assStyle, advance));
 
       // Clean up.
       if (newParagraph) {
@@ -121,21 +121,21 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   bestStyle = (style) => {
     switch (style) {
       case Style.Traditional:
-        switch (this.style) {
+        switch (this.STYLE) {
           case Style.Traditional:
           case Style.Karaoke:
             return Style.Traditional;
           default:
-            throw new Error(`unexpected style "${this.style}"`);
+            throw new Error(`unexpected style "${this.STYLE}"`);
         }
       case Style.Karaoke:
-        switch (this.style) {
+        switch (this.STYLE) {
           case Style.Traditional:
             return Style.Traditional;
           case Style.Karaoke:
             return Style.Karaoke;
           default:
-            throw new Error(`unexpected style "${this.style}"`);
+            throw new Error(`unexpected style "${this.STYLE}"`);
         }
       default:
         throw new Error(`unexpected style "${style}"`);
