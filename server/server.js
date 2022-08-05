@@ -337,7 +337,7 @@ class Server {
     const lines = JSON.parse(lyrics);
     const ass = this.subtitler.compile(lines, entry.lyrics());
     fs.writeFileSync(lyricsPath, ass);
-    
+
     this.player.add(entry);
   };
 

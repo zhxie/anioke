@@ -40,7 +40,7 @@ const formatBorderStyle = (borderStyle) => {
 class Subtitler {
   ASS_STYLES = ["K1", "K2"];
 
-  // TODO: These costants should be configurable.
+  // TODO: These constants should be configurable.
   STYLE = Style.Karaoke;
   ADVANCE = 5;
   DELAY = 1;
