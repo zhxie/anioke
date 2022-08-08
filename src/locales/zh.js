@@ -77,6 +77,8 @@ const zh = {
     hidden: "隐藏",
     youtube: "YouTube",
     api_key: "API Key",
+    youtube_api_key_hint:
+      "你可以从 https://developers.google.com/youtube/registering_an_application 获取 YouTube API Key",
     lyrics: "歌词",
     petit_lyrics: "プチリリ",
     save: "保存",

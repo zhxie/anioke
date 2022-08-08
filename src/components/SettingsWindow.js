@@ -11,6 +11,7 @@ import {
 } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import Hint from "./Hint";
 import "./SettingsWindow.css";
 import "./Window.css";
 
@@ -124,7 +125,12 @@ const SettingsWindow = (props) => {
               <Switch />
             </Form.Item>
             <Form.Item
-              label={t("api_key")}
+              label={
+                <Space>
+                  {t("api_key")}
+                  <Hint title={t("youtube_api_key_hint")} />
+                </Space>
+              }
               name={["providers", "mv", "youtube", "key"]}
             >
               <Input.Password />
