@@ -94,7 +94,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       // Identify new paragraphs.
       let newParagraph = false;
       const lastEndTime = Math.max(...displays);
-      if (lastEndTime < line["startTime"] - this.ADVANCE) {
+      if (lastEndTime < line["startTime"] - this.ADVANCE || lastEndTime === 0) {
         // Assert there is a new paragraph if there are more than `advance`
         // blank.
         newParagraph = true;
