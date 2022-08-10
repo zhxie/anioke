@@ -132,6 +132,7 @@ const PlaylistWindow = (props) => {
                   title={value["lyrics"]["title"]}
                   artist={value["lyrics"]["artist"]}
                   status={value["status"]}
+                  error={value["error"]}
                   onTopmost={
                     value["status"] === "play_queue" ? onTopmost : undefined
                   }

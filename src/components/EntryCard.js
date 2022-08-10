@@ -9,14 +9,23 @@ import { Card, Space, Typography } from "antd";
 import { useCallback } from "react";
 import { useTranslation } from "react-i18next";
 import "./Card.css";
+import Hint from "./Hint";
 
 const { Paragraph, Text } = Typography;
 
 const EntryCard = (props) => {
   const { t } = useTranslation("playlist");
 
-  const { sequence, title, artist, status, onTopmost, onRetry, onRemove } =
-    props;
+  const {
+    sequence,
+    title,
+    artist,
+    status,
+    error,
+    onTopmost,
+    onRetry,
+    onRemove,
+  } = props;
 
   const actions = useCallback(() => {
     let result = [];
@@ -63,6 +72,7 @@ const EntryCard = (props) => {
           <Space className="card-space card-space-inner">
             <SettingOutlined />
             <Text ellipsis>{t(status)}</Text>
+            {error && <Hint title={error} />}
           </Space>
         </Space>
       </Space>
