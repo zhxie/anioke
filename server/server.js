@@ -30,6 +30,7 @@ const defaultConfig = {
   },
   subtitle: {
     style: "karaoke",
+    countdown: false,
   },
   providers: {
     mv: {

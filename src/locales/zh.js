@@ -71,6 +71,7 @@ const zh = {
     style: "样式",
     traditional: "传统",
     karaoke: "卡拉 OK",
+    countdown: "倒计时",
     providers: "数据源",
     mv: "MV",
     bilibili: "哔哩哔哩",

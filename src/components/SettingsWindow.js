@@ -101,6 +101,13 @@ const SettingsWindow = (props) => {
                 <Option value="karaoke">{t("karaoke")}</Option>
               </Select>
             </Form.Item>
+            <Form.Item
+              label={t("countdown")}
+              name={["subtitle", "countdown"]}
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
           </TabPane>
           <TabPane tab={t("providers")} key="providers" forceRender>
             <Divider plain orientation="left" style={{ marginTop: 0 }}>

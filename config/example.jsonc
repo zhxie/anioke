@@ -56,7 +56,11 @@
     //   format support will fallback to `traditional` rendering.
     //
     // If it is unspecified, `karaoke` will be used by default.
-    "style": "karaoke"
+    "style": "karaoke",
+    // Displays countdown of subtitles. If it is enabled, in beginning of each
+    // paragraph, a countdown graph will be appended. If it is unspecified,
+    // `false` will be used by default.
+    "countdown": false
   },
   "providers": {
     "mv": {
