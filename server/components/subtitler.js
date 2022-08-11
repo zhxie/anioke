@@ -32,14 +32,10 @@ class Subtitler {
   SYMBOL = "●";
   ADVANCE = 5;
   DELAY = 1;
-  FONTSIZE = 24;
   PRIMARY_COLOR = "#000000FF";
   SECONDARY_COLOR = "#00FFFFFF";
   OUTLINE_COLOR = "#00000000";
-  BACKGROUND_COLOR = "#00000000";
   BOLD = false;
-  OUTLINE = 2;
-  SHADOW = 0;
 
   constructor(style, countdown) {
     this.style = style;
@@ -61,9 +57,9 @@ ScriptType: v4.00+
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: CD,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,${this.OUTLINE},${this.SHADOW},1,60,30,110,1
-Style: K1,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,${this.OUTLINE},${this.SHADOW},1,60,30,80,1
-Style: K2,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,${this.OUTLINE},${this.SHADOW},3,30,60,40,1
+Style: CD,Source Han Serif,24,${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},#00000000,${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,1,0,1,60,30,110,1
+Style: K1,Source Han Serif,24,${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},#00000000,${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,2,0,1,60,30,80,1
+Style: K2,Source Han Serif,24,${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},#00000000,${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,2,0,3,30,60,40,1
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
