@@ -21,7 +21,7 @@ Please refer to [the example config](/config/example.jsonc) for detailed configu
 
   ```sh
   # Windows
-  mv "${input}" %TEMP%/audio.wav && <PATH_TO_PYTHON> <PATH_TO_VOCAL_REMOVER>/inference.py -P <PATH_TO_VOCAL_REMOVER>/models/baseline.pth -i %TEMP%/audio.wav -o %TEMP% && mv %TEMP%/audio_Instruments.wav "${output}"
+  powershell mv -force "${input}" $env:TEMP/audio.wav && powershell <PATH_TO_PYTHON> <PATH_TO_VOCAL_REMOVER>/inference.py -P <PATH_TO_VOCAL_REMOVER>/models/baseline.pth -i $env:TEMP/audio.wav -o $env:TEMP && powershell mv -force $env:TEMP/audio_Instruments.wav "${output}"
 
   # macOS
   mv "${input}" /tmp/audio.wav && <PATH_TO_PYTHON> <PATH_TO_VOCAL_REMOVER>/inference.py -P <PATH_TO_VOCAL_REMOVER>/models/baseline.pth -i /tmp/audio.wav -o /tmp && mv /tmp/audio_Instruments.wav "${output}"

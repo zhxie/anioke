@@ -1,7 +1,6 @@
 import fetch from "node-fetch";
 import { parseStringPromise as parseXMLString } from "xml2js";
 import { Line, Style, Word } from "../common";
-import { compile, header } from "../utils";
 
 const NAME = "petit_lyrics";
 
@@ -74,7 +73,6 @@ class Entry {
   };
 
   formattedLyrics = async () => {
-    const h = header(this.title_);
     const rawLyrics = await this.rawLyrics();
     const text = await parseXMLString(rawLyrics);
 
@@ -96,8 +94,7 @@ class Entry {
       }
       ls.push(l);
     }
-    const result = compile(this.style(), ls);
-    return `${h}${result}`;
+    return ls.map((value) => value.format());
   };
 
   rawLyrics = async () => {
