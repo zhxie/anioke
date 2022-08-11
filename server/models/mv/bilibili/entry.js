@@ -56,7 +56,7 @@ class Entry {
   };
 
   encodeOptions = () => {
-    return "";
+    return [];
   };
 
   format = (lyrics) => {

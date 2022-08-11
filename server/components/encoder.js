@@ -115,7 +115,8 @@ class Encoder {
             this.ffmpegPath
           }" -i "${mvPath}" -i "${karaokePath}" -map 0:v -map 0:a:0 -map 1 ${entry
             .mv()
-            .encodeOptions()} -y "${genMVPath}"`
+            .encodeOptions()
+            .join(" ")} -y "${genMVPath}"`
         );
         if (fs.existsSync(karaokePath)) {
           fs.rmSync(karaokePath);
