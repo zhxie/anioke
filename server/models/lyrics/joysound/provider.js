@@ -67,7 +67,7 @@ class Provider {
     const json = await res.json();
 
     return new Entry(
-      parseInt(json["songId"]),
+      parseInt(json["selSongNo"]),
       json["songName"],
       json["artistInfo"]["artistName"]
     );
