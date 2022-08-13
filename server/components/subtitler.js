@@ -22,23 +22,24 @@ const formatColor = (color) => {
 };
 
 class Subtitler {
-  ASS_STYLES = ["K1", "K2"];
+  LYRICS_STYLES = ["K1", "K2"];
+  COUNTDOWN_STYLE = "CD";
 
-  style = Style.Karaoke;
+  style;
+  countdown;
   // TODO: These constants should be configurable.
+  COUNT = 3;
+  SYMBOL = "●";
   ADVANCE = 5;
   DELAY = 1;
-  FONTSIZE = 24;
   PRIMARY_COLOR = "#000000FF";
   SECONDARY_COLOR = "#00FFFFFF";
   OUTLINE_COLOR = "#00000000";
-  BACKGROUND_COLOR = "#00000000";
   BOLD = false;
-  OUTLINE = 2;
-  SHADOW = 0;
 
-  constructor(style) {
+  constructor(style, countdown) {
     this.style = style;
+    this.countdown = countdown;
   }
 
   compile = (lines, lyrics) => {
@@ -56,8 +57,9 @@ ScriptType: v4.00+
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: K1,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,${this.OUTLINE},${this.SHADOW},1,60,30,80,1
-Style: K2,Source Han Serif,${this.FONTSIZE},${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},${formatColor(this.BACKGROUND_COLOR)},${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,${this.OUTLINE},${this.SHADOW},3,30,60,40,1
+Style: CD,Source Han Serif,24,${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},#00000000,${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,1,0,1,60,30,110,1
+Style: K1,Source Han Serif,24,${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},#00000000,${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,2,0,1,60,30,80,1
+Style: K2,Source Han Serif,24,${formatColor(this.PRIMARY_COLOR)},${formatColor(this.SECONDARY_COLOR)},${formatColor(this.OUTLINE_COLOR)},#00000000,${this.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,2,0,3,30,60,40,1
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
@@ -84,7 +86,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
   dialogues = (lines, style) => {
     let result = [];
-    let displays = new Array(this.ASS_STYLES.length).fill(0);
+    let displays = new Array(this.LYRICS_STYLES.length).fill(0);
     for (const line of lines) {
       // Escape empty lines.
       if (!line["line"]) {
@@ -111,7 +113,21 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         advance = Math.min(advance, this.ADVANCE);
       }
 
-      const assStyle = this.ASS_STYLES[index];
+      // Countdown.
+      if (this.countdown && newParagraph) {
+        if (advance >= this.COUNT) {
+          result.push(
+            this.dialogue(
+              this.withCountdown(line["startTime"]),
+              Style.Karaoke,
+              this.COUNTDOWN_STYLE,
+              advance - this.COUNT
+            )
+          );
+        }
+      }
+
+      const assStyle = this.LYRICS_STYLES[index];
       result.push(this.dialogue(line, style, assStyle, advance));
 
       // Clean up.
@@ -121,6 +137,25 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       displays[index] = line["endTime"] + this.DELAY;
     }
     return result.join("\n");
+  };
+
+  withCountdown = (startTime) => {
+    const symbol = `${this.SYMBOL} `;
+    const s = startTime - this.COUNT;
+    return {
+      line: symbol.repeat(this.COUNT),
+      startTime: s,
+      endTime: startTime - this.DELAY,
+      words: Array(this.COUNT)
+        .fill()
+        .map((_value, i) => {
+          return {
+            word: symbol,
+            startTime: s + i,
+            endTime: s + 1 + i,
+          };
+        }),
+    };
   };
 
   bestStyle = (style) => {

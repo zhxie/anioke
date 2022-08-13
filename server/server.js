@@ -30,6 +30,7 @@ const defaultConfig = {
   },
   subtitle: {
     style: "karaoke",
+    countdown: false,
   },
   providers: {
     mv: {
@@ -140,7 +141,10 @@ class Server {
 
     // Setup subtitler.
     const subtitleConfig = this.config["subtitle"];
-    this.subtitler = new Subtitler(subtitleConfig["style"] || "karaoke");
+    this.subtitler = new Subtitler(
+      subtitleConfig["style"] || "karaoke",
+      subtitleConfig["countdown"] || false
+    );
 
     // Setup player.
     this.player = new Player(
