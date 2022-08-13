@@ -1,5 +1,5 @@
 // This is an example config in JSONC format. Please remove all comments,
-// rename the file with suffix .json and have it located in the app data
+// rename the file to config.json and have it located in your app data
 // directory.
 //
 // Your default app data directory is:
