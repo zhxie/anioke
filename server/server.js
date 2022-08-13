@@ -7,6 +7,7 @@ import { internalIpV4Sync } from "internal-ip";
 import { camel } from "snake-camel";
 import {
   BilibiliMVProvider,
+  JoysoundLyricsProvider,
   PetitLyricsLyricsProvider,
   YoutubeMVProvider,
 } from "./models";
@@ -43,6 +44,9 @@ const defaultConfig = {
       },
     },
     lyrics: {
+      joysound: {
+        hidden: false,
+      },
       petitLyrics: {
         hidden: false,
       },
@@ -52,7 +56,10 @@ const defaultConfig = {
 
 class Server {
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
-  lyricsProviders = [new PetitLyricsLyricsProvider()];
+  lyricsProviders = [
+    new JoysoundLyricsProvider(),
+    new PetitLyricsLyricsProvider(),
+  ];
   configPath;
   config = defaultConfig;
   database;

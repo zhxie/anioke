@@ -137,6 +137,16 @@ const SettingsWindow = (props) => {
               <Input.Password />
             </Form.Item>
             <Divider plain orientation="left">
+              {t("joysound")}
+            </Divider>
+            <Form.Item
+              label={t("hidden")}
+              name={["providers", "lyrics", "joysound", "hidden"]}
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+            <Divider plain orientation="left">
               {t("petit_lyrics")}
             </Divider>
             <Form.Item

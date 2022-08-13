@@ -79,6 +79,11 @@
       }
     },
     "lyrics": {
+      "joysound": {
+        // Hides JOYSOUND provider. If it is unspecified, `false` will be used
+        // by default.
+        "hidden": false
+      },
       "petitLyrics": {
         // Hides PetitLyrics provider. If it is unspecified, `false` will be
         // used by default.
