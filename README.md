@@ -17,17 +17,19 @@ Please refer to [the example config](/config/example.jsonc) for detailed configu
 
 - Loss of details in the karaoke track
 
-  If you are using delivered method `remove_center_channel` for vocal removal, you may face with heavy loss of details in the karaoke track. We recommend to use 3rd party vocal removal application like [vocal-remover](https://github.com/tsurumeso/vocal-remover) and [Spleeter](https://github.com/deezer/spleeter). You have to follow their instructions to download files, setup environment, and change the vocal removal method to `custom`. For the custom script, you may change to
+  If you are using delivered method `remove_center_channel` for vocal removal, you may face with heavy loss of details in the karaoke track. We recommend to use 3rd party vocal removal application like [Spleeter](https://github.com/deezer/spleeter), [vocal-remover](https://github.com/tsurumeso/vocal-remover) and [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch). You have to follow their instructions to download files, setup environment, and change the vocal removal method to `custom`. For the custom script, if you are using macOS, you may change to the following scripts.
 
   ```sh
-  # Windows
-  powershell mv -force "${input}" $env:TEMP/audio.wav && powershell <PATH_TO_PYTHON> <PATH_TO_VOCAL_REMOVER>/inference.py -P <PATH_TO_VOCAL_REMOVER>/models/baseline.pth -i $env:TEMP/audio.wav -o $env:TEMP && powershell mv -force $env:TEMP/audio_Instruments.wav "${output}"
+  # All the following scripts are based on macOS.
+  # Spleeter
+  mv "${input}" /tmp/audio.wav && <PATH_TO_SPLEETER> separate -p spleeter:2stems -o /tmp /tmp/audio.wav && mv /tmp/audio/accompaniment.wav "${output}"
 
-  # macOS
+  # vocal-remover
   mv "${input}" /tmp/audio.wav && <PATH_TO_PYTHON> <PATH_TO_VOCAL_REMOVER>/inference.py -P <PATH_TO_VOCAL_REMOVER>/models/baseline.pth -i /tmp/audio.wav -o /tmp && mv /tmp/audio_Instruments.wav "${output}"
-  ```
 
-  if you are using vocal-remover.
+  # Open-Unmix
+  mv "${input}" /tmp/audio.wav && cd /tmp && <PATH_TO_OPEN_UNMIX> /tmp/audio.wav --targets vocals --residual 1 && mv /tmp/audio_umxl/residual.wav "${output}"
+  ```
 
 ## License
 
