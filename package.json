@@ -44,6 +44,7 @@
     "express-http-proxy": "^1.6.3",
     "ffmpeg-static": "^5.0.2",
     "i18next": "^21.8.13",
+    "iconv-lite": "^0.6.3",
     "internal-ip": "^7.0.0",
     "node-fetch": "^3.2.6",
     "react": "^18.2.0",
