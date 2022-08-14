@@ -1,27 +1,17 @@
-import { Result } from "antd";
 import iconv from "iconv-lite";
 import fetch from "node-fetch";
 
+import { Point, Pointer, Polyline } from "../../../utils";
 import { Line, Style, Word } from "../common";
 
 const NAME = "joysound";
 
-class Pointer {
-  i;
-
-  constructor(i) {
-    this.i = i ?? 0;
-  }
-
-  advance = (i) => {
-    this.i += i;
-    return this.i - i;
-  };
-
-  current = () => {
-    return this.i;
-  };
-}
+const EventId = {
+  Start: 0x0,
+  SetSpeed: 0x1,
+  Start2: 0xc,
+  SetSpeed2: 0xd,
+};
 
 class Entry {
   selSongNo;
@@ -68,14 +58,85 @@ class Entry {
     const rawLyrics = await this.rawLyrics();
 
     let lines = [];
-    for (const line of rawLyrics["lyrics"]) {
-      lines.push(line.join(""));
+    for (const line of rawLyrics.lyrics) {
+      lines.push(line.chars.map((char) => char.char).join(""));
     }
     return lines.join("\n");
   };
 
   formattedLyrics = async () => {
     const rawLyrics = await this.rawLyrics();
+
+    // Calculate ticks from start time and speed.
+    let lyricsTicks = [];
+    let lineTicks = [];
+    let time = 0;
+    let speed = 0;
+    let pos = 0;
+    const events = rawLyrics.timing;
+    for (const event of events) {
+      const nextTime = event.time / 1000;
+      const eventId = event.payload[0];
+      switch (eventId) {
+        case EventId.Start:
+          // Calculate remaining time in the last line.
+          pos = (nextTime - time) * speed + pos;
+          time = nextTime;
+          speed = event.payload[1] * 10;
+          if (lineTicks.length > 0) {
+            lineTicks.push({ time: time, pos: pos });
+            lyricsTicks.push(lineTicks);
+            lineTicks = [];
+          }
+          // Start of the next line.
+          pos = 0;
+          lineTicks.push({ time: time, pos: pos });
+          break;
+        case EventId.SetSpeed:
+          pos = (nextTime - time) * speed + pos;
+          time = nextTime;
+          speed = event.payload[1] * 10;
+          lineTicks.push({ time: time, pos: pos });
+          break;
+        case EventId.Start2:
+        case EventId.SetSpeed2:
+          throw new Error(`unsupported event id "${eventId}"`);
+        default:
+          break;
+      }
+    }
+    if (lineTicks.length > 0) {
+      lyricsTicks.push(lineTicks);
+    }
+
+    // Match lyrics with ticks.
+    let result = [];
+    const lyrics = rawLyrics.lyrics;
+    for (let i = 0; i < lyrics.length; i++) {
+      const line = lyrics[i];
+      const chars = line.chars;
+      const lineTicks = lyricsTicks[i];
+
+      // Line.
+      let startTime = lineTicks[0].time;
+      let l = new Line(chars.map((char) => char.char).join(""), startTime, 0);
+      let polyline = new Polyline(
+        lineTicks.map((tick) => {
+          return new Point(tick.time, tick.pos);
+        })
+      );
+      let width = 0;
+      for (const char of chars) {
+        width += char.width;
+        const endTime = polyline.crossByY(width).x();
+        l.words.push(new Word(char.char, startTime, endTime));
+        startTime = endTime;
+      }
+      l.endTime = startTime;
+      result.push(l);
+    }
+
+    return result;
   };
 
   rawLyrics = async () => {
@@ -96,8 +157,7 @@ class Entry {
         service_type: "003000951",
         slc: this.selSongNo,
         contents_type: 4,
-        // TODO: change to 3 on release
-        mode: 0,
+        mode: 3,
         api_ver: 6,
         play_type: 1,
       }),
@@ -115,11 +175,16 @@ class Entry {
     // These 30 bytes represent colors.
     pointer.advance(30);
     while (pointer.current() < timingOffset) {
-      // These 12 bytes represent size, flags, positions and styles.
-      pointer.advance(12);
+      // These 12 bytes represent size.
+      pointer.advance(2);
+      const flags = bin.readUint16LE(pointer.advance(2));
+      const xPos = bin.readUint16LE(pointer.advance(2));
+      const yPos = bin.readUint16LE(pointer.advance(2));
+      // These 4 bytes represent styles.
+      pointer.advance(4);
 
       // Parse characters.
-      let characters = [];
+      let chars = [];
       const count = bin.readUint16LE(pointer.advance(2));
       for (let i = 0; i < count; i++) {
         // This byte represents font.
@@ -128,21 +193,36 @@ class Entry {
           .slice(pointer.advance(2), pointer.current())
           .reverse();
         const char = iconv.decode(charSlice, "SHIFT_JIS");
-        characters.push(char.replace("\x00", ""));
-        // These bytes represents width.
-        pointer.advance(2);
+        const width = bin.readUint16LE(pointer.advance(2));
+        chars.push({
+          char: char.replace("\x00", ""),
+          width: width,
+        });
       }
-      lyrics.push(characters);
 
-      // TODO: Parse furiganas.
+      // Parse furiganas.
+      let furis = [];
       const fc = bin.readUint16LE(pointer.advance(2));
       for (let i = 0; i < fc; i++) {
         const length = bin.readUInt8(pointer.advance(2));
-        // These bytes represents position.
-        pointer.advance(2);
-        // These bytes represents furiganas.
-        pointer.advance(2 * length);
+        const xPos = bin.readUint16LE(pointer.advance(2));
+        let chars = "";
+        for (let j = 0; j < length; j++) {
+          const charSlice = bin
+            .slice(pointer.advance(2), pointer.current())
+            .reverse();
+          const char = iconv.decode(charSlice, "SHIFT_JIS");
+          chars += char;
+        }
+        furis.push({ xPos: xPos, chars: chars });
       }
+      lyrics.push({
+        flags: flags,
+        xPos: xPos,
+        yPos: yPos,
+        chars: chars,
+        furis: furis,
+      });
     }
 
     // Parse timing.
