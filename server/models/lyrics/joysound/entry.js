@@ -110,7 +110,7 @@ class Entry {
     }
 
     // Match lyrics with ticks.
-    let result = [];
+    let lines = [];
     const lyrics = rawLyrics.lyrics;
     for (let i = 0; i < lyrics.length; i++) {
       const line = lyrics[i];
@@ -120,23 +120,66 @@ class Entry {
       // Line.
       let startTime = lineTicks[0].time;
       let l = new Line(chars.map((char) => char.char).join(""), startTime, 0);
-      let polyline = new Polyline(
+      const polyline = new Polyline(
         lineTicks.map((tick) => {
           return new Point(tick.time, tick.pos);
         })
       );
       let width = 0;
       for (const char of chars) {
+        // Words.
         width += char.width;
         const endTime = polyline.crossByY(width).x();
-        l.words.push(new Word(char.char, startTime, endTime));
+        const word = new Word(char.char, startTime, endTime);
+        l.words.push(word);
         startTime = endTime;
       }
       l.endTime = startTime;
-      result.push(l);
+
+      lines.push(l);
     }
 
-    return result;
+    // Match lyrics with furiganas.
+    for (let i = 0; i < lyrics.length; i++) {
+      const line = lyrics[i];
+      const chars = line.chars;
+      const furis = line.furis;
+      if (furis.length < 1) {
+        continue;
+      }
+      let l = lines[i];
+
+      // Rubies.
+      const polyline = new Polyline(
+        chars
+          .reduce((prev, char) => {
+            let xPos = 0;
+            if (prev.length > 0) {
+              const p = prev[prev.length - 1];
+              xPos = p.xPos + p.width;
+            }
+            return prev.concat([{ xPos: xPos, width: char.width }]);
+          }, [])
+          .map((value, index) => new Point(index, value.xPos))
+      );
+      for (const furi of furis) {
+        const furiChars = furi.chars;
+        for (let j = 0; j < furiChars.length; j++) {
+          // Each furigana occupies a width of 24.
+          const width = furi.xPos + j * 24;
+          const wordIndex = Math.max(
+            Math.min(
+              Math.floor(polyline.crossByY(width).x()),
+              chars.length - 1
+            ),
+            0
+          );
+          l.words[wordIndex].rubies += furiChars[j];
+        }
+      }
+    }
+
+    return lines;
   };
 
   rawLyrics = async () => {
