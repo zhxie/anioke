@@ -102,6 +102,13 @@ const SettingsWindow = (props) => {
               </Select>
             </Form.Item>
             <Form.Item
+              label={t("rubies")}
+              name={["subtitle", "rubies"]}
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+            <Form.Item
               label={t("countdown")}
               name={["subtitle", "countdown"]}
               valuePropName="checked"
@@ -135,6 +142,16 @@ const SettingsWindow = (props) => {
               name={["providers", "mv", "youtube", "key"]}
             >
               <Input.Password />
+            </Form.Item>
+            <Divider plain orientation="left">
+              {t("joysound")}
+            </Divider>
+            <Form.Item
+              label={t("hidden")}
+              name={["providers", "lyrics", "joysound", "hidden"]}
+              valuePropName="checked"
+            >
+              <Switch />
             </Form.Item>
             <Divider plain orientation="left">
               {t("petit_lyrics")}

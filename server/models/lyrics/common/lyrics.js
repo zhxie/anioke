@@ -7,6 +7,7 @@ class Word {
   word;
   startTime;
   endTime;
+  rubies = "";
 
   constructor(word, startTime, endTime) {
     this.word = word;
@@ -19,6 +20,7 @@ class Word {
       word: this.word,
       startTime: this.startTime,
       endTime: this.endTime,
+      rubies: this.rubies,
     };
   };
 }
@@ -40,7 +42,7 @@ class Line {
       line: this.line,
       startTime: this.startTime,
       endTime: this.endTime,
-      words: this.words.map((value) => value.format()),
+      words: this.words.map((word) => word.format()),
     };
   };
 }

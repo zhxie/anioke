@@ -7,6 +7,7 @@ import { internalIpV4Sync } from "internal-ip";
 import { camel } from "snake-camel";
 import {
   BilibiliMVProvider,
+  JoysoundLyricsProvider,
   PetitLyricsLyricsProvider,
   YoutubeMVProvider,
 } from "./models";
@@ -30,6 +31,7 @@ const defaultConfig = {
   },
   subtitle: {
     style: "karaoke",
+    rubies: false,
     countdown: false,
   },
   providers: {
@@ -43,6 +45,9 @@ const defaultConfig = {
       },
     },
     lyrics: {
+      joysound: {
+        hidden: false,
+      },
       petitLyrics: {
         hidden: false,
       },
@@ -52,7 +57,10 @@ const defaultConfig = {
 
 class Server {
   mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
-  lyricsProviders = [new PetitLyricsLyricsProvider()];
+  lyricsProviders = [
+    new JoysoundLyricsProvider(),
+    new PetitLyricsLyricsProvider(),
+  ];
   configPath;
   config = defaultConfig;
   database;
@@ -143,6 +151,7 @@ class Server {
     const subtitleConfig = this.config["subtitle"];
     this.subtitler = new Subtitler(
       subtitleConfig["style"] || "karaoke",
+      subtitleConfig["rubies"] || false,
       subtitleConfig["countdown"] || false
     );
 
@@ -308,7 +317,7 @@ class Server {
     });
     this.server.get("/library", (_req, res) => {
       const records = this.database.selectAll();
-      const result = records.map((value) => value.format());
+      const result = records.map((record) => record.format());
       res.send(result);
     });
     this.server.get("/web-ui", (_req, res) => {

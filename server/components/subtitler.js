@@ -1,11 +1,6 @@
 import { Style } from "../models/lyrics/common/lyrics";
 import { padStart } from "../utils";
 
-const compileWord = (word) => {
-  const duration = Math.round((word["endTime"] - word["startTime"]) * 100);
-  return `{\\K${duration}}${word["word"]}`;
-};
-
 const formatTime = (time) => {
   const hour = parseInt(String(time / 3600));
   const min = parseInt(String((time - 3600 * hour) / 60));
@@ -26,6 +21,7 @@ class Subtitler {
   COUNTDOWN_STYLE = "CD";
 
   style;
+  rubies;
   countdown;
   // TODO: These constants should be configurable.
   COUNT = 3;
@@ -37,8 +33,9 @@ class Subtitler {
   OUTLINE_COLOR = "#00000000";
   BOLD = false;
 
-  constructor(style, countdown) {
+  constructor(style, rubies, countdown) {
     this.style = style;
+    this.rubies = rubies;
     this.countdown = countdown;
   }
 
@@ -65,6 +62,16 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;
   };
 
+  word = (word) => {
+    const duration = Math.round((word["endTime"] - word["startTime"]) * 100);
+    // TODO: These rubies should be rendered over the word.
+    if (this.rubies && word.rubies) {
+      return `{\\K${duration}}${word["rubies"]}`;
+    } else {
+      return `{\\K${duration}}${word["word"]}`;
+    }
+  };
+
   dialogue = (line, style, assStyle, advance) => {
     let words;
     switch (style) {
@@ -74,7 +81,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         break;
       case Style.Karaoke:
         words = `{\\K${Math.round(advance * 100)}}`;
-        words += line["words"].map(compileWord).join("");
+        words += line["words"].map(this.word).join("");
         break;
       default:
         throw new Error(`unexpected style "${style}"`);

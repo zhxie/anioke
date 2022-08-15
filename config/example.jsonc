@@ -57,6 +57,10 @@
     //
     // If it is unspecified, `karaoke` will be used by default.
     "style": "karaoke",
+    // Displays rubies (furiganas) instead of original characters (kanji) on
+    // subtitles if available. If it is unspecified, `false` will be used by
+    // default.
+    "rubies": false,
     // Displays countdown of subtitles. If it is enabled, in beginning of each
     // paragraph, a countdown graph will be appended. If it is unspecified,
     // `false` will be used by default.
@@ -79,6 +83,11 @@
       }
     },
     "lyrics": {
+      "joysound": {
+        // Hides JOYSOUND provider. If it is unspecified, `false` will be used
+        // by default.
+        "hidden": false
+      },
       "petitLyrics": {
         // Hides PetitLyrics provider. If it is unspecified, `false` will be
         // used by default.

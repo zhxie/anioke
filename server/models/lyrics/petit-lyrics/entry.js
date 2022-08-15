@@ -94,7 +94,7 @@ class Entry {
       }
       ls.push(l);
     }
-    return ls.map((value) => value.format());
+    return ls.map((line) => line.format());
   };
 
   rawLyrics = async () => {
