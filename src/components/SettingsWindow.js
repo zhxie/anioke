@@ -102,6 +102,13 @@ const SettingsWindow = (props) => {
               </Select>
             </Form.Item>
             <Form.Item
+              label={t("rubies")}
+              name={["subtitle", "rubies"]}
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
+            <Form.Item
               label={t("countdown")}
               name={["subtitle", "countdown"]}
               valuePropName="checked"

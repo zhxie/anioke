@@ -31,6 +31,7 @@ const defaultConfig = {
   },
   subtitle: {
     style: "karaoke",
+    rubies: false,
     countdown: false,
   },
   providers: {
@@ -150,6 +151,7 @@ class Server {
     const subtitleConfig = this.config["subtitle"];
     this.subtitler = new Subtitler(
       subtitleConfig["style"] || "karaoke",
+      subtitleConfig["rubies"] || false,
       subtitleConfig["countdown"] || false
     );
 
