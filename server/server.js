@@ -315,7 +315,7 @@ class Server {
     });
     this.server.get("/library", (_req, res) => {
       const records = this.database.selectAll();
-      const result = records.map((value) => value.format());
+      const result = records.map((record) => record.format());
       res.send(result);
     });
     this.server.get("/web-ui", (_req, res) => {

@@ -98,13 +98,13 @@ class Database {
 
   selectAll = () => {
     const records = this.db.prepare("SELECT * FROM mv").all();
-    return records.map((value) => {
+    return records.map((record) => {
       return new Record(
-        value["id"],
-        value["lyrics"],
-        value["offset"],
-        value["title"],
-        value["artist"]
+        record["id"],
+        record["lyrics"],
+        record["offset"],
+        record["title"],
+        record["artist"]
       );
     });
   };
