@@ -241,6 +241,11 @@ class Entry {
       }
     }
 
+    // Trim spaces in lines.
+    for (let line of lines) {
+      line.line = line.line.trim();
+    }
+
     return lines;
   };
 
