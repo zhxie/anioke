@@ -150,17 +150,21 @@ class Entry {
       let l = lines[i];
 
       // Rubies.
+      let charPos = chars.reduce((prev, char) => {
+        let xPos = 0;
+        if (prev.length > 0) {
+          const p = prev[prev.length - 1];
+          xPos = p.xPos + p.width;
+        }
+        return prev.concat([{ xPos: xPos, width: char.width }]);
+      }, []);
+      charPos.push({
+        xPos:
+          charPos[charPos.length - 1].xPos + charPos[charPos.length - 1].width,
+        width: 0,
+      });
       const polyline = new Polyline(
-        chars
-          .reduce((prev, char) => {
-            let xPos = 0;
-            if (prev.length > 0) {
-              const p = prev[prev.length - 1];
-              xPos = p.xPos + p.width;
-            }
-            return prev.concat([{ xPos: xPos, width: char.width }]);
-          }, [])
-          .map((value, index) => new Point(index, value.xPos))
+        charPos.map((value, index) => new Point(index, value.xPos))
       );
       for (const furi of furis) {
         const furiChars = furi.chars;
