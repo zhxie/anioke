@@ -59,9 +59,39 @@ class Entry {
 
     let lines = [];
     for (const line of rawLyrics.lyrics) {
-      lines.push(line.chars.map((char) => char.char).join(""));
+      lines.push({
+        line: line.chars.map((char) => char.char).join(""),
+        startXPos: line.xPos,
+        endXPos:
+          line.xPos +
+          line.chars.reduce((prev, char) => {
+            return prev + char.width;
+          }, 0),
+        yPos: line.yPos,
+      });
     }
-    return lines.join("\n");
+
+    // Merge lines with the same Y position.
+    for (let i = lines.length - 1; i > 0; i--) {
+      const line = lines[i];
+      let prevLine = lines[i - 1];
+
+      if (line.yPos == prevLine.yPos) {
+        if (line.startXPos != prevLine.endXPos) {
+          if (line.line.startsWith(" ") || prevLine.line.endsWith(" ")) {
+            prevLine.line += line.line;
+          } else {
+            prevLine.line += ` ${line.line}`;
+          }
+        } else {
+          prevLine.line += line.line;
+        }
+        prevLine.endXPos = line.endXPos;
+        lines.splice(i, 1);
+      }
+    }
+
+    return lines.map((line) => line.line.trim()).join("\n");
   };
 
   formattedLyrics = async () => {
