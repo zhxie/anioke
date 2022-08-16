@@ -75,9 +75,8 @@ class Entry {
     for (let i = lines.length - 1; i > 0; i--) {
       const line = lines[i];
       let prevLine = lines[i - 1];
-
-      if (line.yPos == prevLine.yPos) {
-        if (line.startXPos != prevLine.endXPos) {
+      if (line.yPos === prevLine.yPos) {
+        if (line.startXPos !== prevLine.endXPos) {
           if (line.line.startsWith(" ") || prevLine.line.endsWith(" ")) {
             prevLine.line += line.line;
           } else {
@@ -210,6 +209,35 @@ class Entry {
           );
           l.words[wordIndex].rubies += furiChars[j];
         }
+      }
+    }
+
+    // Merge lines with the same Y position.
+    for (let i = lines.length - 1; i > 0; i--) {
+      const line = lyrics[i];
+      const prevLine = lyrics[i - 1];
+      const l = lines[i];
+      if (line.yPos === prevLine.yPos) {
+        let prevL = lines[i - 1];
+        const prevLineEndXPos =
+          prevLine.xPos +
+          prevLine.chars.reduce((prev, char) => {
+            return prev + char.width;
+          }, 0);
+        if (prevLineEndXPos !== prevLine.xPos) {
+          if (l.line.startsWith(" ") || prevL.line.endsWith(" ")) {
+            prevL.line += l.line;
+          } else {
+            prevL.line += ` ${l.line}`;
+            prevL.words[prevL.words.length - 1].word += " ";
+          }
+        } else {
+          prevL.line += l.line;
+        }
+        prevL.words[prevL.words.length - 1].endTime = l.words[0].startTime;
+        prevL.words = prevL.words.concat(l.words);
+        prevL.endTime = l.endTime;
+        lines.splice(i, 1);
       }
     }
 
