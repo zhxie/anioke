@@ -159,10 +159,19 @@ class Entry {
       // Furigana.
       let furis = line.furis;
       for (let furi of furis) {
-        furi.startTime = polyline.crossByY(furi.xPos).x();
-        furi.endTime = polyline
-          .crossByY(furi.xPos + 24 * furi.chars.length)
-          .x();
+        let width = furi.xPos;
+        let furiStartTime = polyline.crossByY(width).x();
+        furi.charArray = [];
+        for (const char of furi.chars) {
+          width += 24;
+          const endTime = polyline.crossByY(width).x();
+          furi.charArray.push({
+            char: char,
+            startTime: furiStartTime,
+            endTime: endTime,
+          });
+          furiStartTime = endTime;
+        }
       }
     }
 
@@ -204,13 +213,7 @@ class Entry {
           endTime: char.endTime,
         };
       });
-      const furis = line.furis.map((furi) => {
-        return {
-          chars: furi.chars,
-          startTime: furi.startTime,
-          endTime: furi.endTime,
-        };
-      });
+      const furis = line.furis.map((furi) => furi.charArray);
       return {
         startTime: line.startTime,
         endTime: line.endTime,
