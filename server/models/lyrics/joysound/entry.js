@@ -1,5 +1,6 @@
 import iconv from "iconv-lite";
 import fetch from "node-fetch";
+import assert from "node:assert";
 
 import { Point, Pointer, Polyline } from "../../../utils";
 import { Line, Style, Word } from "../common";
@@ -72,6 +73,7 @@ class Entry {
 
     let result = [];
     for (const line of rawLyrics) {
+      const chars = line.chars;
       let l = new Line(
         line.chars
           .map((char) => char.char)
@@ -80,8 +82,65 @@ class Entry {
         line.startTime,
         line.endTime
       );
-      // TODO: Generate rubies for words.
-      for (const char of line.chars) {
+
+      // Mapping rubies to words.
+      const polyline = new Polyline(
+        chars
+          .map((char, i) => new Point(i, char.startTime))
+          .concat(new Point(chars.length, chars[chars.length - 1].endTime))
+      );
+      let nextWordWithRubies = 0;
+      let wordsWithRubies = [];
+      for (let i = 0; i < line.furis.length; i++) {
+        const furi = line.furis[i];
+        const startIndex = Math.max(
+          nextWordWithRubies,
+          Math.floor(polyline.crossByY(furi[0].startTime).x())
+        );
+        const endIndex = Math.min(
+          chars.length,
+          Math.ceil(polyline.crossByY(furi[furi.length - 1].endTime).x())
+        );
+        assert(
+          startIndex <= endIndex,
+          new Error("bug: incorrect furigana position")
+        );
+        wordsWithRubies.push({
+          start: startIndex,
+          end: endIndex,
+          furiIndex: i,
+        });
+        nextWordWithRubies = endIndex;
+      }
+
+      // Generate rubies for words.
+      for (let i = 0; i < chars.length; i++) {
+        if (wordsWithRubies.length > 0) {
+          const wordWithRubies = wordsWithRubies[0];
+          const start = wordWithRubies.start;
+          const end = wordWithRubies.end;
+          if (start <= i && i < end) {
+            let word = new Word(
+              chars
+                .slice(start, end)
+                .map((char) => char.char)
+                .join(""),
+              chars[start].startTime,
+              chars[end - 1].endTime
+            );
+            word.rubies = line.furis[wordWithRubies.furiIndex].map(
+              (furi) => new Word(furi.char, furi.startTime, furi.endTime)
+            );
+            word.rubies[0].startTime = word.startTime;
+            word.rubies[word.rubies.length - 1].endTime = word.endTime;
+
+            l.words.push(word);
+            wordsWithRubies.splice(0, 1);
+            i = end - 1;
+            continue;
+          }
+        }
+        const char = chars[i];
         l.words.push(new Word(char.char, char.startTime, char.endTime));
       }
       result.push(l);
