@@ -80,6 +80,7 @@ class Entry {
         line.startTime,
         line.endTime
       );
+      // TODO: Generate rubies for words.
       for (const char of line.chars) {
         l.words.push(new Word(char.char, char.startTime, char.endTime));
       }

@@ -68,7 +68,7 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     if (this.rubies && word.rubies) {
       return `{\\K${duration}}${word["rubies"]}`;
     } else {
-      return `{\\K${duration}}${word["word"]}`;
+      return word.rubies.map((ruby) => this.word(ruby)).join("");
     }
   };
 
