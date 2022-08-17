@@ -1,5 +1,6 @@
 import iconv from "iconv-lite";
 import fetch from "node-fetch";
+import assert from "node:assert";
 
 import { Point, Pointer, Polyline } from "../../../utils";
 import { Line, Style, Word } from "../common";
@@ -55,17 +56,100 @@ class Entry {
   };
 
   lyrics = async () => {
-    const rawLyrics = await this.rawLyrics();
+    const rawLyrics = await this.formattedRawLyrics();
 
-    let lines = [];
-    for (const line of rawLyrics.lyrics) {
-      lines.push(line.chars.map((char) => char.char).join(""));
-    }
-    return lines.join("\n");
+    return rawLyrics
+      .map((line) =>
+        line.chars
+          .map((char) => char.char)
+          .join("")
+          .trim()
+      )
+      .join("\n");
   };
 
   formattedLyrics = async () => {
-    const rawLyrics = await this.rawLyrics();
+    const rawLyrics = await this.formattedRawLyrics();
+
+    let result = [];
+    for (const line of rawLyrics) {
+      const chars = line.chars;
+      let l = new Line(
+        line.chars
+          .map((char) => char.char)
+          .join("")
+          .trim(),
+        line.startTime,
+        line.endTime
+      );
+
+      // Mapping rubies to words.
+      const polyline = new Polyline(
+        chars
+          .map((char, i) => new Point(i, char.startTime))
+          .concat(new Point(chars.length, chars[chars.length - 1].endTime))
+      );
+      let nextWordWithRubies = 0;
+      let wordsWithRubies = [];
+      for (let i = 0; i < line.furis.length; i++) {
+        const furi = line.furis[i];
+        const startIndex = Math.max(
+          nextWordWithRubies,
+          Math.floor(polyline.crossByY(furi[0].startTime).x())
+        );
+        const endIndex = Math.min(
+          chars.length,
+          Math.ceil(polyline.crossByY(furi[furi.length - 1].endTime).x())
+        );
+        assert(
+          startIndex <= endIndex,
+          new Error("bug: incorrect furigana position")
+        );
+        wordsWithRubies.push({
+          start: startIndex,
+          end: endIndex,
+          furiIndex: i,
+        });
+        nextWordWithRubies = endIndex;
+      }
+
+      // Generate rubies for words.
+      for (let i = 0; i < chars.length; i++) {
+        if (wordsWithRubies.length > 0) {
+          const wordWithRubies = wordsWithRubies[0];
+          const start = wordWithRubies.start;
+          const end = wordWithRubies.end;
+          if (start <= i && i < end) {
+            let word = new Word(
+              chars
+                .slice(start, end)
+                .map((char) => char.char)
+                .join(""),
+              chars[start].startTime,
+              chars[end - 1].endTime
+            );
+            word.rubies = line.furis[wordWithRubies.furiIndex].map(
+              (furi) => new Word(furi.char, furi.startTime, furi.endTime)
+            );
+            word.rubies[0].startTime = word.startTime;
+            word.rubies[word.rubies.length - 1].endTime = word.endTime;
+
+            l.words.push(word);
+            wordsWithRubies.splice(0, 1);
+            i = end - 1;
+            continue;
+          }
+        }
+        const char = chars[i];
+        l.words.push(new Word(char.char, char.startTime, char.endTime));
+      }
+      result.push(l);
+    }
+    return result;
+  };
+
+  formattedRawLyrics = async () => {
+    let rawLyrics = await this.rawLyrics();
 
     // Calculate ticks from start time and speed.
     let lyricsTicks = [];
@@ -110,76 +194,93 @@ class Entry {
     }
 
     // Match lyrics with ticks.
-    let lines = [];
-    const lyrics = rawLyrics.lyrics;
+    let lyrics = rawLyrics.lyrics;
     for (let i = 0; i < lyrics.length; i++) {
-      const line = lyrics[i];
-      const chars = line.chars;
+      let line = lyrics[i];
       const lineTicks = lyricsTicks[i];
 
-      // Line.
       let startTime = lineTicks[0].time;
-      let l = new Line(chars.map((char) => char.char).join(""), startTime, 0);
+      line.startTime = startTime;
       const polyline = new Polyline(
-        lineTicks.map((tick) => {
-          return new Point(tick.time, tick.pos);
-        })
+        lineTicks.map((tick) => new Point(tick.time, tick.pos))
       );
       let width = 0;
-      for (const char of chars) {
-        // Words.
+      // Char.
+      let chars = line.chars;
+      for (let char of chars) {
         width += char.width;
         const endTime = polyline.crossByY(width).x();
-        const word = new Word(char.char, startTime, endTime);
-        l.words.push(word);
+        char.startTime = startTime;
+        char.endTime = endTime;
         startTime = endTime;
       }
-      l.endTime = startTime;
-
-      lines.push(l);
-    }
-
-    // Match lyrics with furiganas.
-    for (let i = 0; i < lyrics.length; i++) {
-      const line = lyrics[i];
-      const chars = line.chars;
-      const furis = line.furis;
-      if (furis.length < 1) {
-        continue;
-      }
-      let l = lines[i];
-
-      // Rubies.
-      const polyline = new Polyline(
-        chars
-          .reduce((prev, char) => {
-            let xPos = 0;
-            if (prev.length > 0) {
-              const p = prev[prev.length - 1];
-              xPos = p.xPos + p.width;
-            }
-            return prev.concat([{ xPos: xPos, width: char.width }]);
-          }, [])
-          .map((value, index) => new Point(index, value.xPos))
-      );
-      for (const furi of furis) {
-        const furiChars = furi.chars;
-        for (let j = 0; j < furiChars.length; j++) {
-          // Each furigana occupies a width of 24.
-          const width = furi.xPos + j * 24;
-          const wordIndex = Math.max(
-            Math.min(
-              Math.floor(polyline.crossByY(width).x()),
-              chars.length - 1
-            ),
-            0
-          );
-          l.words[wordIndex].rubies += furiChars[j];
+      line.endTime = startTime;
+      line.endXPos = line.xPos + width;
+      // Furigana.
+      let furis = line.furis;
+      for (let furi of furis) {
+        let width = furi.xPos;
+        let furiStartTime = polyline.crossByY(width).x();
+        furi.charArray = [];
+        for (const char of furi.chars) {
+          width += 24;
+          const endTime = polyline.crossByY(width).x();
+          furi.charArray.push({
+            char: char,
+            startTime: furiStartTime,
+            endTime: endTime,
+          });
+          furiStartTime = endTime;
         }
       }
     }
 
-    return lines;
+    // Merge lines with the same Y position.
+    for (let i = lyrics.length - 1; i > 0; i--) {
+      let line = lyrics[i];
+      let prevLine = lyrics[i - 1];
+      let lineFirstChar = line.chars[0];
+      let prevLineLastChar = prevLine.chars[prevLine.chars.length - 1];
+      if (line.yPos === prevLine.yPos) {
+        if (line.xPos !== prevLine.endXPos) {
+          if (prevLineLastChar.char === " ") {
+            prevLineLastChar.endTime = lineFirstChar.startTime;
+          } else if (lineFirstChar.char === " ") {
+            lineFirstChar.startTime = prevLineLastChar.startTime;
+          } else {
+            prevLine.chars.push({
+              char: " ",
+              startTime: prevLineLastChar.endTime,
+              endTime: lineFirstChar.startTime,
+            });
+          }
+        } else {
+          prevLineLastChar.endTime = lineFirstChar.startTime;
+        }
+        prevLine.chars = prevLine.chars.concat(line.chars);
+        prevLine.furis = prevLine.furis.concat(line.furis);
+        prevLine.endTime = line.endTime;
+        prevLine.endXPos = line.endXPos;
+        lyrics.splice(i, 1);
+      }
+    }
+
+    return lyrics.map((line) => {
+      const chars = line.chars.map((char) => {
+        return {
+          char: char.char,
+          startTime: char.startTime,
+          endTime: char.endTime,
+        };
+      });
+      const furis = line.furis.map((furi) => furi.charArray);
+      return {
+        startTime: line.startTime,
+        endTime: line.endTime,
+        chars: chars,
+        furis: furis,
+      };
+    });
   };
 
   rawLyrics = async () => {

@@ -7,7 +7,7 @@ class Word {
   word;
   startTime;
   endTime;
-  rubies = "";
+  rubies = [];
 
   constructor(word, startTime, endTime) {
     this.word = word;
@@ -20,7 +20,7 @@ class Word {
       word: this.word,
       startTime: this.startTime,
       endTime: this.endTime,
-      rubies: this.rubies,
+      rubies: this.rubies.map((ruby) => ruby.format()),
     };
   };
 }
