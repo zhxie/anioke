@@ -6,7 +6,13 @@ import "./SearchWindow.css";
 import "./Window.css";
 import LyricsCard from "./LyricsCard";
 import MVCard from "./MVCard";
-import { options } from "../utils";
+import {
+  getConnect,
+  options,
+  searchMV as requestSearchMV,
+  searchLyrics as requestSearchLyrics,
+  requestOrder,
+} from "../utils";
 
 const SearchWindow = (props) => {
   const { className, addr } = props;
@@ -26,8 +32,7 @@ const SearchWindow = (props) => {
   useEffect(() => {
     const fetchProviders = async () => {
       setLoading(true);
-      const res = await fetch(`${addr}/connect`);
-      const json = await res.json();
+      const json = await getConnect();
 
       const mv = json["mv"];
       setMVProviders(mv);
@@ -43,10 +48,10 @@ const SearchWindow = (props) => {
   const searchMV = useCallback(
     async (title) => {
       setLoading(true);
-      const res = await fetch(
-        `${addr}/search?mv=${selectedMVProvider}&title=${title}`
-      );
-      const json = await res.json();
+      const json = await requestSearchMV({
+        mv: selectedMVProvider,
+        title,
+      });
 
       if ("error" in json) {
         console.error(json["error"]);
@@ -55,16 +60,16 @@ const SearchWindow = (props) => {
       }
       setLoading(false);
     },
-    [addr, selectedMVProvider]
+    [selectedMVProvider]
   );
 
   const searchLyrics = useCallback(
     async (title) => {
       setLoading(true);
-      const res = await fetch(
-        `${addr}/search?lyrics=${selectedLyricsProvider}&title=${title}`
-      );
-      const json = await res.json();
+      const json = await requestSearchLyrics({
+        lyrics: selectedLyricsProvider,
+        title,
+      });
 
       if ("error" in json) {
         console.error(json["error"]);
@@ -73,36 +78,26 @@ const SearchWindow = (props) => {
       }
       setLoading(false);
     },
-    [addr, selectedLyricsProvider]
+    [selectedLyricsProvider]
   );
 
-  const order = useCallback(
-    async (mv, lyrics) => {
-      setLoading(true);
-      const res = await fetch(`${addr}/order`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mv: mv,
-          lyrics: lyrics,
-        }),
-      });
-      const json = await res.json();
+  const order = useCallback(async (mv, lyrics) => {
+    setLoading(true);
+    const json = await requestOrder({
+      mv: mv,
+      lyrics: lyrics,
+    });
 
-      if ("error" in json) {
-        console.error(json["error"]);
-      }
+    if ("error" in json) {
+      console.error(json["error"]);
+    }
 
-      // Clean up.
-      setSelectedMV(null);
-      setMVList([]);
-      setLyricsList([]);
-      setLoading(false);
-    },
-    [addr]
-  );
+    // Clean up.
+    setSelectedMV(null);
+    setMVList([]);
+    setLyricsList([]);
+    setLoading(false);
+  }, []);
 
   const onBack = useCallback(async (_e) => {
     setSelectedMV(null);

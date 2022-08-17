@@ -13,11 +13,16 @@ import {
   SearchWindow,
 } from "../components";
 import { options } from "../utils";
+import { initService } from "../utils";
 
 const Tab = {
   Library: "library",
   Search: "search",
 };
+
+initService({
+  baseUrl: "",
+});
 
 const App = () => {
   const { t } = useTranslation(["webUI"]);

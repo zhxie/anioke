@@ -3,6 +3,9 @@ import express from "express";
 import proxy from "express-http-proxy";
 import path from "path";
 import url from "url";
+import installExtension, {
+  REACT_DEVELOPER_TOOLS,
+} from "electron-devtools-installer";
 import Server from "../server/server";
 
 const PROTOCOL = "anifile";
@@ -65,9 +68,11 @@ function handleFile(req, callback) {
 }
 
 app.whenReady().then(() => {
+  installExtension(REACT_DEVELOPER_TOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log("An error occurred: ", err));
   // Register protocols.
   protocol.registerFileProtocol(PROTOCOL, handleFile);
-
   // Setup window.
   const mainWindow = createWindow();
 
