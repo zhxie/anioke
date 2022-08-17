@@ -65,10 +65,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   word = (word) => {
     const duration = Math.round((word["endTime"] - word["startTime"]) * 100);
     // TODO: These rubies should be rendered over the word.
-    if (this.rubies && word.rubies) {
-      return `{\\K${duration}}${word["rubies"]}`;
-    } else {
+    if (this.rubies && word.rubies.length > 0) {
       return word.rubies.map((ruby) => this.word(ruby)).join("");
+    } else {
+      return `{\\K${duration}}${word["word"]}`;
     }
   };
 
