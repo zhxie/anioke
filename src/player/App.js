@@ -22,6 +22,7 @@ import {
   SearchWindow,
   SettingsWindow,
 } from "../components";
+import { initService } from "../utils";
 
 const { Text } = Typography;
 
@@ -44,6 +45,9 @@ const App = () => {
 
   const onReady = useCallback(async () => {
     const ready = await window.server.ready();
+    initService({
+      baseUrl: ready.addr,
+    });
     setAddr(ready["addr"]);
     setConfig(ready["config"]);
   }, []);
@@ -239,7 +243,7 @@ const App = () => {
       <div className="popover-widgets-wrapper">
         <Space direction="vertical">
           <PopoverWidget icon={<AppstoreOutlined />}>
-            <LibraryWindow className="fixed-window" addr={`${addr}`} />
+            <LibraryWindow className="fixed-window" />
           </PopoverWidget>
           <PopoverWidget icon={<SearchOutlined />}>
             <SearchWindow className="fixed-window" addr={`${addr}`} />

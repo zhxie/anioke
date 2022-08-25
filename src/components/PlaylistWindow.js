@@ -5,7 +5,14 @@ import { useTranslation } from "react-i18next";
 import "./PlaylistWindow.css";
 import "./Window.css";
 import EntryCard from "./EntryCard";
-import { options } from "../utils";
+import {
+  getPlaylist,
+  options,
+  removeSong,
+  requestShuffle,
+  retrySong,
+  topmostSong,
+} from "../utils";
 
 const Filter = {
   WaitToPlay: "wait_to_play",
@@ -13,7 +20,7 @@ const Filter = {
 };
 
 const PlaylistWindow = (props) => {
-  const { className, addr, visibility } = props;
+  const { className, visibility } = props;
 
   const { t } = useTranslation("playlist");
 
@@ -23,66 +30,45 @@ const PlaylistWindow = (props) => {
 
   const onRefresh = useCallback(async () => {
     setLoading(true);
-    const res = await fetch(`${addr}/playlist`);
-    const json = await res.json();
+    const json = await getPlaylist();
 
     setPlaylist(json);
     setLoading(false);
-  }, [addr]);
+  }, []);
 
   const onShuffle = useCallback(async () => {
     setLoading(true);
-    await fetch(`${addr}/shuffle`, { method: "POST" });
+    await requestShuffle();
 
     await onRefresh();
-  }, [addr, onRefresh]);
+  }, [onRefresh]);
 
   const onTopmost = useCallback(
     async (sequence) => {
       setLoading(true);
-      await fetch(`${addr}/topmost`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ sequence: sequence }),
-      });
-
+      await topmostSong({ sequence: sequence });
       await onRefresh();
     },
-    [addr, onRefresh]
+    [onRefresh]
   );
 
   const onRetry = useCallback(
     async (sequence) => {
       setLoading(true);
-      await fetch(`${addr}/retry`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ sequence: sequence }),
-      });
-
+      await retrySong({ sequence: sequence });
       await onRefresh();
     },
-    [addr, onRefresh]
+    [onRefresh]
   );
 
   const onRemove = useCallback(
     async (sequence) => {
       setLoading(true);
-      await fetch(`${addr}/remove`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ sequence: sequence }),
-      });
+      await removeSong({ sequence: sequence });
 
       await onRefresh();
     },
-    [addr, onRefresh]
+    [onRefresh]
   );
 
   useEffect(() => {

@@ -5,10 +5,10 @@ import { useTranslation } from "react-i18next";
 import "./LibraryWindow.css";
 import MVCard from "./MVCard";
 import "./Window.css";
-import { alphabetic } from "../utils";
+import { alphabetic, getLibrary, requestOrder } from "../utils";
 
 const LibraryWindow = (props) => {
-  const { className, addr } = props;
+  const { className } = props;
 
   const { t } = useTranslation("library");
 
@@ -19,14 +19,13 @@ const LibraryWindow = (props) => {
   useEffect(() => {
     const refresh = async () => {
       setLoading(true);
-      const res = await fetch(`${addr}/library`);
-      const json = await res.json();
+      const json = await getLibrary();
 
       setList(json);
       setLoading(false);
     };
     refresh();
-  }, [addr]);
+  }, []);
 
   const onInputChange = useCallback((e) => {
     setTitle(e.target.value);
@@ -37,17 +36,10 @@ const LibraryWindow = (props) => {
       const record = list.find((value) => value["mv"] === id);
       // Order.
       setLoading(true);
-      const res = await fetch(`${addr}/order`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          mv: record["mv"],
-          lyrics: record["lyrics"],
-        }),
+      const json = await requestOrder({
+        mv: record["mv"],
+        lyrics: record["lyrics"],
       });
-      const json = await res.json();
 
       if ("error" in json) {
         console.error(json["error"]);
@@ -55,7 +47,7 @@ const LibraryWindow = (props) => {
 
       setLoading(false);
     },
-    [list, addr]
+    [list]
   );
 
   return (

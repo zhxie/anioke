@@ -5,6 +5,12 @@ import { useTranslation } from "react-i18next";
 import "./Window.css";
 import "./PlayControlWindow.css";
 import QRLink from "./QRLink";
+import {
+  changeLyricsOffset,
+  requestReplay,
+  requestSkip,
+  requestSwitch,
+} from "../utils";
 
 const PlayControlWindow = (props) => {
   const { className, addr } = props;
@@ -12,29 +18,20 @@ const PlayControlWindow = (props) => {
   const { t } = useTranslation("playControl");
 
   const onSkip = useCallback(async () => {
-    await fetch(`${addr}/skip`, { method: "POST" });
-  }, [addr]);
+    await requestSkip();
+  }, []);
 
   const onReplay = useCallback(async () => {
-    await fetch(`${addr}/replay`, { method: "POST" });
-  }, [addr]);
+    await requestReplay();
+  }, []);
 
   const onSwitch = useCallback(async () => {
-    await fetch(`${addr}/switch`, { method: "POST" });
-  }, [addr]);
+    await requestSwitch();
+  }, []);
 
-  const onOffset = useCallback(
-    async (time) => {
-      await fetch(`${addr}/offset`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ time: time }),
-      });
-    },
-    [addr]
-  );
+  const onOffset = useCallback(async (time) => {
+    await changeLyricsOffset({ time: time });
+  }, []);
 
   return (
     <Space
