@@ -9,6 +9,14 @@ npm install
 npm run electron
 ```
 
+## Build
+
+```sh
+npm install
+npm build
+npm exec electron-builder -- -p never
+```
+
 ## Configuration
 
 Please refer to [the example config](/config/example.jsonc) for detailed configuration.
