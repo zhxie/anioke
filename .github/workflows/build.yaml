@@ -36,15 +36,15 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         run: node -p "process.arch" && mkdir C:\\GTK && curl -o gtk.zip https://mirror.ossplanet.net/gnome/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip && tar xvf gtk.zip -C C:\\GTK
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
-        with:
-          path: node_modules
-          key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-node-modules-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
+      # - name: Cache dependencies
+      #   uses: actions/cache@v3
+      #   with:
+      #     path: node_modules
+      #     key: ${{ runner.os }}-build-node-modules-${{ hashFiles('**/package-lock.json') }}
+      #     restore-keys: |
+      #       ${{ runner.os }}-build-node-modules-
+      #       ${{ runner.os }}-build-
+      #       ${{ runner.os }}-
 
       - name: Install dependencies
         run: npm install
