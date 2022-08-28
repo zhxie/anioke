@@ -12,8 +12,8 @@ jobs:
     strategy:
       matrix:
         os:
-          # - windows-latest
-          - macos-latest
+          - windows-latest
+          # - macos-latest
 
     steps:
       - name: Checkout
@@ -28,9 +28,13 @@ jobs:
           node-version: "16"
           cache: "npm"
 
-      - name: Install canvas dependencies on MacOS
+      - name: Install canvas dependencies on macOS
         if: ${{ runner.os == 'macOS' }}
         run: brew install pkg-config cairo pango libpng jpeg giflib librsvg
+
+      - name: Install canvas dependencies on Windows
+        if: ${{ runner.os == 'Windows' }}
+        run: mkdir C:\\GTK && curl -o gtk.zip https://mirror.ossplanet.net/gnome/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip && tar xvf gtk.zip -C C:\\GTK
 
       - name: Cache dependencies
         uses: actions/cache@v3
