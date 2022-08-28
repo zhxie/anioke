@@ -13,7 +13,7 @@ jobs:
       matrix:
         os:
           - windows-latest
-          # - macos-latest
+          - macos-latest
 
     steps:
       - name: Checkout
@@ -22,19 +22,11 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
 
-      - name: Use Node.js 16
+      - name: Use Node.js 18
         uses: actions/setup-node@v3
         with:
           node-version: "18"
           cache: "npm"
-
-      - name: Install canvas dependencies on macOS
-        if: ${{ runner.os == 'macOS' }}
-        run: brew install pkg-config cairo pango libpng jpeg giflib librsvg
-
-      - name: Install canvas dependencies on Windows
-        if: ${{ runner.os == 'Windows' }}
-        run: mkdir C:\\GTK && curl -o gtk.zip https://mirror.ossplanet.net/gnome/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip && tar xvf gtk.zip -C C:\\GTK
 
       - name: Cache dependencies
         uses: actions/cache@v3
