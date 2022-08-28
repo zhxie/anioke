@@ -1,15 +1,16 @@
 import { padStart } from "../../utils";
-import { createCanvas } from "canvas";
+import { createCanvas } from "@napi-rs/canvas";
 import config from "./config";
 
-const canvas = createCanvas();
+const canvas = createCanvas(1920, 1080);
 const ctx = canvas.getContext("2d");
 
-export const measureText = (text) => {
+export const measureText = (text = "") => {
   ctx.font = `${config.FONT_SIZE}px "${config.FONT_FAMILY}"`;
   const res = ctx.measureText(text);
+  console.log(res);
   const resWidth = res.width;
-  const resHeight = res.emHeightAscent + res.emHeightDescent;
+  const resHeight = res.fontBoundingBoxAscent + res.fontBoundingBoxDescent;
   // refer to Aegisub src/auto4_base.cpp line:159
   const scale = config.FONT_SIZE / resHeight;
   return {
