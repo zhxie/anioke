@@ -28,6 +28,10 @@ jobs:
           node-version: "16"
           cache: "npm"
 
+      - name: Install canvas dependencies on MacOS
+        if: ${{ runner.os == 'macOS' }}
+        run: brew install pkg-config cairo pango libpng jpeg giflib librsvg
+
       - name: Cache dependencies
         uses: actions/cache@v3
         with:
