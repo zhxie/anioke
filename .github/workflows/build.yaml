@@ -34,7 +34,7 @@ jobs:
 
       - name: Install canvas dependencies on Windows
         if: ${{ runner.os == 'Windows' }}
-        run: mkdir C:\\GTK && curl -o gtk.zip https://mirror.ossplanet.net/gnome/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip && tar xvf gtk.zip -C C:\\GTK
+        run: node -p "process.arch" && mkdir C:\\GTK && curl -o gtk.zip https://mirror.ossplanet.net/gnome/binaries/win64/gtk+/2.22/gtk+-bundle_2.22.1-20101229_win64.zip && tar xvf gtk.zip -C C:\\GTK
 
       - name: Cache dependencies
         uses: actions/cache@v3
