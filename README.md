@@ -42,6 +42,7 @@ Please refer to [the example config](/config/example.jsonc) for detailed configu
 - Cannot open on macOS
 
   If macOS tells you the application is broken and needs to be deleted, please follow the steps below:
+
   1. Open your terminal
   2. Execute `sudo xattr -d com.apple.quarantine /Applications/Anioke.app`
   3. Reopen Anioke
