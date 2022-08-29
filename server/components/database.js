@@ -77,6 +77,7 @@ class Database {
         }
 
         this.db.exec("PRAGMA user_version=1");
+        break;
       case USER_VERSION:
         break;
       default:
