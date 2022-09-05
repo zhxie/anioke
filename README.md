@@ -39,6 +39,14 @@ Please refer to [the example config](/config/example.jsonc) for detailed configu
   mv "${input}" /tmp/audio.wav && cd /tmp && <PATH_TO_OPEN_UNMIX> /tmp/audio.wav --targets vocals --residual 1 && mv /tmp/audio_umxl/residual.wav "${output}"
   ```
 
+- Cannot open on macOS
+
+  If macOS tells you the application is broken and needs to be deleted, please follow the steps below:
+
+  1. Open your terminal
+  2. Execute `sudo xattr -d com.apple.quarantine /Applications/Anioke.app`
+  3. Reopen Anioke
+
 ## License
 
 Anioke is licensed under [the MIT License](/LICENSE).
