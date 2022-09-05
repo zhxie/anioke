@@ -4,11 +4,6 @@ import Entry, { NAME } from "./entry";
 class Provider {
   cookie;
 
-  constructor() {
-    // TODO: It's async but should work most time.
-    this._initCookie();
-  }
-
   _initCookie = async () => {
     const res = await fetch(`https://www.bilibili.com`, {
       headers: {
