@@ -2,6 +2,19 @@ import fetch from "node-fetch";
 import Entry, { NAME } from "./entry";
 
 class Provider {
+  cookie;
+
+  _initCookie = async () => {
+    const res = await fetch(`https://www.bilibili.com`, {
+      headers: {
+        "user-agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.0.0 Safari/537.36",
+      },
+    });
+    const cookieList = res.headers.raw()["set-cookie"];
+    this.cookie = cookieList.map((item) => item.split(";")[0]).join(";");
+  };
+
   name = () => {
     return NAME;
   };
@@ -9,8 +22,16 @@ class Provider {
   configure = (_config) => {};
 
   search = async (title) => {
+    if (!this.cookie) {
+      await this._initCookie();
+    }
     const res = await fetch(
-      `https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=${title}`
+      `https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=${title}`,
+      {
+        headers: {
+          cookie: this.cookie,
+        },
+      }
     );
     const json = await res.json();
 
