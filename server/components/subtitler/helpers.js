@@ -8,7 +8,6 @@ const ctx = canvas.getContext("2d");
 export const measureText = (text = "") => {
   ctx.font = `${config.FONT_SIZE}px "${config.FONT_FAMILY}"`;
   const res = ctx.measureText(text);
-  console.log(res);
   const resWidth = res.width;
   const resHeight = res.fontBoundingBoxAscent + res.fontBoundingBoxDescent;
   // refer to Aegisub src/auto4_base.cpp line:159
