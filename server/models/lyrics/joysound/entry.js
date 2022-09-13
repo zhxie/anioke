@@ -194,7 +194,7 @@ class Entry {
     }
 
     // Match lyrics with ticks.
-    let lyrics = rawLyrics.lyrics;
+    let lyrics = rawLyrics.lyrics.filter((lyric) => lyric.flags !== 255);
     for (let i = 0; i < lyrics.length; i++) {
       let line = lyrics[i];
       const lineTicks = lyricsTicks[i];
