@@ -40,9 +40,9 @@ PlayResY: ${config.VIDEO_HEIGHT}
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: ${this.COUNTDOWN_STYLE},${config.FONT_FAMILY},${config.FONT_SIZE},${formatColor(config.PRIMARY_COLOR)},${formatColor(config.SECONDARY_COLOR)},${formatColor(config.OUTLINE_COLOR)},#00000000,${config.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,1,0,1,0,0,0,1
-Style: ${this.LYRIC_STYLE},${config.FONT_FAMILY},${config.FONT_SIZE},${formatColor(config.PRIMARY_COLOR)},${formatColor(config.SECONDARY_COLOR)},${formatColor(config.OUTLINE_COLOR)},#00000000,${config.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,2,0,1,0,0,0,1
-Style: ${this.RUBY_STYLE},${config.FONT_FAMILY},${config.RUBY_FONT_SIZE},${formatColor(config.PRIMARY_COLOR)},${formatColor(config.SECONDARY_COLOR)},${formatColor(config.OUTLINE_COLOR)},#00000000,${config.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,2,0,2,0,0,0,1
+Style: ${this.COUNTDOWN_STYLE},${config.FONT_FAMILY},${config.FONT_SIZE},${formatColor(config.PRIMARY_COLOR)},${formatColor(config.SECONDARY_COLOR)},${formatColor(config.OUTLINE_COLOR)},#00000000,${config.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,3,0,1,0,0,0,1
+Style: ${this.LYRIC_STYLE},${config.FONT_FAMILY},${config.FONT_SIZE},${formatColor(config.PRIMARY_COLOR)},${formatColor(config.SECONDARY_COLOR)},${formatColor(config.OUTLINE_COLOR)},#00000000,${config.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,4,0,1,0,0,0,1
+Style: ${this.RUBY_STYLE},${config.FONT_FAMILY},${config.RUBY_FONT_SIZE},${formatColor(config.PRIMARY_COLOR)},${formatColor(config.SECONDARY_COLOR)},${formatColor(config.OUTLINE_COLOR)},#00000000,${config.BOLD ? 1 : 0},0,0,0,100,100,0,0,1,4,0,2,0,0,0,1
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 `;

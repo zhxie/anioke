@@ -7,7 +7,7 @@ let config = {
   PRIMARY_COLOR: "#000000FF",
   SECONDARY_COLOR: "#00FFFFFF",
   OUTLINE_COLOR: "#00000000",
-  BOLD: false,
+  BOLD: true,
   COUNT: 3,
   SYMBOL: "●",
   ADVANCE: 5,
