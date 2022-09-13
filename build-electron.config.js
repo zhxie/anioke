@@ -9,4 +9,14 @@ module.exports = {
   },
   mainTarget: "electron18.0-main",
   preloadTarget: "electron18.0-preload",
+  customMainConfig: {
+    module: {
+      rules: [
+        {
+          test: /\.node$/,
+          loader: "node-loader",
+        },
+      ],
+    },
+  },
 };

@@ -16,6 +16,7 @@
 /public/*.js
 /public/*.txt
 /public/*.wasm
+/public/*.node
 
 # misc
 .DS_Store
