@@ -247,7 +247,7 @@ class Server {
     this.server.get("/lyrics", async (req, res) => {
       try {
         const lyrics = await this.getLyricsWithId(req.query["id"]);
-        res.send(lyrics.format(true));
+        res.send(await lyrics.format(true));
       } catch (e) {
         console.error(e);
         res.status(400).send({ error: e.message });
