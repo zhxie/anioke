@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import { Line, Style, Word } from "../common";
+import { Line, Style } from "../common";
 
 const NAME = "netease";
 
