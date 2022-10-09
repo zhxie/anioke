@@ -8,6 +8,7 @@ import { camel } from "snake-camel";
 import {
   BilibiliMVProvider,
   JoysoundLyricsProvider,
+  NullLyricsProvider,
   PetitLyricsLyricsProvider,
   YoutubeMVProvider,
 } from "./models";
@@ -51,6 +52,9 @@ const defaultConfig = {
       petitLyrics: {
         hidden: false,
       },
+      null: {
+        hidden: false,
+      },
     },
   },
 };
@@ -60,6 +64,7 @@ class Server {
   lyricsProviders = [
     new JoysoundLyricsProvider(),
     new PetitLyricsLyricsProvider(),
+    new NullLyricsProvider(),
   ];
   configPath;
   config = defaultConfig;
