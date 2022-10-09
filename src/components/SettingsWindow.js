@@ -154,11 +154,11 @@ const SettingsWindow = (props) => {
               <Switch />
             </Form.Item>
             <Divider plain orientation="left">
-              {t("netease")}
+              {t("ncm")}
             </Divider>
             <Form.Item
               label={t("hidden")}
-              name={["providers", "lyrics", "netease", "hidden"]}
+              name={["providers", "lyrics", "ncm", "hidden"]}
               valuePropName="checked"
             >
               <Switch />

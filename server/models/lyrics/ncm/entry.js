@@ -1,7 +1,7 @@
 import fetch from "node-fetch";
 import { Line, Style } from "../common";
 
-const NAME = "netease";
+const NAME = "ncm";
 
 class Entry {
   id_;

@@ -1,6 +1,6 @@
 export {
   JoysoundProvider as JoysoundLyricsProvider,
-  NetEaseProvider as NetEaseLyricsProvider,
+  NCMProvider as NCMLyricsProvider,
   NullProvider as NullLyricsProvider,
   PetitLyricsProvider as PetitLyricsLyricsProvider,
 } from "./lyrics";
