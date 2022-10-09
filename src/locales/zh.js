@@ -25,6 +25,7 @@ const zh = {
     in_library: "曲库内",
     joysound: "JOYSOUND",
     petit_lyrics: "プチリリ",
+    null: "无",
     traditional: "经典",
     karaoke: "卡拉OK",
     associated: "已关联",
