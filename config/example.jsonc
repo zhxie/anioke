@@ -74,8 +74,8 @@
         "hidden": false
       },
       "youtube": {
-        // Hides YouTube provider. If it is unspecified, `false` will be used by
-        // default.
+        // Hides YouTube provider. If it is unspecified, `false` will be used
+        // by default.
         "hidden": false,
         // The YouTube API key. You may acquire your own key in
         // https://developers.google.com/youtube/registering_an_application.
@@ -88,9 +88,19 @@
         // by default.
         "hidden": false
       },
+      "ncm": {
+        // Hides NetEase Cloud Music provider. If it is unspecified, `false`
+        // will be used by default.
+        "hidden": false
+      },
       "petitLyrics": {
         // Hides PetitLyrics provider. If it is unspecified, `false` will be
         // used by default.
+        "hidden": false
+      },
+      "null": {
+        // Hides null provider. If it is unspecified, `false` will be used by
+        // default.
         "hidden": false
       }
     }
