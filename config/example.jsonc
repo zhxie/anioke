@@ -97,11 +97,6 @@
         // Hides PetitLyrics provider. If it is unspecified, `false` will be
         // used by default.
         "hidden": false
-      },
-      "null": {
-        // Hides null provider. If it is unspecified, `false` will be used by
-        // default.
-        "hidden": false
       }
     }
   }

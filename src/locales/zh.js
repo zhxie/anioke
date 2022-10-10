@@ -26,10 +26,10 @@ const zh = {
     joysound: "JOYSOUND",
     ncm: "网易云音乐",
     petit_lyrics: "プチリリ",
-    null: "无",
     traditional: "经典",
     karaoke: "卡拉OK",
     associated: "已关联",
+    no_lyrics: "无歌词",
   },
   playlist: {
     shuffle: "打乱",

@@ -56,9 +56,6 @@ const defaultConfig = {
       petitLyrics: {
         hidden: false,
       },
-      null: {
-        hidden: false,
-      },
     },
   },
 };
@@ -68,8 +65,8 @@ class Server {
   lyricsProviders = [
     new JoysoundLyricsProvider(),
     new NCMLyricsProvider(),
-    new PetitLyricsLyricsProvider(),
     new NullLyricsProvider(),
+    new PetitLyricsLyricsProvider(),
   ];
   configPath;
   config = defaultConfig;
@@ -105,6 +102,10 @@ class Server {
     const mvConfig = providersConfig["mv"];
     for (let i = this.mvProviders.length - 1; i >= 0; i--) {
       let provider = this.mvProviders[i];
+      if (provider.name() === "null") {
+        continue;
+      }
+
       let config = mvConfig[camel(provider.name())];
       if (config["hidden"]) {
         this.mvProviders.splice(i, 1);
@@ -115,6 +116,10 @@ class Server {
     const lyricsConfig = providersConfig["lyrics"];
     for (let i = this.lyricsProviders.length - 1; i >= 0; i--) {
       let provider = this.lyricsProviders[i];
+      if (provider.name() === "null") {
+        continue;
+      }
+
       let config = lyricsConfig[camel(provider.name())];
       if (config["hidden"]) {
         this.lyricsProviders.splice(i, 1);
