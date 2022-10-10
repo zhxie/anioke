@@ -21,18 +21,20 @@ const LyricsCard = (props) => {
       <Space className="card-space" direction="vertical">
         <Paragraph className="card-paragraph" strong ellipsis={{ rows: 2 }}>
           {associated && <Tag>{t("associated")}</Tag>}
-          {title}
+          {associated ? `${artist} - ${title}` : title}
         </Paragraph>
-        <Space className="card-space" direction="vertical" size={0}>
-          <Space className="card-space card-space-inner">
-            <UserOutlined />
-            <Text ellipsis>{artist}</Text>
+        {!associated && (
+          <Space className="card-space" direction="vertical" size={0}>
+            <Space className="card-space card-space-inner">
+              <UserOutlined />
+              <Text ellipsis>{artist}</Text>
+            </Space>
+            <Space className="card-space card-space-inner">
+              <AlignCenterOutlined />
+              <Text ellipsis>{t(style)}</Text>
+            </Space>
           </Space>
-          <Space className="card-space card-space-inner">
-            <AlignCenterOutlined />
-            <Text ellipsis>{t(style)}</Text>
-          </Space>
-        </Space>
+        )}
       </Space>
     </Card>
   );
