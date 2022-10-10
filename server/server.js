@@ -9,6 +9,7 @@ import {
   BilibiliMVProvider,
   JoysoundLyricsProvider,
   NCMLyricsProvider,
+  NCMMVProvider,
   NullLyricsProvider,
   PetitLyricsLyricsProvider,
   YoutubeMVProvider,
@@ -41,6 +42,9 @@ const defaultConfig = {
       bilibili: {
         hidden: false,
       },
+      ncm: {
+        hidden: false,
+      },
       youtube: {
         hidden: false,
         key: "",
@@ -61,7 +65,11 @@ const defaultConfig = {
 };
 
 class Server {
-  mvProviders = [new BilibiliMVProvider(), new YoutubeMVProvider()];
+  mvProviders = [
+    new BilibiliMVProvider(),
+    new NCMMVProvider(),
+    new YoutubeMVProvider(),
+  ];
   lyricsProviders = [
     new JoysoundLyricsProvider(),
     new NCMLyricsProvider(),
