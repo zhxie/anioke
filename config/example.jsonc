@@ -73,6 +73,11 @@
         // by default.
         "hidden": false
       },
+      "ncm": {
+        // Hides NetEase Cloud Music provider. If it is unspecified, `false`
+        // will be used by default.
+        "hidden": false
+      },
       "youtube": {
         // Hides YouTube provider. If it is unspecified, `false` will be used
         // by default.

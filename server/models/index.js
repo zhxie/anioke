@@ -7,5 +7,6 @@ export {
 
 export {
   BilibiliProvider as BilibiliMVProvider,
+  NCMProvider as NCMMVProvider,
   YoutubeProvider as YoutubeMVProvider,
 } from "./mv";

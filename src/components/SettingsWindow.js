@@ -127,6 +127,16 @@ const SettingsWindow = (props) => {
             >
               <Switch />
             </Form.Item>
+            <Divider plain orientation="left" style={{ marginTop: 0 }}>
+              {t("ncm_mv")}
+            </Divider>
+            <Form.Item
+              label={t("hidden")}
+              name={["providers", "mv", "ncm", "hidden"]}
+              valuePropName="checked"
+            >
+              <Switch />
+            </Form.Item>
             <Divider plain orientation="left">
               {t("youtube")}
             </Divider>
@@ -154,7 +164,7 @@ const SettingsWindow = (props) => {
               <Switch />
             </Form.Item>
             <Divider plain orientation="left">
-              {t("ncm")}
+              {t("ncm_lyrics")}
             </Divider>
             <Form.Item
               label={t("hidden")}
