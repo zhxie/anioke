@@ -8,7 +8,7 @@ const { Paragraph, Text } = Typography;
 const LyricsCard = (props) => {
   const { t } = useTranslation("search");
 
-  const { id, title, artist, style, associated, onClick } = props;
+  const { id, title, artist, style, associated, simplified, onClick } = props;
 
   return (
     <Card
@@ -23,16 +23,18 @@ const LyricsCard = (props) => {
           {associated && <Tag>{t("associated")}</Tag>}
           {title}
         </Paragraph>
-        <Space className="card-space" direction="vertical" size={0}>
-          <Space className="card-space card-space-inner">
-            <UserOutlined />
-            <Text ellipsis>{artist}</Text>
+        {!simplified && (
+          <Space className="card-space" direction="vertical" size={0}>
+            <Space className="card-space card-space-inner">
+              <UserOutlined />
+              <Text ellipsis>{artist}</Text>
+            </Space>
+            <Space className="card-space card-space-inner">
+              <AlignCenterOutlined />
+              <Text ellipsis>{t(style)}</Text>
+            </Space>
           </Space>
-          <Space className="card-space card-space-inner">
-            <AlignCenterOutlined />
-            <Text ellipsis>{t(style)}</Text>
-          </Space>
-        </Space>
+        )}
       </Space>
     </Card>
   );

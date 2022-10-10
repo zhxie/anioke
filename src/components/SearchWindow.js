@@ -35,10 +35,10 @@ const SearchWindow = (props) => {
       const json = await getConnect();
 
       const mv = json["mv"];
-      setMVProviders(mv);
+      setMVProviders(mv.filter((provider) => provider !== "null"));
       setSelectedMVProvider(mv[0]);
       const lyrics = json["lyrics"];
-      setLyricsProviders(lyrics);
+      setLyricsProviders(lyrics.filter((provider) => provider !== "null"));
       setSelectedLyricsProvider(lyrics[0]);
       setLoading(false);
     };
@@ -183,9 +183,16 @@ const SearchWindow = (props) => {
             <LyricsCard
               id={selectedMV["lyrics"]["id"]}
               title={selectedMV["lyrics"]["title"]}
-              artist={selectedMV["lyrics"]["artist"]}
-              style={selectedMV["lyrics"]["style"]}
               associated
+              simplified
+              onClick={onLyricsCardClick}
+            />
+          )}
+          {selectedMV && (
+            <LyricsCard
+              id={`null..${title}`}
+              title={t("no_lyrics")}
+              simplified
               onClick={onLyricsCardClick}
             />
           )}
