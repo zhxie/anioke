@@ -3,7 +3,7 @@
 // directory.
 //
 // Your default app data directory is:
-// Windows: %APPDATA%\Roaming\Anioke
+// Windows: %APPDATA%\Anioke
 // macOS: ~/Library/Application Support/Anioke
 // Linux: ~/.Anioke
 {
