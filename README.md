@@ -30,7 +30,7 @@ Please refer to [the example config](/config/example.jsonc) for detailed configu
   ```sh
   # The following scripts are based on Windows.
   # Open-Unmix
-  powershell mv "${input}" $env:TEMP/audio.wav && cd %TEMP% && <PATH_TO_OPEN_UNMIX> audio.wav --targets vocals --residual 1 && powershell mv ./audio_umxl/residual.wav "${output}"
+  powershell mv -force "${input}" $env:TEMP/audio.wav && cd %TEMP% && <PATH_TO_OPEN_UNMIX> audio.wav --targets vocals --residual 1 && powershell mv -force ./audio_umxl/residual.wav "${output}"
 
   # The following scripts are based on macOS.
   # Spleeter
