@@ -12,6 +12,7 @@ process.once("loaded", () => {
     onSwitchTrack: (callback) => ipcRenderer.on("switch-track", callback),
     onOffset: (callback) => ipcRenderer.on("offset", callback),
     end: () => ipcRenderer.invoke("end"),
+    dir: () => ipcRenderer.invoke("dir"),
     removeAllControllerBinds: () => {
       ipcRenderer.removeAllListeners("play");
       ipcRenderer.removeAllListeners("stop");

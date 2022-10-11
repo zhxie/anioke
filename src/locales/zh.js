@@ -61,6 +61,7 @@ const zh = {
     database: "数据库",
     location: "位置",
     default_path: "默认路径",
+    open: "打开",
     download: "下载",
     "yt-dlp_path": "yt-dlp 路径",
     "use_internal_yt-dlp": "使用内置 yt-dlp",

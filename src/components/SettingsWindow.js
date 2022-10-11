@@ -19,7 +19,7 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 
 const SettingsWindow = (props) => {
-  const { className, config, onSave } = props;
+  const { className, config, onSave, onDir } = props;
 
   const { t } = useTranslation("settings");
 
@@ -69,7 +69,12 @@ const SettingsWindow = (props) => {
               <Input placeholder={t("use_internal_yt-dlp")} />
             </Form.Item>
             <Form.Item label={t("location")} name={["download", "location"]}>
-              <Input placeholder={t("default_path")} />
+              <Space>
+                <Input placeholder={t("default_path")} />
+                <Button block onClick={onDir}>
+                  {t("open")}
+                </Button>
+              </Space>
             </Form.Item>
           </TabPane>
           <TabPane tab={t("encode")} key="encode" forceRender>

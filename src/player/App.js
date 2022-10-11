@@ -266,6 +266,9 @@ const App = () => {
               className="fixed-window"
               config={config}
               onSave={onConfigSave}
+              onDir={() => {
+                window.player.dir();
+              }}
             />
           </PopoverWidget>
         </Space>
