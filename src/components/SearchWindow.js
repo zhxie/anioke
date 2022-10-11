@@ -15,7 +15,7 @@ import {
 } from "../utils";
 
 const SearchWindow = (props) => {
-  const { className, addr } = props;
+  const { className } = props;
 
   const { t } = useTranslation("search");
 
@@ -43,7 +43,7 @@ const SearchWindow = (props) => {
       setLoading(false);
     };
     fetchProviders();
-  }, [addr]);
+  }, []);
 
   const searchMV = useCallback(
     async (title) => {

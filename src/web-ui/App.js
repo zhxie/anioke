@@ -38,10 +38,8 @@ const App = () => {
         options={options([Tab.Library, Tab.Search], t)}
         value={tab}
       />
-      {tab === Tab.Library && (
-        <LibraryWindow className="fixed-window" addr="" />
-      )}
-      {tab === Tab.Search && <SearchWindow className="fixed-window" addr="" />}
+      {tab === Tab.Library && <LibraryWindow className="fixed-window" />}
+      {tab === Tab.Search && <SearchWindow className="fixed-window" />}
       <div className="drawer-widgets-wrapper">
         <Space direction="vertical">
           <DrawerWidget
@@ -49,11 +47,7 @@ const App = () => {
             height={480}
             afterVisibleChange={setPlaylist}
           >
-            <PlaylistWindow
-              className="window"
-              addr=""
-              visibility={showPlaylist}
-            />
+            <PlaylistWindow className="window" visibility={showPlaylist} />
           </DrawerWidget>
           <DrawerWidget icon={<PlaySquareOutlined />} height={104}>
             <PlayControlWindow className="window" addr="" />
