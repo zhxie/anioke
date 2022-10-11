@@ -106,6 +106,7 @@ app.whenReady().then(() => {
     server.handleConfig(config);
   });
   ipcMain.handle("end", server.handlePlayerEnded);
+  ipcMain.handle("dir", server.handleDir);
 });
 
 app.on("window-all-closed", () => {

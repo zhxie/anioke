@@ -4,6 +4,7 @@ import express from "express";
 import pathToFfmpeg from "ffmpeg-static";
 import fs from "fs";
 import { internalIpV4Sync } from "internal-ip";
+import openExplorer from "open-file-explorer";
 import { camel } from "snake-camel";
 import {
   BilibiliMVProvider,
@@ -394,6 +395,11 @@ class Server {
 
   handlePlayerEnded = () => {
     this.player.next();
+  };
+
+  handleDir = () => {
+    const appDataPath = getAppDataPath("Anioke");
+    openExplorer(this.config["download"]["location"] || `${appDataPath}/Media`);
   };
 }
 
