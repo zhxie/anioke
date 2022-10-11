@@ -1,3 +1,4 @@
+import { Lrc } from "lrc-kit";
 import fetch from "node-fetch";
 import { Line, Style } from "../common";
 
@@ -49,7 +50,7 @@ class Entry {
 
     let result = [];
     for (const line of rawLyrics) {
-      result.push(line.split("]", 2)[1]);
+      result.push(line.line);
     }
     return result.join("\n");
   };
@@ -58,25 +59,19 @@ class Entry {
     const rawLyrics = await this.rawLyrics();
 
     let result = [];
-    let prevStartTime = -1;
+    let prevTime = -1;
     let prevLine = "";
     for (const line of rawLyrics) {
       if (!line) {
         continue;
       }
-      const splits = line.split("]", 2);
-      const timeString = splits[0].split("[")[1];
-      const timeComponents = timeString.split(":");
-      const time = timeComponents.reduce(
-        (prev, current) => prev * 60 + parseFloat(current)
-      );
-      if (prevStartTime >= 0) {
-        result.push(new Line(prevLine, prevStartTime, time));
+      if (prevTime >= 0) {
+        result.push(new Line(prevLine, prevTime, line.time));
       }
-      prevStartTime = time;
-      prevLine = splits[1];
+      prevTime = line.time;
+      prevLine = line.line;
     }
-    result.push(new Line(prevLine, prevStartTime, 35999.99));
+    result.push(new Line(prevLine, prevTime, 35999.99));
     return result;
   };
 
@@ -86,7 +81,12 @@ class Entry {
     );
     const json = await res.json();
 
-    return json["lrc"]["lyric"].split("\n");
+    const lyrics = Lrc.parse(json["lrc"]["lyric"]);
+    return lyrics.lyrics
+      .sort((a, b) => a.timestamp - b.timestamp)
+      .map((lyric) => {
+        return { time: lyric.timestamp, line: lyric.content };
+      });
   };
 }
 
