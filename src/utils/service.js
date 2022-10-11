@@ -4,11 +4,15 @@ class Service {
   }
 
   _buildUrl(path, params = {}) {
-    const url = new URL(path, this.baseUrl);
-    Object.keys(params).forEach((key) => {
-      url.searchParams.set(key, params[key]);
-    });
-    return url.href;
+    if (this.baseUrl) {
+      const url = new URL(path, this.baseUrl);
+      Object.keys(params).forEach((key) => {
+        url.searchParams.set(key, params[key]);
+      });
+      return url.href;
+    } else {
+      return path;
+    }
   }
 
   async _request(fetchRequest) {
