@@ -25,10 +25,14 @@ Please refer to [the example config](/config/example.jsonc) for detailed configu
 
 - Loss of details in the karaoke track
 
-  If you are using delivered method `remove_center_channel` for vocal removal, you may face with heavy loss of details in the karaoke track. We recommend to use 3rd party vocal removal application like [Spleeter](https://github.com/deezer/spleeter), [vocal-remover](https://github.com/tsurumeso/vocal-remover) and [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch). You have to follow their instructions to download files, setup environment, and change the vocal removal method to `custom`. For the custom script, if you are using macOS, you may change to the following scripts.
+  You may face with heavy loss of details in the karaoke track using delivered method `remove_center_channel` for vocal removal. Therefore, we recommend to use 3rd party vocal removal application like [Spleeter](https://github.com/deezer/spleeter), [vocal-remover](https://github.com/tsurumeso/vocal-remover) and [Open-Unmix](https://github.com/sigsep/open-unmix-pytorch). You have to follow their instructions to download files, setup environment, and change the vocal removal method to `custom` and fill scripts as the following examples.
 
   ```sh
-  # All the following scripts are based on macOS.
+  # The following scripts are based on Windows.
+  # Open-Unmix
+  powershell mv -force "${input}" $env:TEMP/audio.wav && cd %TEMP% && <PATH_TO_OPEN_UNMIX> audio.wav --targets vocals --residual 1 && powershell mv -force ./audio_umxl/residual.wav "${output}"
+
+  # The following scripts are based on macOS.
   # Spleeter
   mv "${input}" /tmp/audio.wav && <PATH_TO_SPLEETER> separate -p spleeter:2stems -o /tmp /tmp/audio.wav && mv /tmp/audio/accompaniment.wav "${output}"
 
@@ -36,16 +40,16 @@ Please refer to [the example config](/config/example.jsonc) for detailed configu
   mv "${input}" /tmp/audio.wav && <PATH_TO_PYTHON> <PATH_TO_VOCAL_REMOVER>/inference.py -P <PATH_TO_VOCAL_REMOVER>/models/baseline.pth -i /tmp/audio.wav -o /tmp && mv /tmp/audio_Instruments.wav "${output}"
 
   # Open-Unmix
-  mv "${input}" /tmp/audio.wav && cd /tmp && <PATH_TO_OPEN_UNMIX> /tmp/audio.wav --targets vocals --residual 1 && mv /tmp/audio_umxl/residual.wav "${output}"
+  mv "${input}" /tmp/audio.wav && cd /tmp && <PATH_TO_OPEN_UNMIX> audio.wav --targets vocals --residual 1 && mv ./audio_umxl/residual.wav "${output}"
   ```
 
-- Cannot open on macOS
+- Cannot be opened on macOS
 
-  If macOS tells you the application is broken and needs to be deleted, please follow the steps below:
+  If macOS tells you Anioke is damaged and cannot be opened, please execute the following script in terminal to fix.
 
-  1. Open your terminal
-  2. Execute `sudo xattr -d com.apple.quarantine /Applications/Anioke.app`
-  3. Reopen Anioke
+  ```sh
+  sudo xattr -d com.apple.quarantine /Applications/Anioke.app
+  ```
 
 ## License
 
