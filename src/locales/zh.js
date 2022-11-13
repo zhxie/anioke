@@ -90,9 +90,8 @@ const zh = {
     ncm_lyrics: "网易云音乐 (歌词)",
     petit_lyrics: "プチリリ",
     save: "保存",
-    cookies_file_path: "Cookies 文件路径",
-    bilibili_cookies_file_path_tooltip:
-      "B 站需要提供 cookies 才能获取 480P 以上的画质。请提供一个 Netscape 格式的 cookies 文件路径，可以用「Get cookies.txt」插件在 B 站页面获取",
+    bilibili_cookies_tooltip:
+      "B 站需要提供 cookies 才能获取 480P 以上的画质，请在 B 站页面获取后粘贴在这里",
   },
 };
 

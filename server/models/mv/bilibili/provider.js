@@ -20,7 +20,7 @@ class Provider {
   };
 
   configure = (config) => {
-    this.cookiesPath = config.cookiesPath;
+    this.cookies = config.cookies;
   };
 
   search = async (title) => {
@@ -62,7 +62,7 @@ class Provider {
             ele["upic"],
             page["page"],
             part,
-            this.cookiesPath
+            this.cookies
           )
         );
       }
@@ -94,7 +94,7 @@ class Provider {
       owner["face"],
       page,
       part,
-      this.cookiesPath
+      this.cookies
     );
   };
 }

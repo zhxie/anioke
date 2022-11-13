@@ -42,9 +42,9 @@ const SettingsWindow = (props) => {
     form.submit();
   }, [form]);
 
-  const BilibiliCookiesPathConfigLabel = (
-    <Tooltip title={t("bilibili_cookies_file_path_tooltip")}>
-      <span>{t("cookies_file_path")}</span>
+  const BilibiliCookiesConfigLabel = (
+    <Tooltip title={t("bilibili_cookies_tooltip")}>
+      <span>Cookies</span>
     </Tooltip>
   );
 
@@ -140,8 +140,8 @@ const SettingsWindow = (props) => {
               <Switch />
             </Form.Item>
             <Form.Item
-              label={BilibiliCookiesPathConfigLabel}
-              name={["providers", "mv", "bilibili", "cookiesPath"]}
+              label={BilibiliCookiesConfigLabel}
+              name={["providers", "mv", "bilibili", "cookies"]}
             >
               <Input />
             </Form.Item>

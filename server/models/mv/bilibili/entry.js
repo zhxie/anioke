@@ -8,10 +8,10 @@ class Entry {
   upic;
   page;
   part;
-  cookiesPath;
+  cookies;
 
   // Too many props. Should be put into one config prop.
-  constructor(author, bvid, title, pic, upic, page, part, cookiesPath) {
+  constructor(author, bvid, title, pic, upic, page, part, cookies) {
     this.author = author;
     this.bvid = bvid;
     this.title_ = title;
@@ -19,7 +19,7 @@ class Entry {
     this.upic = upic;
     this.page = page;
     this.part = part;
-    this.cookiesPath = cookiesPath;
+    this.cookies = cookies;
   }
 
   id = () => {
@@ -55,8 +55,8 @@ class Entry {
   };
 
   downloadOptions = () => {
-    if (this.cookiesPath) {
-      return ["--cookies", this.cookiesPath];
+    if (this.cookies) {
+      return ["--add-header", `cookie:${this.cookies}`];
     }
     return [];
   };
