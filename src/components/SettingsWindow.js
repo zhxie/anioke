@@ -8,6 +8,7 @@ import {
   Space,
   Switch,
   Tabs,
+  Tooltip,
 } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
@@ -40,6 +41,12 @@ const SettingsWindow = (props) => {
   const onClick = useCallback(() => {
     form.submit();
   }, [form]);
+
+  const BilibiliCookiesPathConfigLabel = (
+    <Tooltip title={t("bilibili_cookies_file_path_tooltip")}>
+      <span>{t("cookies_file_path")}</span>
+    </Tooltip>
+  );
 
   return (
     <Space
@@ -131,6 +138,12 @@ const SettingsWindow = (props) => {
               valuePropName="checked"
             >
               <Switch />
+            </Form.Item>
+            <Form.Item
+              label={BilibiliCookiesPathConfigLabel}
+              name={["providers", "mv", "bilibili", "cookiesPath"]}
+            >
+              <Input />
             </Form.Item>
             <Divider plain orientation="left" style={{ marginTop: 0 }}>
               {t("ncm_mv")}
