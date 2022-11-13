@@ -25,7 +25,7 @@ class Subtitler {
 
   compile = (lines, lyrics) => {
     const style = this.bestStyle(lyrics.style());
-    const dialogues = this.dialogues(lines, style);
+    const dialogues = this.dialogues(this.formatLines(lines), style);
     const header = this.header(lyrics.title());
     return `${header}\n${dialogues}`;
   };
@@ -50,7 +50,20 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
   word = (word) => {
     const duration = Math.round((word["endTime"] - word["startTime"]) * 100);
-    return `{\\K${duration}}${word["word"]}`;
+    const spaceMatches = word.word.match(/^(\s*)(\S+|\S+\s*\S+)*(\s*)$/);
+    if (word.word.trim().length === 0 || !spaceMatches) {
+      return `{\\K${duration}}${word["word"]}`;
+    }
+    const prefixSpaces = spaceMatches[1];
+    const suffixSpaces = spaceMatches[3];
+    const line = word.word.trim();
+    // Each space is converted to k1, and the duration of words should minus spaces.
+    const lineDuration = duration - prefixSpaces.length - suffixSpaces.length;
+    return [
+      ...Array(prefixSpaces.length).fill(`{\\K1} `),
+      `{\\K${lineDuration}}${line}`,
+      ...Array(suffixSpaces.length).fill(`{\\K1} `),
+    ].join("");
   };
 
   dialogue = (options) => {
@@ -76,11 +89,12 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
   rubyDialogues = (options) => {
     const { line, advance, trackIndex, style } = options;
     const result = [];
+    const fullWords = line.words.map((word) => word.word).join("");
     let cachedWords = "";
-    // 处理 rubies
+    // Handle rubies.
     line.words.forEach((word) => {
       cachedWords += word.word;
-      if (!word.rubies.length) {
+      if (!word.rubies || !word.rubies.length) {
         return;
       }
       const waitedTime = Math.round(
@@ -90,9 +104,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       const endTime = formatTime(line.endTime + config.DELAY);
       const rubyStartPoint = getRubyTrackPos({
         trackIndex,
-        targetWord: word.word,
-        wordsToTarget: cachedWords,
-        fullWords: line.line,
+        targetWord: word.word.trim(),
+        wordsToTarget: cachedWords.trimEnd(),
+        fullWords,
       });
       const words =
         style === Style.Karaoke
@@ -159,7 +173,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
           style,
           assStyle: this.LYRIC_STYLE,
           advance,
-          pos: getLyricTrackPos(line.line, trackIndex),
+          pos: getLyricTrackPos(
+            line.words.map((w) => w.word).join(""),
+            trackIndex
+          ),
         })
       );
 
@@ -224,6 +241,27 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
       default:
         throw new Error(`unexpected style "${style}"`);
     }
+  };
+
+  formatLines = (lines) => {
+    return lines.map((line) => ({
+      ...line,
+      // The first word and the last word in line should be trimmed. Libass will ignore whitespace at the beginning and end of line while rendering subtitle.
+      words: line.words.map((word, index) => {
+        const res = {
+          ...word,
+        };
+        // If is the first sentence.
+        if (index === 0) {
+          res.word = res.word.trimStart();
+        }
+        // If is the last sentence.
+        if (index === line.words.length - 1) {
+          res.word = res.word.trimEnd();
+        }
+        return res;
+      }),
+    }));
   };
 }
 
