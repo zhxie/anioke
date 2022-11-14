@@ -12,6 +12,7 @@ import {
 } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import InfoCircleOutlined from "@ant-design/icons/InfoCircleOutlined";
 import "./SettingsWindow.css";
 import "./Window.css";
 
@@ -44,7 +45,8 @@ const SettingsWindow = (props) => {
 
   const BilibiliCookiesConfigLabel = (
     <Tooltip title={t("bilibili_cookies_tooltip")}>
-      <span>Cookies</span>
+      <span>{t("cookie")}</span>
+      <InfoCircleOutlined className="icon-info" />
     </Tooltip>
   );
 
@@ -141,7 +143,7 @@ const SettingsWindow = (props) => {
             </Form.Item>
             <Form.Item
               label={BilibiliCookiesConfigLabel}
-              name={["providers", "mv", "bilibili", "cookies"]}
+              name={["providers", "mv", "bilibili", "cookie"]}
             >
               <Input />
             </Form.Item>
