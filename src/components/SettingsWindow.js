@@ -8,9 +8,11 @@ import {
   Space,
   Switch,
   Tabs,
+  Tooltip,
 } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import InfoCircleOutlined from "@ant-design/icons/InfoCircleOutlined";
 import "./SettingsWindow.css";
 import "./Window.css";
 
@@ -40,6 +42,13 @@ const SettingsWindow = (props) => {
   const onClick = useCallback(() => {
     form.submit();
   }, [form]);
+
+  const BilibiliCookiesConfigLabel = (
+    <Tooltip title={t("bilibili_cookies_tooltip")}>
+      <span>{t("cookie")}</span>
+      <InfoCircleOutlined className="icon-info" />
+    </Tooltip>
+  );
 
   return (
     <Space
@@ -131,6 +140,12 @@ const SettingsWindow = (props) => {
               valuePropName="checked"
             >
               <Switch />
+            </Form.Item>
+            <Form.Item
+              label={BilibiliCookiesConfigLabel}
+              name={["providers", "mv", "bilibili", "cookie"]}
+            >
+              <Input />
             </Form.Item>
             <Divider plain orientation="left" style={{ marginTop: 0 }}>
               {t("ncm_mv")}

@@ -90,6 +90,9 @@ const zh = {
     ncm_lyrics: "网易云音乐 (歌词)",
     petit_lyrics: "プチリリ",
     save: "保存",
+    cookie: "Cookie",
+    bilibili_cookies_tooltip:
+      "哔哩哔哩需要提供 Cookie 才能获取 480P 以上的画质",
   },
 };
 
