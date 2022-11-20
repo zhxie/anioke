@@ -62,7 +62,7 @@ class Entry {
   };
 
   encodeOptions = () => {
-    return [];
+    return ["-vcodec", "copy"];
   };
 
   format = (lyrics) => {

@@ -64,6 +64,8 @@ function handleFile(req, callback) {
   });
 }
 
+app.commandLine.appendSwitch("enable-features", "PlatformHEVCDecoderSupport");
+
 app.whenReady().then(() => {
   // Register protocols.
   protocol.registerFileProtocol(PROTOCOL, handleFile);
