@@ -71,7 +71,9 @@
       "bilibili": {
         // Hides Bilibili provider. If it is unspecified, `false` will be used
         // by default.
-        "hidden": false
+        "hidden": false,
+        // Cookie for Bilibili. If it is unspecified, you'll get only 480P when downloading videos.
+        "cookie": ""
       },
       "ncm": {
         // Hides NetEase Cloud Music provider. If it is unspecified, `false`
