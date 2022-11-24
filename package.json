@@ -39,7 +39,7 @@
     "@napi-rs/canvas": "^0.1.29",
     "antd": "^4.21.5",
     "appdata-path": "^1.0.0",
-    "better-sqlite3": "github:neoxpert/better-sqlite3#fix_electron20_build",
+    "better-sqlite3": "^8.0.0",
     "deep-extend": "^0.6.0",
     "express": "^4.18.1",
     "express-http-proxy": "^1.6.3",
