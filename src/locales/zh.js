@@ -81,18 +81,20 @@ const zh = {
     providers: "数据源",
     mv: "MV",
     bilibili: "哔哩哔哩",
+    cookie: "Cookie",
+    bilibili_cookie_tooltip:
+      "提供哔哩哔哩的 Cookie 后，Anioke 将支持下载分辨率高于 480p 的 MV",
     hidden: "隐藏",
     ncm_mv: "网易云音乐 (MV)",
     youtube: "YouTube",
-    api_key: "API Key",
+    api_key: "API 密钥",
+    youtube_api_key_tooltip:
+      "提供 YouTube 的 API 密钥 后，Anioke 将支持搜索与下载 MV",
     lyrics: "歌词",
     joysound: "JOYSOUND",
     ncm_lyrics: "网易云音乐 (歌词)",
     petit_lyrics: "プチリリ",
     save: "保存",
-    cookie: "Cookie",
-    bilibili_cookies_tooltip:
-      "哔哩哔哩需要提供 Cookie 才能获取 480P 以上的画质",
   },
 };
 
