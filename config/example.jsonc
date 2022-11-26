@@ -3,7 +3,7 @@
 // directory.
 //
 // Your default app data directory is:
-// Windows: %APPDATA%\Roaming\Anioke
+// Windows: %APPDATA%\Anioke
 // macOS: ~/Library/Application Support/Anioke
 // Linux: ~/.Anioke
 {
@@ -71,7 +71,10 @@
       "bilibili": {
         // Hides Bilibili provider. If it is unspecified, `false` will be used
         // by default.
-        "hidden": false
+        "hidden": false,
+        // The cookie of Bilibili. If it is unspecified, Anioke can onl
+        // download videos with resolution less than 480p.
+        "cookie": ""
       },
       "ncm": {
         // Hides NetEase Cloud Music provider. If it is unspecified, `false`

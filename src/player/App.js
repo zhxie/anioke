@@ -246,7 +246,7 @@ const App = () => {
             <LibraryWindow className="fixed-window" />
           </PopoverWidget>
           <PopoverWidget icon={<SearchOutlined />}>
-            <SearchWindow className="fixed-window" addr={`${addr}`} />
+            <SearchWindow className="fixed-window" />
           </PopoverWidget>
           <PopoverWidget
             icon={<UnorderedListOutlined />}
@@ -254,7 +254,6 @@ const App = () => {
           >
             <PlaylistWindow
               className="fixed-window"
-              addr={`${addr}`}
               visibility={showPlaylist}
             />
           </PopoverWidget>
@@ -266,6 +265,9 @@ const App = () => {
               className="fixed-window"
               config={config}
               onSave={onConfigSave}
+              onDir={() => {
+                window.player.dir();
+              }}
             />
           </PopoverWidget>
         </Space>

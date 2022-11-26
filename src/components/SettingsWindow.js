@@ -12,6 +12,7 @@ import {
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import "./SettingsWindow.css";
+import TooltipLabel from "./TooltipLabel";
 import "./Window.css";
 
 const { TextArea } = Input;
@@ -19,7 +20,7 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 
 const SettingsWindow = (props) => {
-  const { className, config, onSave } = props;
+  const { className, config, onSave, onDir } = props;
 
   const { t } = useTranslation("settings");
 
@@ -69,7 +70,12 @@ const SettingsWindow = (props) => {
               <Input placeholder={t("use_internal_yt-dlp")} />
             </Form.Item>
             <Form.Item label={t("location")} name={["download", "location"]}>
-              <Input placeholder={t("default_path")} />
+              <Space>
+                <Input placeholder={t("default_path")} />
+                <Button block onClick={onDir}>
+                  {t("open")}
+                </Button>
+              </Space>
             </Form.Item>
           </TabPane>
           <TabPane tab={t("encode")} key="encode" forceRender>
@@ -127,6 +133,17 @@ const SettingsWindow = (props) => {
             >
               <Switch />
             </Form.Item>
+            <Form.Item
+              label={
+                <TooltipLabel
+                  tooltip={t("bilibili_cookie_tooltip")}
+                  label={t("cookie")}
+                />
+              }
+              name={["providers", "mv", "bilibili", "cookie"]}
+            >
+              <Input.Password />
+            </Form.Item>
             <Divider plain orientation="left" style={{ marginTop: 0 }}>
               {t("ncm_mv")}
             </Divider>
@@ -148,7 +165,12 @@ const SettingsWindow = (props) => {
               <Switch />
             </Form.Item>
             <Form.Item
-              label={t("api_key")}
+              label={
+                <TooltipLabel
+                  tooltip={t("youtube_api_key_tooltip")}
+                  label={t("api_key")}
+                />
+              }
               name={["providers", "mv", "youtube", "key"]}
             >
               <Input.Password />
