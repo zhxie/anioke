@@ -8,12 +8,11 @@ import {
   Space,
   Switch,
   Tabs,
-  Tooltip,
 } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import InfoCircleOutlined from "@ant-design/icons/InfoCircleOutlined";
 import "./SettingsWindow.css";
+import TooltipLabel from "./TooltipLabel";
 import "./Window.css";
 
 const { TextArea } = Input;
@@ -42,13 +41,6 @@ const SettingsWindow = (props) => {
   const onClick = useCallback(() => {
     form.submit();
   }, [form]);
-
-  const BilibiliCookiesConfigLabel = (
-    <Tooltip title={t("bilibili_cookies_tooltip")}>
-      <span>{t("cookie")}</span>
-      <InfoCircleOutlined className="icon-info" />
-    </Tooltip>
-  );
 
   return (
     <Space
@@ -142,10 +134,15 @@ const SettingsWindow = (props) => {
               <Switch />
             </Form.Item>
             <Form.Item
-              label={BilibiliCookiesConfigLabel}
+              label={
+                <TooltipLabel
+                  tooltip={t("bilibili_cookie_tooltip")}
+                  label={t("cookie")}
+                />
+              }
               name={["providers", "mv", "bilibili", "cookie"]}
             >
-              <Input />
+              <Input.Password />
             </Form.Item>
             <Divider plain orientation="left" style={{ marginTop: 0 }}>
               {t("ncm_mv")}
@@ -168,7 +165,12 @@ const SettingsWindow = (props) => {
               <Switch />
             </Form.Item>
             <Form.Item
-              label={t("api_key")}
+              label={
+                <TooltipLabel
+                  tooltip={t("youtube_api_key_tooltip")}
+                  label={t("api_key")}
+                />
+              }
               name={["providers", "mv", "youtube", "key"]}
             >
               <Input.Password />
