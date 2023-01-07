@@ -167,16 +167,19 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         }
       }
 
+      // Words for this line.
+      // Lyrics from ncm have no words data.
+      const lineContent = line.words.length
+        ? line.words.map((w) => w.word).join("")
+        : line.line;
+
       result.push(
         this.dialogue({
           line,
           style,
           assStyle: this.LYRIC_STYLE,
           advance,
-          pos: getLyricTrackPos(
-            line.words.map((w) => w.word).join(""),
-            trackIndex
-          ),
+          pos: getLyricTrackPos(lineContent, trackIndex),
         })
       );
 
