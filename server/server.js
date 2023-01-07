@@ -42,6 +42,7 @@ const defaultConfig = {
     mv: {
       bilibili: {
         hidden: false,
+        cookie: "",
       },
       ncm: {
         hidden: false,
